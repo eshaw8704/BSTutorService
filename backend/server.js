@@ -8,7 +8,7 @@ const app = express();
     app.get("/products",(req, res) => { });
 
 dotenv.config();
-console.log(process.env.MONGO_URI);
+//console.log(process.env.MONGO_URI);
 
 app.use("/api/buttons", buttonRoutes);
 app.use("/api/textinput", textInputRoutes);
