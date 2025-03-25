@@ -66,3 +66,16 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+.bst-logo {
+  position: absolute; /* Fix the logo at a specific position */
+  top: 20px;          /* Distance from the top of the screen */
+  left: 20px;         /* Distance from the left of the screen */
+  width: 100px;       /* Adjust width as needed */
+  height: auto;       /* Maintain aspect ratio */
+  margin: 0;          /* Remove default margin */
+  transition: transform 0.3s ease; /* Smooth hover effect */
+}
+
+.bst-logo:hover {
+  transform: scale(1.1); /* Enlarge slightly on hover */
+}
