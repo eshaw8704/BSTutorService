@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './StudentCreation.css'; 
 
 function StudentCreation() {
   const [username, setUsername] = useState('');
@@ -45,7 +46,7 @@ function StudentCreation() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           style={{ margin: '0.5rem', padding: '0.5rem', width: '300px' }}
-        /> 
+        />
         <input
           type="password"
           placeholder="Password"
