@@ -6,7 +6,7 @@ export const getAppointmentByStudent = async (req, res) => {
         const appointments = await Appointment.find({ student: studentID });
 
         // Check if appointments are found
-        if (!appointments || appointments.length === 0) {
+        if (!appointments || appointments.length == 0) {
             return res.status(404).json({ message: "No appointments found for this student." });
         }
 
