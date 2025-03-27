@@ -6,11 +6,7 @@ import { connectDB } from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
-<<<<<<<<< Temporary merge branch 1
-connectDB();
-=========
 console.log(process.env.MONGO_URI);
->>>>>>>>> Temporary merge branch 2
 
 const app = express();
 app.use(cors());
@@ -18,7 +14,7 @@ app.use(bodyParser.json());
 
 app.use("/api/users", userRoutes);
 
-app.get("/", (req, res) => {  
+app.get("/", (req, res) => {
     res.send("API is running...");
 });
 
