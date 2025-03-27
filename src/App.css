@@ -37,6 +37,48 @@
   padding: 2em;
 }
 
-.read-the-docs {
-  color: #888;
+.slogan {
+  font-size: 2em;
+  font-weight: bold;
+  color: #4a4a4a;
+  margin: 1.5rem 0;
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  background-color: #f0f0f0;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.bst-logo {
+  width: 100px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.landing-page {
+  text-align: center;
+  margin: 2rem;
+}
+
+.form input {
+  margin: 0.5rem;
+  padding: 0.75rem;
+  width: 250px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.form button {
+  margin: 1rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #6200ea;
+  color: rgb(255, 255, 255);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.form button:hover {
+  background-color: #3700b3;
 }
