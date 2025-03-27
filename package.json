@@ -10,14 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@chakra-ui/react": "^3.14.1",
+    "@chakra-ui/react": "^3.14.2",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
     "framer-motion": "^12.5.0",
-    "mongoose": "^8.13.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -31,5 +27,18 @@
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^15.15.0",
     "vite": "^6.2.0"
-  }
+  },
+  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "main": "eslint.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eshaw8704/BSTutorService.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eshaw8704/BSTutorService/issues"
+  },
+  "homepage": "https://github.com/eshaw8704/BSTutorService#readme"
 }
