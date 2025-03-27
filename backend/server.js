@@ -6,7 +6,7 @@ import { connectDB } from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
-connectDB();
+console.log(process.env.MONGO_URI);
 
 const app = express();
 app.use(cors());
