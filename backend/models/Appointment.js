@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { User } from './models/User';
+import { User } from './models/userModel';
 
 const appointmentSchema = new mongoose.Schema({
     student: {
@@ -7,7 +7,7 @@ const appointmentSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-
+    
     tutor: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
