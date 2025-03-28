@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { User } from './models/userModel';
+import { User } from './userModel.js';
 
 const appointmentSchema = new mongoose.Schema({
     student: {

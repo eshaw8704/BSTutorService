@@ -7,13 +7,12 @@ import userRoutes from "./routes/userRoutes.js";
 import appointmentRoutes from './routes/appointmentRoutes.js';
 
 dotenv.config();
-console.log(process.env.MONGO_URI);
-
+connectDB(); 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use("/api/users", userRoutes);
+app.use("/api/users", userRoutes); 
 app.use('/api', appointmentRoutes);
 
 app.get("/", (req, res) => {

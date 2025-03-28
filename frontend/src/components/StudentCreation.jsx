@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import './StudentCreation.css'; 
+import { useNavigate } from 'react-router-dom'; // <-- Import for navigation
+import './StudentCreation.css';
 
 function StudentCreation() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // <-- Initialize the navigate hook
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,6 +22,7 @@ function StudentCreation() {
       const data = await response.json();
       if (response.ok) {
         alert('Student account created successfully!');
+        navigate('/dashboard'); // <-- Redirect to dashboard after success
       } else {
         alert(`Error: ${data.message}`);
       }
