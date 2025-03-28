@@ -1,5 +1,7 @@
+// routes/userRoutes.js
+
 import express from 'express';
-import User from '../models/User.js'; 
+import User from '../models/User.js'; // <-- Make sure this matches your actual file name (“Users.js” or “User.js”)
 
 const router = express.Router();
 
@@ -8,7 +10,6 @@ router.post('/', async (req, res) => {
   try {
     const { firstName, lastName, email, password, role } = req.body;
     
-    // Create a new user. You can add validations or hashing for the password here.
     const newUser = new User({ firstName, lastName, email, password, role });
     await newUser.save();
 

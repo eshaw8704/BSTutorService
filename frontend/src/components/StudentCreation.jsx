@@ -39,8 +39,9 @@ function StudentCreation() {
     } catch (error) {
       console.error('Error creating user:', error);
       alert('Error creating user');
-    }    
+    }
   };
+  
 
   return (
     <div className="student-creation-container">
