@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './LoginPage.css';
 import confetti from 'canvas-confetti';
 
+// displays a login form and handles the form submission
 function LoginPage() {
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
@@ -14,6 +15,7 @@ function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
+      // parse the response
       const data = await response.json();
       if (response.ok) {
         alert('Login successful!');
@@ -29,6 +31,7 @@ function LoginPage() {
     }
   };
 
+  // render the component
   return (
     <div className="login-container">
       <h2>Login</h2>

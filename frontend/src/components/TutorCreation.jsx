@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import './TutorCreation.css';
 import confetti from 'canvas-confetti';
 
+// displays a form to create a tutor account and handles the form submission
+// function to create a tutor account
 function TutorCreation() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName]   = useState('');
   const [email, setEmail]         = useState('');
   const [password, setPassword]   = useState('');
 
+  // function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -17,6 +20,7 @@ function TutorCreation() {
         body: JSON.stringify({ firstName, lastName, email, password, role: 'tutor' }),
       });
 
+      // parse the response
       const data = await response.json();
       if (response.ok) {
         alert('Tutor account created successfully!');
@@ -34,6 +38,7 @@ function TutorCreation() {
     }
   };
 
+  // render the component
   return (
     <div className="tutor-creation-container">
       <h2>Create Tutor Account</h2>
