@@ -5,14 +5,13 @@ export const getAppointmentByStudent = async (req, res) => {
         const { studentID } = req.params;
         const appointments = await Appointment.find({ student: studentID });
 
-        // Check if appointments are found
-        if (!appointments || appointments.length == 0) {
-            return res.status(404).json({ message: "No appointments found for this student." });
+        
+        if (!studentID || !subject || !appointmentTime || !appointmentDay || !tutor) {
+            return res.status(400).json({ message: "All fields are required." });
         }
 
-        res.status(201).json(appointments);
+        res.status(200).json(appointments);
     } catch(error) {
-        console.error("Error booking appointment:", error.message);
-        res.status(500).json({ message: "Error booking appointment", error: error.message });
+        res.status(500).json({ message: "Error retrieving appointments", error: error.message });
     }
 };
