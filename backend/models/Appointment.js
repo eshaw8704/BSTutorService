@@ -53,6 +53,7 @@ const timeSlots = [
       );
     };
     export default DateTimeSelector;   
+//ends here
 
     //for appointment booking
 const appointmentSchema = new mongoose.Schema({
