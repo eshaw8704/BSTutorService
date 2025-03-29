@@ -14,11 +14,25 @@ BSTutors is a web application designed to facilitate booking tutoring sessions. 
 ## Project Structure
 ```
 BSTutors/
-├── public/               # Public assets and files
-├── src/                  # Main source code
-│   ├── assets/           # Image and logo assets
-│   ├── components/       # Reusable UI components
-│   ├── pages/            # Page components
+├── backend/               # Backend services
+│   ├── config/            # Configuration files
+│   ├── controllers/       # Request handlers and controllers
+│   ├── databases/         # Database connection and setup
+│   ├── models/            # Mongoose models
+│   ├── routes/            # API routing definitions
+│   ├── server.js          # Entry point for the backend server
+│   └── testConnection.js  # Script to test database connectivity
+├── frontend/              # Frontend client application
+│   ├── public/            # Publicly accessible files
+│   ├── src/               # Frontend source code
+│   │   ├── assets/        # Images and static assets
+│   │   ├── components/    # Reusable UI components
+│   │   │   ├── AdminCreation.jsx    # Admin creation page
+│   │   │   ├── LoginPage.jsx        # User login page
+│   │   │   ├── StudentCreation.jsx  # Student account creation
+│   │   │   ├── TutorCreation.jsx    # Tutor account creation
+│   │   │   ├── WelcomePage.jsx      # Landing page for the app
+│   │   │   └── Header.jsx           # Navigation header
 │   ├── App.jsx           # Main application file
 │   ├── main.jsx          # Entry point for React application
 │   └── index.css         # Global styling
@@ -37,19 +51,29 @@ BSTutors/
    git clone https://github.com/yourusername/BSTutors.git
    cd BSTutors
    ```
-2. Install dependencies:
+2. Install dependencies for both frontend and backend:
    ```bash
+   cd backend
+   npm install
+   cd ../frontend
    npm install
    ```
-3. Run the development server:
+3. Run the backend server:
    ```bash
+   cd backend
+   npm start
+   ```
+4. Run the frontend development server:
+   ```bash
+   cd frontend
    npm run dev
    ```
 
 ## Usage
 - Access the application at `http://localhost:5173/`.
-- Click the BSTutors logo to view more information.
-- The counter button demonstrates interactive state management.
+- Log in or create an account (Admin, Student, Tutor).
+- The Welcome Page provides an introduction to the platform.
+- Administrative users can manage tutor and student accounts.
 
 ## Technologies Used
 - React: Frontend UI framework
@@ -58,6 +82,7 @@ BSTutors/
 - CSS: Styling and layout
 - MongoDB: Database
 - Express: Backend framework
+- Node.js: Server environment
 
 ## Contributing
 1. Fork the project.
