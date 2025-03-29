@@ -20,6 +20,7 @@ function AdminCreation() {
       const data = await response.json();
       if (response.ok) {
         alert('Admin account created successfully!');
+        //Populate Clone DB for data validation
         setFirstName('');
         setLastName('');
         setEmail('');

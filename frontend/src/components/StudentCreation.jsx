@@ -22,6 +22,7 @@ function StudentCreation() {
       const data = await response.json();
       if (response.ok) {
         alert('Student account created successfully!');
+        //Populate Clone DB for data validation
         // reset fields
         setFirstName('');
         setLastName('');

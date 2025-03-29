@@ -135,7 +135,7 @@
     "minimatch": "^3.1.2",
     "mongodb": "^6.15.0",
     "mongodb-connection-string-url": "^3.0.2",
-    "mongoose": "^8.13.0",
+    "mongoose": "^8.13.1",
     "motion-dom": "^12.6.0",
     "motion-utils": "^12.5.0",
     "mpath": "^0.9.0",
@@ -225,7 +225,6 @@
     "yaml": "^2.7.0",
     "yocto-queue": "^0.1.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
