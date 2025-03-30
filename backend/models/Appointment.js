@@ -86,6 +86,11 @@ const appointmentSchema = new mongoose.Schema({
 });
 
 // Adding a compound index on 'student' and 'tutor' for faster lookups
-appointmentSchema.index({ student: 1, tutor: 1 });
+//appointmentSchema.index({ student: 1, tutor: 1 });
+
+//This is the same but prevents double booking
+// Adding a compound unique index on 'tutor', 'appointmentDate', and 'appointmentTime' to prevent double booking
+appointmentSchema.index({ tutor: 1, appointmentDate: 1, appointmentTime: 1 }, { unique: true });
+
 
 export const Appointment = mongoose.model("Appointment", appointmentSchema);
