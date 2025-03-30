@@ -7,9 +7,7 @@ function Appointment() {
   const [appointmentDate, setAppointmentDate] = useState(null);
   const [tutor, setTutor] = useState('');
   const [studentID, setStudentID] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
-
+  
   useEffect(() => {
     // Fetch the student ID from session or JWT (this is just a placeholder)
     setStudentID('student123');
