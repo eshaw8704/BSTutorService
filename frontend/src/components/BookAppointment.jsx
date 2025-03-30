@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './Appointment.css'; // Assuming you already have the styles for the form
+import './Appointment.css';
 
 function Appointment() {
   const [subject, setSubject] = useState('');
@@ -27,6 +27,11 @@ function Appointment() {
       const data = await response.json();
       if (response.ok) {
         alert('Appointment successfully booked!');
+        // Reset the fields after success
+        setSubject('');
+        setAppointmentTime('');
+        setAppointmentDate(null);
+        setTutor('');
       } else {
         alert(`Error: ${data.message}`);
       }
@@ -39,12 +44,8 @@ function Appointment() {
   return (
     <div style={{ textAlign: 'center', margin: '2rem' }}>
       <h2>Book Appointment</h2>
-
-      {/* Error and success messages */}
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      {successMessage && <div className="success-message">{successMessage}</div>}
-
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
         {/* Subject Selection */}
         <select
           value={subject}
@@ -61,23 +62,39 @@ function Appointment() {
         </select>
 
         {/* Tutor Selection */}
-        <input
-          type="text"
-          placeholder="Tutor Name"
+        <select
           value={tutor}
           onChange={(e) => setTutor(e.target.value)}
           style={{ margin: '0.5rem', padding: '0.5rem', width: '300px' }}
           required
-        />
+        >
+            <option value="">Select Tutor</option>
+            <option value="Rumeet Hundal">Rumeet Hundal</option>
+            <option value="Mary Nolan">Mary Nolan</option>
+            <option value="Liz Hernandez">Liz Hernandez</option>
+            <option value="Matthew Quan">Matthew Quan</option>
+            <option value="Elijah shaw">Elijah shaw</option>
+            <option value="Farrukh Israilov">Farrukh Israilov</option>
+        </select>
 
         {/* Date Picker */}
-        <input
-          type="date"
-          value={appointmentDate}
-          onChange={(e) => setAppointmentDate(e.target.value)}
-          style={{ margin: '0.5rem', padding: '0.5rem', width: '300px' }}
-          required
-        />
+        <select
+            value={appointmentDate}
+            onChange={(e) => setAppointmentDate(e.target.value)}
+            style={{ margin: '0.5rem', padding: '0.5rem', width: '300px' }}
+            required
+        >
+            <option value="">Select Date</option>
+            <option value="03/20/2025">03/20/2025</option>
+            <option value="03/21/2025">03/21/2025</option>
+            <option value="03/22/2025">03/22/2025</option>
+            <option value="03/23/2025">03/23/2025</option>
+            <option value="03/24/2025">03/24/2025</option>
+            <option value="03/25/2025">03/25/2025</option>
+            <option value="03/26/2025">03/26/2025</option>
+            <option value="03/27/2025">03/27/2025</option>
+            <option value="03/28/2025">03/28/2025</option>
+        </select>
 
         {/* Time Selection */}
         <select
