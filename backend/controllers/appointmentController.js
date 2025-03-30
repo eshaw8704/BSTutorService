@@ -1,5 +1,11 @@
 import { Appointment } from '../models/Appointment.js';
-import nodemailer from 'nodemailer';
+import { sendEmail } from '../utils/email.js';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const EMAIL_USER = process.env.EMAIL_USER;
+const EMAIL_PASS = process.env.EMAIL_PASS;
 
 // Get appointments for a specific student
 export const getAppointmentByStudent = async (req, res) => {
@@ -19,9 +25,9 @@ export const getAppointmentByStudent = async (req, res) => {
 
 export const createAppointment = async (req, res) => {
     try {
-        const { subject, appointmentTime, tutor } = req.body;
+        const { subject, appointmentTime, appointmentDate, tutor, email } = req.body;
 
-        if (!subject || !appointmentTime || !appointmentDate || !tutor) {
+        if (!email || !subject || !appointmentTime || !appointmentDate || !tutor) {
             return res.status(400).json({ message: "All fields are required." });
         }
 
@@ -32,33 +38,24 @@ export const createAppointment = async (req, res) => {
             tutor,
         });
         await newAppointment.save();
-        //email notification
-        const transporter = nodemailer.createTransport({
-            service: 'gmail', // Use your email service provider
-            auth: {
-                user: 'your-email@gmail.com', // Replace with your email
-                pass: 'your-email-password', // Replace with your email password or app password
-            },
-        });
 
-        const mailOptions = {
-            from: 'your-email@gmail.com',
-            to: email,
-            subject: 'Appointment Confirmation',
-            text: `Your appointment for ${subject} on ${appointmentDay} at ${appointmentTime} has been booked successfully.`
-        };
+        try {
+            await sendEmail(
+                email,
+                'Appointment Confirmation',
+                `Your appointment for ${subject} on ${appointmentDate} at ${appointmentTime} has been booked successfully.`
+            );
+        } catch (emailError) {
+            console.error("Error sending confirmation email:", emailError.message);
+        }
 
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.error("Error sending email:", error);
-            } else {
-                console.log("Email sent:", info.response);
-            }
-        });
         res.status(201).json({ message: "Appointment booked successfully!", appointment: newAppointment });
     } 
     catch (error) {
-        console.error("Error booking appointment:", error.message);
+        console.error("Error booking appointment:", {
+            message: error.message,
+            stack: error.stack,
+        });
         res.status(500).json({ message: "Error booking appointment", error: error.message });
     }
 };
