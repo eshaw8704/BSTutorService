@@ -79,3 +79,26 @@
     background-color: #f0e9f8;
   }
   
+  .profile-btn {
+    position: absolute;
+    top: 105px;
+    left: 2500px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 1rem;
+  }
+  
+  .profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #6a0dadbb;
+    transition: transform 0.2s ease;
+  }
+  
+  .profile-pic:hover {
+    transform: scale(1.05);
+  }
