@@ -19,17 +19,16 @@ export const getAppointmentByStudent = async (req, res) => {
 
 export const createAppointment = async (req, res) => {
     try {
-        const { studentID, subject, appointmentTime, appointmentDay, tutor } = req.body;
+        const { subject, appointmentTime, tutor } = req.body;
 
-        if (!studentID || !subject || !appointmentTime || !appointmentDay || !tutor) {
+        if (!subject || !appointmentTime || !appointmentDate || !tutor) {
             return res.status(400).json({ message: "All fields are required." });
         }
 
         const newAppointment = new Appointment({
-            student: studentID,
             subject,
             appointmentTime,
-            appointmentDay,
+            appointmentDate,
             tutor,
         });
         await newAppointment.save();
