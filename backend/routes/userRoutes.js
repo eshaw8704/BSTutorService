@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
       email,
       password: hashedPassword,
       role,
-      UID, // ← Add UID here
+      UID, 
     });
     await newUser.save();
 
