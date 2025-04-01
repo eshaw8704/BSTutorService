@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import './StudentCreation.css';
 import confetti from 'canvas-confetti';
 
-
+// This component allows the admin to create a new student account
+// It includes a form with fields for first name, last name, email, and password
 function StudentCreation() {
 
   const [firstName, setFirstName] = useState('');
@@ -10,6 +11,7 @@ function StudentCreation() {
   const [email, setEmail]         = useState('');
   const [password, setPassword]   = useState('');
 
+  // This function handles the form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -19,6 +21,7 @@ function StudentCreation() {
         body: JSON.stringify({ firstName, lastName, email, password, role: 'student' }),
       });
   
+      // Handle the response from the server
       const data = await response.json();
       if (response.ok) {
         alert('Student account created successfully!');

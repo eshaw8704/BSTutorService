@@ -21,7 +21,15 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+
+// Call connectDB before starting the server
+const startServer = async () => {
+  await connectDB(); // Connects to MongoDB
+  app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
-});
+  });
+};
+
+startServer();
+
 

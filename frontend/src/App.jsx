@@ -7,6 +7,8 @@ import AdminCreation from './components/AdminCreation';
 import LoginPage from './components/LoginPage';
 import Header from './components/Header'; // green logo on every page
 
+// This is the main App component that sets up the routing for the application
+// It imports the necessary components and defines the routes for each page
 function App() {
   return (
   <>
