@@ -2,13 +2,16 @@ import React, { useState } from 'react';
 import './StudentCreation.css';
 import confetti from 'canvas-confetti';
 
+import { useNavigate } from 'react-router-dom'; // <-- Import for navigation
+import './StudentCreation.css';
 
 function StudentCreation() {
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName]   = useState('');
-  const [email, setEmail]         = useState('');
-  const [password, setPassword]   = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // <-- Initialize the navigate hook
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,6 +37,7 @@ function StudentCreation() {
           spread: 70,
           origin: { y: 0.6 },
         });
+        navigate('/dashboard'); // <-- Redirect to dashboard after success
       } else {
         alert(`Error: ${data.message}`);
       }

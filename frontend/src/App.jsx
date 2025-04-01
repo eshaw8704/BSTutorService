@@ -6,6 +6,8 @@ import TutorCreation from './components/TutorCreation';
 import AdminCreation from './components/AdminCreation';
 import LoginPage from './components/LoginPage';
 import Header from './components/Header'; // green logo on every page
+import Login from './components/Login';
+import StudentDashboard from './components/StudentDashboard';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
       <Route path="/tutor" element={<TutorCreation />} />
       <Route path="/admin" element={<AdminCreation />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/dashboard" element={<StudentDashboard />} />
     </Routes>
   </>
   );
