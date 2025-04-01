@@ -20,6 +20,7 @@ function TutorCreation() {
       const data = await response.json();
       if (response.ok) {
         alert('Tutor account created successfully!');
+        //Populate Clone DB for data validation
         setFirstName('');
         setLastName('');
         setEmail('');
