@@ -1,13 +1,14 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import WelcomePage from './components/WelcomePage';
-import StudentCreation from './components/StudentCreation';
-import TutorCreation from './components/TutorCreation';
-import AdminCreation from './components/AdminCreation';
-import LoginPage from './components/LoginPage';
-import Header from './components/Header'; // green logo on every page
-import Login from './components/Login';
-import StudentDashboard from './components/StudentDashboard';
+import WelcomePage from './components/Frames/WelcomePage.jsx';
+import StudentCreation from './components/AccountCreation/StudentCreation.jsx';
+import TutorCreation from './components/AccountCreation/TutorCreation.jsx';
+import AdminCreation from './components/AccountCreation/AdminCreation.jsx';
+import LoginPage from './components/Frames/LoginPage.jsx';
+import Header from './components/Frames/Header.jsx'; // green logo on every page
+import StudentDashboard from './components/Frames/StudentDashboard.jsx';
+import TutorDashboard from './components/Frames/TutorDashboard.jsx';
+
 
 function App() {
   return (
@@ -22,8 +23,8 @@ function App() {
       <Route path="/tutor" element={<TutorCreation />} />
       <Route path="/admin" element={<AdminCreation />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/login" element={<Login />} />
       <Route path="/dashboard" element={<StudentDashboard />} />
+      <TutorDashboard />
     </Routes>
   </>
   );

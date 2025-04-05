@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './WelcomePage.css';
-import yellowLogo from "../assets/yellowBS.png"; // import logo
+import yellowLogo from "../../assets/yellowBS.png"; // import logo
 
 function WelcomePage() {
   const navigate = useNavigate();
