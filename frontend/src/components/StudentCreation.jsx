@@ -1,25 +1,43 @@
 import React, { useState } from 'react';
-import './StudentCreation.css'; 
+import './StudentCreation.css';
+import confetti from 'canvas-confetti';
+
+import { useNavigate } from 'react-router-dom'; // <-- Import for navigation
+import './StudentCreation.css';
 
 function StudentCreation() {
-  const [username, setUsername] = useState('');
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName]   = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // <-- Initialize the navigate hook
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch('http://localhost:5000/api/users', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, email, password, role: 'student' }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firstName, lastName, email, password, role: 'student' }),
       });
-
+  
       const data = await response.json();
       if (response.ok) {
         alert('Student account created successfully!');
+        //Populate Clone DB for data validation
+        // reset fields
+        setFirstName('');
+        setLastName('');
+        setEmail('');
+        setPassword('');
+        // confetti trigger
+        confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+        });
+        navigate('/dashboard'); // <-- Redirect to dashboard after success
       } else {
         alert(`Error: ${data.message}`);
       }
@@ -28,35 +46,41 @@ function StudentCreation() {
       alert('Error creating user');
     }
   };
+  
 
   return (
-    <div style={{ textAlign: 'center', margin: '2rem' }}>
+    <div className="student-creation-container">
       <h2>Create Student Account</h2>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <form onSubmit={handleSubmit} className="student-form">
         <input
           type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          style={{ margin: '0.5rem', padding: '0.5rem', width: '300px' }}
+          placeholder="First Name"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+          required
+        />
+        <input
+          type="text"
+          placeholder="Last Name"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          required
         />
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={{ margin: '0.5rem', padding: '0.5rem', width: '300px' }}
-        />
+          required
+        /> 
         <input
           type="password"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          style={{ margin: '0.5rem', padding: '0.5rem', width: '300px' }}
+          required
         />
-        <button type="submit" style={{ margin: '1rem', padding: '0.75rem 1.5rem', backgroundColor: '#6a0dad', color: 'white', borderRadius: '5px' }}>
-          Register
-        </button>
+        <button type="submit">Register</button>
       </form>
     </div>
   );
