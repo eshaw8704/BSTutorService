@@ -60,12 +60,20 @@ router.post('/login', async (req, res) => {
     }
 
     const { password: _, ...userData } = user.toObject();
-    res.status(200).json({ message: 'Login successful!', user: userData });
+
+    // ✅ Send role directly in top-level response for frontend routing
+    res.status(200).json({
+      message: 'Login successful!',
+      role: user.role,          // <-- This is key!
+      email: user.email,        // optional
+      UID: user.UID,            // optional
+    });
 
   } catch (error) {
     console.error('❌ Error during login:', error.message);
     res.status(500).json({ message: 'Server error during login.' });
   }
 });
+
 
 export default router;

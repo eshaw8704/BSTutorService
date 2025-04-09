@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import './TutorCreation.css';
 import confetti from 'canvas-confetti';
+import { useNavigate } from 'react-router-dom';
 
 function TutorCreation() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName]   = useState('');
   const [email, setEmail]         = useState('');
   const [password, setPassword]   = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,12 +22,12 @@ function TutorCreation() {
       const data = await response.json();
       if (response.ok) {
         alert('Tutor account created successfully!');
-        //Populate Clone DB for data validation
         setFirstName('');
         setLastName('');
         setEmail('');
         setPassword('');
         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        navigate('/tutordashboard');
       } else {
         alert(`Error: ${data.message}`);
       }
@@ -39,34 +41,10 @@ function TutorCreation() {
     <div className="tutor-creation-container">
       <h2>Create Tutor Account</h2>
       <form onSubmit={handleSubmit} className="tutor-form">
-        <input
-          type="text"
-          placeholder="First Name"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Last Name"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <input type="text" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+        <input type="text" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         <button type="submit">Register</button>
       </form>
     </div>

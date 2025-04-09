@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import './LoginPage.css';
 import confetti from 'canvas-confetti';
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
-  const [email, setEmail]       = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -14,12 +16,25 @@ function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
+
       const data = await response.json();
+      console.log('Login response:', data); // ✅ Debug the response
+
       if (response.ok) {
         alert('Login successful!');
         setEmail('');
         setPassword('');
         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+
+        // ✅ Role-based navigation
+        if (data.role === 'tutor') {
+          navigate('/tutordashboard');
+        } else if (data.role === 'student') {
+          navigate('/dashboard');
+        } else {
+          alert('Unknown role. Redirecting to home.');
+          navigate('/');
+        }
       } else {
         alert(`Error: ${data.message}`);
       }

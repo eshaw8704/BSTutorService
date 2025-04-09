@@ -15,6 +15,16 @@ export const getAppointmentByStudent = async (req, res) => {
         res.status(500).json({ message: "Error retrieving appointments", error: error.message });
     }
 };
+export const getAppointmentsByTutor = async (req, res) => {
+    const { tutorID } = req.params;
+    try {
+      const appointments = await Appointment.find({ tutor: tutorID }).populate('student', 'firstName lastName');
+      res.json(appointments);
+    } catch (error) {
+      res.status(500).json({ message: 'Failed to fetch tutor appointments' });
+    }
+  };
+  
 
 export const createAppointment = async (req, res) => {
     try {
