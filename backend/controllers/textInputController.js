@@ -1,4 +1,4 @@
-import { User } from '../models/userModel.js';
+import { User } from '../models/User.js';
 
 // Create a new user
 export const createUser = async (req, res) => {
@@ -20,9 +20,9 @@ export const createUser = async (req, res) => {
         const newUser = new User({ username, email, password, role });
         await newUser.save();
 
-        res.status(201).json({ message: 'User created successfully', user: newUser });
+        res.status(201).json({ message: 'User created successfullye', user: newUser });
     } catch (error) {
-        console.error('Error in createUser:', error.message);
+        console.error('Error in createUseer:', error.message);
         res.status(500).json({ message: error.message });
     }
 };

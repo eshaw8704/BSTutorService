@@ -9,9 +9,11 @@ import appointmentRoutes from './routes/appointmentRoutes.js';
 dotenv.config();
 console.log(process.env.MONGO_URI);
 
+connectDB();
+
 const app = express();
 app.use(cors());
-app.use(bodyParser.json());
+
 
 app.use("/api/users", userRoutes);
 app.use("/api/appointments", appointmentRoutes);
@@ -24,3 +26,4 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+
