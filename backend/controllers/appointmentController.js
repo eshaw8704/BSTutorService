@@ -1,4 +1,5 @@
 import { Appointment } from '../models/Appointment.js';
+import nodemailer from 'nodemailer';
 
 // Get appointments for a specific student
 export const getAppointmentByStudent = async (req, res) => {
@@ -18,21 +19,42 @@ export const getAppointmentByStudent = async (req, res) => {
 
 export const createAppointment = async (req, res) => {
     try {
-        const { studentID, subject, appointmentTime, appointmentDay, tutor } = req.body;
+        const { subject, appointmentTime, tutor } = req.body;
 
-        if (!studentID || !subject || !appointmentTime || !appointmentDay || !tutor) {
+        if (!subject || !appointmentTime || !appointmentDate || !tutor) {
             return res.status(400).json({ message: "All fields are required." });
         }
 
         const newAppointment = new Appointment({
-            student: studentID,
             subject,
             appointmentTime,
-            appointmentDay,
+            appointmentDate,
             tutor,
         });
         await newAppointment.save();
+        //email notification
+        const transporter = nodemailer.createTransport({
+            service: 'gmail', // Use your email service provider
+            auth: {
+                user: 'your-email@gmail.com', // Replace with your email
+                pass: 'your-email-password', // Replace with your email password or app password
+            },
+        });
 
+        const mailOptions = {
+            from: 'your-email@gmail.com',
+            to: email,
+            subject: 'Appointment Confirmation',
+            text: `Your appointment for ${subject} on ${appointmentDay} at ${appointmentTime} has been booked successfully.`
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error("Error sending email:", error);
+            } else {
+                console.log("Email sent:", info.response);
+            }
+        });
         res.status(201).json({ message: "Appointment booked successfully!", appointment: newAppointment });
     } 
     catch (error) {

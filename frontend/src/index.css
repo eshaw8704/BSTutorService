@@ -14,11 +14,11 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #999ef5;
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #a3a5cb;
 }
 
 body {
@@ -35,7 +35,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #1a0d0d;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -59,6 +59,15 @@ button:hover {
 }
 
 /* remove default margins */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+/* remove default margins */
+
 html, body {
   margin: 0;
   padding: 0;
