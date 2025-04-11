@@ -1,8 +1,15 @@
-import { Payroll } from '../models/Payroll.js';
-
 export const createPayroll = async (req, res) => {
   try {
+    console.log("📦 Incoming payroll body:", req.body);
+
     const { tutor, confirmedHours, nonConfirmedHours, confirmedBy } = req.body;
+
+    if (!tutor || !confirmedHours || !nonConfirmedHours || !confirmedBy) {
+      return res.status(400).json({
+        message: "Missing required fields",
+        body: req.body
+      });
+    }
 
     const newPayroll = await Payroll.create({
       tutor,
@@ -12,9 +19,8 @@ export const createPayroll = async (req, res) => {
     });
 
     res.status(201).json(newPayroll);
-    
   } catch (error) {
-    console.error("Error creating payroll record:", error);
+    console.error("❌ Error creating payroll record:", error);
     res.status(500).json({ message: "Failed to create payroll record" });
   }
 };

@@ -8,6 +8,11 @@ import LoginPage from './components/Frames/LoginPage.jsx';
 import Header from './components/Frames/Header.jsx';
 import StudentDashboard from './components/Frames/StudentDashboard.jsx';
 import TutorDashboard from './components/Frames/TutorDashboard.jsx';
+import TutorPayrollPage from './components/Frames/TutorPayrollPage.jsx';
+import AdminPayrollList from './components/Frames/AdminPayrollList.jsx';
+import AdminPayrollReview from './components/Frames/AdminPayrollReview.jsx';
+
+
 
 function App() {
   return (
