@@ -25,10 +25,6 @@ body {
   margin: 0;
   padding: 0;
   min-width: 320px;
-<<<<<<< HEAD
-  /*maryadd*/
-=======
->>>>>>> ecb208361db7653a1bf3071780b9a1d7d9faa42e
   box-sizing: border-box;
 }
 
@@ -45,11 +41,7 @@ button {
 }
 
 button:hover {
-<<<<<<< HEAD
-  border-color: #979ade;
-=======
   border-color: #646cff;
->>>>>>> ecb208361db7653a1bf3071780b9a1d7d9faa42e
 }
 
 .bst-logo {
