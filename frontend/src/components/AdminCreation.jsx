@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './AdminCreation.css';
-import confetti from 'canvas-confetti';
+//import confetti from 'canvas-confetti';
 
 function AdminCreation() {
   const [firstName, setFirstName] = useState('');
@@ -25,7 +25,7 @@ function AdminCreation() {
         setLastName('');
         setEmail('');
         setPassword('');
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        //confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       } else {
         alert(`Error: ${data.message}`);
       }
