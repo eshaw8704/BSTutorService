@@ -9,17 +9,19 @@ import paymentRoutes from './routes/paymentRoutes.js'; // Import payment routes
 import webhookRoutes from './routes/webhookRoutes.js'; // Import webhook routes
 
 dotenv.config();
+connectDB();
 console.log(process.env.MONGO_URI);
 
 const app = express();
 app.use(cors());
-
+app.use(bodyParser.json());
 
 app.use("/api/users", userRoutes);
 app.use('/api', appointmentRoutes);
 app.use('/api', paymentRoutes); // Use payment routes
 app.use('/api', webhookRoutes);
-app.use(bodyParser.json());
+app.use('/api', appointmentRoutes);
+
 
 app.get("/", (req, res) => {
     res.send("API is running...");
