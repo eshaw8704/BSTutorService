@@ -2,6 +2,7 @@
 import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 
+// This function handles user registration
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 

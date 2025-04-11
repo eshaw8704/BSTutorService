@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import { connectDB } from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import appointmentRoutes from './routes/appointmentRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 dotenv.config();
 console.log(process.env.MONGO_URI);
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 
 app.use("/api/users", userRoutes);
 app.use('/api', appointmentRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get("/", (req, res) => {
     res.send("API is running...");

@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import User from './User.js';
 
+// Define the Appointment schema
 const appointmentSchema = new mongoose.Schema({
     student: {
         type: mongoose.Schema.Types.ObjectId,
@@ -22,7 +23,20 @@ const appointmentSchema = new mongoose.Schema({
     appointmentTime: {
         type: Date,
         required: true,
-    }
+    },
+    
+    appointmentDay: {
+    type: String,
+    required: true,
+    },
+
+    // new field for logging completion:
+    status: {
+    type: String,
+    enum: ['Booked', 'Completed'],
+    default: 'Booked',
+    },
+
 });
 
 // Adding a compound index on 'student' and 'tutor' for faster lookups

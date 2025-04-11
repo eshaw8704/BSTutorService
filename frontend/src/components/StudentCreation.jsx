@@ -5,6 +5,7 @@ import confetti from 'canvas-confetti';
 // displays a form to create a student account and handles the form submission
 function StudentCreation() {
 
+  // state variables to manage form inputs
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName]   = useState('');
   const [email, setEmail]         = useState('');
@@ -24,7 +25,7 @@ function StudentCreation() {
       const data = await response.json();
       if (response.ok) {
         alert('Student account created successfully!');
-        //Populate Clone DB for data validation
+        // populate Clone DB for data validation
         // reset fields
         setFirstName('');
         setLastName('');

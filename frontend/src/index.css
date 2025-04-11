@@ -58,7 +58,7 @@ button:hover {
   transform: scale(1.1); 
 }
 
-/* remove default margins */
+/* removes default margins */
 html, body {
   margin: 0;
   padding: 0;
