@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import '../Styles/PayrollPages.css'; // ✅ Make sure this path matches your project
 
 const AdminPayrollReview = () => {
   const { tutorId } = useParams(); // pulled from URL
@@ -8,7 +9,18 @@ const AdminPayrollReview = () => {
   const [status, setStatus] = useState('');
 
   const handleConfirm = async () => {
-    const adminId = localStorage.getItem('userId'); // stored at login
+    console.log("🟢 Confirm button clicked");
+
+    const adminId = localStorage.getItem('userId');
+    if (!adminId || !tutorId) {
+      setStatus("❌ Missing tutor or admin ID.");
+      return;
+    }
+
+    if (!confirmedHours || !nonConfirmedHours) {
+      setStatus("⚠️ Please enter both confirmed and non-confirmed hours.");
+      return;
+    }
 
     const requestBody = {
       tutor: tutorId,
@@ -40,7 +52,7 @@ const AdminPayrollReview = () => {
   };
 
   return (
-    <div style={{ padding: '2rem' }}>
+    <div className="page-wrapper">
       <h2>Payroll Review for Tutor ID: {tutorId}</h2>
 
       <label>
@@ -49,7 +61,6 @@ const AdminPayrollReview = () => {
           type="number"
           value={confirmedHours}
           onChange={(e) => setConfirmedHours(e.target.value)}
-          style={{ marginLeft: '0.5rem' }}
         />
       </label>
 
@@ -61,14 +72,16 @@ const AdminPayrollReview = () => {
           type="number"
           value={nonConfirmedHours}
           onChange={(e) => setNonConfirmedHours(e.target.value)}
-          style={{ marginLeft: '0.5rem' }}
         />
       </label>
 
       <br /><br />
 
-      <button onClick={handleConfirm}>Confirm Payroll</button>
-      {status && <p>{status}</p>}
+      <button className="confirm-btn" onClick={handleConfirm}>
+        Confirm Payroll
+      </button>
+
+      {status && <p className="status-msg">{status}</p>}
     </div>
   );
 };

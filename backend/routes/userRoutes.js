@@ -75,5 +75,16 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// ✅ Route to get all tutors
+router.get('/tutors', async (req, res) => {
+  try {
+    const tutors = await User.find({ role: 'tutor' }).select('-password');
+    res.json(tutors);
+  } catch (err) {
+    console.error("Error fetching tutors:", err);
+    res.status(500).json({ message: "Failed to fetch tutors." });
+  }
+});
+
 
 export default router;
