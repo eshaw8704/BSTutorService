@@ -6,7 +6,7 @@ import { changeAppointment } from '../controllers/changeAppointmentController.js
 
 const router = express.Router();
 
-router.get('/appointments/:studentID', getAppointmentByStudent);
+// Route to get appointments by student ID
 router.post('/appointments', createAppointment);
 
 // Route to delete an appointment
