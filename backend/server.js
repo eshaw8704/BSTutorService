@@ -17,7 +17,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use("/api/users", userRoutes);
-app.use('/api', appointmentRoutes);
+
 app.use('/api', paymentRoutes); // Use payment routes
 app.use('/api', webhookRoutes);
 app.use('/api', appointmentRoutes);
