@@ -1,19 +1,14 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import WelcomePage from './components/Frames/WelcomePage.jsx';
-import StudentCreation from './components/AccountCreation/StudentCreation.jsx';
-import TutorCreation from './components/AccountCreation/TutorCreation.jsx';
-import AdminCreation from './components/AccountCreation/AdminCreation.jsx';
-import LoginPage from './components/Frames/LoginPage.jsx';
-import Header from './components/Frames/Header.jsx';
-import StudentDashboard from './components/Frames/StudentDashboard.jsx';
-import TutorDashboard from './components/Frames/TutorDashboard.jsx';
-import TutorPayrollPage from './components/Frames/TutorPayrollPage.jsx';
-import AdminPayrollList from './components/Frames/AdminPayrollList.jsx';
-import AdminPayrollReview from './components/Frames/AdminPayrollReview.jsx';
+import WelcomePage from './components/WelcomePage';
+import StudentCreation from './components/StudentCreation';
+import TutorCreation from './components/TutorCreation';
+import AdminCreation from './components/AdminCreation';
+import LoginPage from './components/LoginPage';
+import Header from './components/Header'; // green logo on every page
 
-
-
+// This is the main App component that sets up the routing for the application
+// It imports the necessary components and defines the routes for each page
 function App() {
   return (
     <>

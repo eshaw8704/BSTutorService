@@ -3,6 +3,8 @@ import './TutorCreation.css';
 import confetti from 'canvas-confetti';
 import { useNavigate } from 'react-router-dom';
 
+// displays a form to create a tutor account and handles the form submission
+// function to create a tutor account
 function TutorCreation() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName]   = useState('');
@@ -10,6 +12,8 @@ function TutorCreation() {
   const [password, setPassword]   = useState('');
   const navigate = useNavigate();
 
+  // this function handles the form submission
+  // It sends a POST request to the server with the user data
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -19,6 +23,7 @@ function TutorCreation() {
         body: JSON.stringify({ firstName, lastName, email, password, role: 'tutor' }),
       });
 
+      // parse the response
       const data = await response.json();
       if (response.ok) {
         alert('Tutor account created successfully!');
@@ -37,6 +42,8 @@ function TutorCreation() {
     }
   };
 
+  // render the form for creating a new tutor account
+  // it includes fields for first name, last name, email, and password
   return (
     <div className="tutor-creation-container">
       <h2>Create Tutor Account</h2>

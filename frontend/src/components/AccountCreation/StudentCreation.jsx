@@ -7,12 +7,14 @@ import './StudentCreation.css';
 
 function StudentCreation() {
 
+  // state variables to manage form inputs
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName]   = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate(); // <-- Initialize the navigate hook
 
+  // function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -22,10 +24,11 @@ function StudentCreation() {
         body: JSON.stringify({ firstName, lastName, email, password, role: 'student' }),
       });
   
+      // parse the response
       const data = await response.json();
       if (response.ok) {
         alert('Student account created successfully!');
-        //Populate Clone DB for data validation
+        // populate Clone DB for data validation
         // reset fields
         setFirstName('');
         setLastName('');
@@ -48,6 +51,7 @@ function StudentCreation() {
   };
   
 
+  // render the component
   return (
     <div className="student-creation-container">
       <h2>Create Student Account</h2>

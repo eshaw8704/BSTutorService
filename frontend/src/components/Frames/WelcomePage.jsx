@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './WelcomePage.css';
 import yellowLogo from "../../assets/yellowBS.png"; // import logo
 
+// This component represents the welcome page layout
 function WelcomePage() {
   const navigate = useNavigate();
 
