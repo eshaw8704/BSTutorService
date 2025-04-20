@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './TutorCreation.css';
-import confetti from 'canvas-confetti';
+//import confetti from 'canvas-confetti';
 
 function TutorCreation() {
   const [firstName, setFirstName] = useState('');
@@ -25,7 +25,7 @@ function TutorCreation() {
         setLastName('');
         setEmail('');
         setPassword('');
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        //confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       } else {
         alert(`Error: ${data.message}`);
       }

@@ -1,27 +1,8 @@
-import { Appointment } from '../models/Appointment.js';
-import nodemailer from 'nodemailer';
-
-// Get appointments for a specific student
-export const getAppointmentByStudent = async (req, res) => {
-    try {
-        const { studentID } = req.params;
-        const appointments = await Appointment.find({ student: studentID });
-
-        if (!appointments || appointments.length === 0) {
-            return res.status(404).json({ message: "No appointments found for this student." });
-        }
-
-        res.status(200).json(appointments);
-    } catch (error) {
-        res.status(500).json({ message: "Error retrieving appointments", error: error.message });
-    }
-};
-
 export const createAppointment = async (req, res) => {
     try {
-        const { subject, appointmentTime, tutor } = req.body;
+        const { subject, appointmentTime, appointmentDate, tutor, email } = req.body;
 
-        if (!subject || !appointmentTime || !appointmentDate || !tutor) {
+        if (!email || !subject || !appointmentTime || !appointmentDate || !tutor) {
             return res.status(400).json({ message: "All fields are required." });
         }
 
@@ -31,13 +12,15 @@ export const createAppointment = async (req, res) => {
             appointmentDate,
             tutor,
         });
+
         await newAppointment.save();
-        //email notification
+
+        // email notification
         const transporter = nodemailer.createTransport({
-            service: 'gmail', // Use your email service provider
+            service: 'gmail',
             auth: {
-                user: 'your-email@gmail.com', // Replace with your email
-                pass: 'your-email-password', // Replace with your email password or app password
+                user: 'your-email@gmail.com',
+                pass: 'your-email-password',
             },
         });
 
@@ -45,7 +28,7 @@ export const createAppointment = async (req, res) => {
             from: 'your-email@gmail.com',
             to: email,
             subject: 'Appointment Confirmation',
-            text: `Your appointment for ${subject} on ${appointmentDay} at ${appointmentTime} has been booked successfully.`
+            text: `Your appointment for ${subject} on ${appointmentDate} at ${appointmentTime} has been booked successfully.`
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
@@ -55,10 +38,19 @@ export const createAppointment = async (req, res) => {
                 console.log("Email sent:", info.response);
             }
         });
-        res.status(201).json({ message: "Appointment booked successfully!", appointment: newAppointment });
-    } 
-    catch (error) {
-        console.error("Error booking appointment:", error.message);
-        res.status(500).json({ message: "Error booking appointment", error: error.message });
+
+        res.status(201).json({
+            message: "Appointment booked successfully!",
+            appointment: newAppointment,
+        });
+    } catch (error) {
+        console.error("Error booking appointment:", {
+            message: error.message,
+            stack: error.stack,
+        });
+        res.status(500).json({
+            message: "Error booking appointment",
+            error: error.message,
+        });
     }
 };

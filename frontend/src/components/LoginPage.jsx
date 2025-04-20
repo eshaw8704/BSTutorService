@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './LoginPage.css';
-import confetti from 'canvas-confetti';
+//import confetti from 'canvas-confetti';
 
 function LoginPage() {
   const [email, setEmail]       = useState('');
@@ -19,7 +19,7 @@ function LoginPage() {
         alert('Login successful!');
         setEmail('');
         setPassword('');
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        //confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       } else {
         alert(`Error: ${data.message}`);
       }
