@@ -20,6 +20,7 @@ app.use("/api/users", userRoutes);
 app.use('/api', appointmentRoutes);
 app.use('/api/payroll', payrollRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api', appointmentRoutes);
 
 app.get("/", (req, res) => {
     res.send("API is running...");

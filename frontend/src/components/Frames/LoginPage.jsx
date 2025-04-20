@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 import confetti from 'canvas-confetti';
 
