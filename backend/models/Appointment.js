@@ -43,3 +43,4 @@ const appointmentSchema = new mongoose.Schema({
 appointmentSchema.index({ student: 1, tutor: 1 });
 
 export const Appointment = mongoose.model("Appointment", appointmentSchema);
+export default Appointment;

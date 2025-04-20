@@ -37,6 +37,19 @@
   border-bottom: none;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
+.sidebar-nav ul li {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sidebar-nav ul li.sidebar-link:hover {
+  background-color: #b183dc; /* Light purple background on hover */
+  color: white;
+  font-size: 1.05em;
+  border-radius: 6px;
+  padding-left: 5px;
+}
+
 
 /* Left side of header: BSTutors logo, name, plus admin buttons */
 .header-left {

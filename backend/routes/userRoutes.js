@@ -1,6 +1,6 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import crypto from 'crypto'; // ✅ import this
+import crypto from 'crypto';
 import User from '../models/User.js';
 
 const router = express.Router();
@@ -19,22 +19,24 @@ router.post('/', async (req, res) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // ✅ Generate UID
+    // Generate UID
     const UID = crypto.randomUUID();
 
-    // ✅ Create and save the user
+    // Create and save the user
     const newUser = new User({
       firstName,
       lastName,
       email,
       password: hashedPassword,
       role,
-      UID, 
+      UID,
     });
+
     await newUser.save();
 
-    // Remove password from response
+    // Remove password from the response
     const { password: _, ...userData } = newUser.toObject();
+
     res.status(201).json({ message: 'User created successfully!', user: userData });
 
   } catch (error) {
@@ -42,6 +44,8 @@ router.post('/', async (req, res) => {
     res.status(500).json({ message: 'Server error during registration.' });
   }
 });
+
+// ✅ User Login Route (fixed)
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -59,14 +63,15 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid password.' });
     }
 
-    const { password: _, ...userData } = user.toObject();
-
-    // ✅ Send role directly in top-level response for frontend routing
+    // ✅ Send user object properly
     res.status(200).json({
       message: 'Login successful!',
-      role: user.role,          // <-- This is key!
-      email: user.email,        // optional
-      UID: user.UID,            // optional
+      user: {
+        _id: user._id,
+        email: user.email,
+        role: user.role,
+        UID: user.UID,
+      },
     });
 
   } catch (error) {
@@ -75,7 +80,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// ✅ Route to get all tutors
+// ✅ Get all tutors
 router.get('/tutors', async (req, res) => {
   try {
     const tutors = await User.find({ role: 'tutor' }).select('-password');
@@ -85,6 +90,5 @@ router.get('/tutors', async (req, res) => {
     res.status(500).json({ message: "Failed to fetch tutors." });
   }
 });
-
 
 export default router;

@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 import confetti from 'canvas-confetti';
-import { useNavigate } from 'react-router-dom';
 
-// displays a login form and handles the form submission
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,36 +17,55 @@ function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
+
       const data = await response.json();
-      console.log('Login response:', data); // ✅ Debug the response
+      console.log('Login response:', data);
+      console.log(">>> data.user:", data.user);
 
       if (response.ok) {
         alert('Login successful!');
         setEmail('');
         setPassword('');
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-      
-        // checks if the logged-in user is an admin
-        if (data.user && data.user.role === 'admin') {
-          // redirected to admin dashboard
-          navigate('/admin/dashboard');
-        } else {
-          // redirect to a home page)
-          navigate('/');
+
+        try {
+          confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        } catch (confettiError) {
+          console.warn('Confetti error:', confettiError);
         }
 
-
-        // ✅ Role-based navigation
-        if (data.role === 'tutor') {
-          navigate('/tutordashboard');
-        } else if (data.role === 'student') {
-          navigate('/dashboard');
-        } else {
-          alert('Unknown role. Redirecting to home.');
-          navigate('/');
+        // ✅ Guard clause to prevent errors
+        if (data.user && data.user._id && data.user.role) {
+          localStorage.setItem('user', JSON.stringify(data.user));
+        
+          if (data.user.role === 'admin') {
+            navigate('/admindashboard');
+          } else if (data.user.role === 'tutor') {
+            navigate('/tutordashboard');
+          } else if (data.user.role === 'student') {
+            navigate('/studentdashboard');
+          } else {
+            alert('Unknown role. Redirecting to home.');
+            navigate('/');
+          }
         }
+         else {
+          console.error("Missing user info in response:", data);
+          alert("Login failed: Incomplete user data.");
+          return;
+        }
+
       } else {
-        alert(`Error: ${data.message}`);
+        // ❗ Specific backend error handling
+        if (data.message === 'User not found.') {
+          console.error("❌ User not found for email:", email);
+          alert("User not found. Please check your email.");
+        } else if (data.message === 'Invalid password.') {
+          console.error("❌ Invalid password for email:", email);
+          alert("Incorrect password. Try again.");
+        } else {
+          console.error("❌ Login failed:", data.message);
+          alert(`Login failed: ${data.message}`);
+        }
       }
 
     } catch (error) {
@@ -55,7 +74,6 @@ function LoginPage() {
     }
   };
 
-  // render the component
   return (
     <div className="login-container">
       <h2>Login</h2>
@@ -67,13 +85,24 @@ function LoginPage() {
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+
+        <div className="password-wrapper">
+          <input
+            type={showPassword ? 'text' : 'password'}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="button"
+            className="toggle-password"
+            onClick={() => setShowPassword(prev => !prev)}
+          >
+            {showPassword ? 'Hide' : 'Show'}
+          </button>
+        </div>
+
         <button type="submit">Login</button>
       </form>
     </div>

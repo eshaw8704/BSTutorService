@@ -1,28 +1,25 @@
+// backend/models/Payroll.js
 import mongoose from 'mongoose';
 
 const payrollSchema = new mongoose.Schema({
   tutor: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
+    unique: true,
   },
   confirmedHours: {
     type: Number,
-    required: true
+    default: 0,
   },
   nonConfirmedHours: {
     type: Number,
-    required: true
+    default: 0,
   },
   confirmedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // Admin who reviewed
-    required: true
+    ref: 'User',
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+}, { timestamps: true });
 
-export const Payroll = mongoose.model('Payroll', payrollSchema);
+export default mongoose.model('Payroll', payrollSchema);
