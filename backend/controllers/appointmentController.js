@@ -42,11 +42,17 @@ export const getAppointmentByStudent = async (req, res) => {
         res.status(500).json({ message: "Error retrieving appointments", error: error.message });
     }
 };
-export const getAppointmentsByTutor = async (req, res) => {
+export const getAppointmentsByTutor = async (req, res) => {   
+  try {
     const { tutorID } = req.params;
-    try {
-      const appointments = await Appointment.find({ tutor: tutorID }).populate('student', 'firstName lastName');
-      res.json(appointments);
+    const appts = await Appointment.find({
+      tutor: tutorID,
+      status: 'Booked'
+    })
+    .populate('student', 'firstName lastName')  // so you can show student names
+    .sort({ appointmentTime: 1 });
+
+    res.status(200).json(appts);
     } catch (error) {
       res.status(500).json({ message: 'Failed to fetch tutor appointments' });
     }
@@ -85,11 +91,13 @@ export const getLoggedAppointments = async (req, res) => {
     try {
       // filtering: the admin can filter by tutor or date range
       const { tutorId, startDate, endDate } = req.query;
+      
+      // Constructing the criteria for the query
       const criteria = { status: 'Completed' };
-    
       if (tutorId) {
         criteria.tutor = tutorId;
       }
+
       if (startDate || endDate) {
         criteria.appointmentTime = {};
         if (startDate) {

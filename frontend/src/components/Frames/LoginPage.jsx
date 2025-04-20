@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 import confetti from 'canvas-confetti';
 import { useNavigate } from 'react-router-dom';
@@ -8,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // used for navigation after login
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,27 +25,21 @@ function LoginPage() {
         setEmail('');
         setPassword('');
         confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-      
-        // checks if the logged-in user is an admin
-        if (data.user && data.user.role === 'admin') {
-          // redirected to admin dashboard
-          navigate('/admin/dashboard');
+        
+        // roles to login
+        const role = data.role;
+        if (role === 'admin') {
+          navigate('/admin/dashboard')
+        } else if (role === 'tutor') {
+          navigate('/tutordashboard')
+        } else if (role === 'student') {
+          navigate('/studentdashboard')
         } else {
-          // redirect to a home page)
-          navigate('/');
+          alert('Unknown role. Redirecting to home.')
+          navigate('/')
         }
-
-
-        // ✅ Role-based navigation
-        if (data.role === 'tutor') {
-          navigate('/tutordashboard');
-        } else if (data.role === 'student') {
-          navigate('/dashboard');
-        } else {
-          alert('Unknown role. Redirecting to home.');
-          navigate('/');
-        }
-      } else {
+      } 
+      else {
         alert(`Error: ${data.message}`);
       }
 

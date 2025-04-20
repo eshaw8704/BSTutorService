@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminDashboard.css';
-import greenLogo from '../assets/greenBS.png'; // Adjust path if needed
+import greenLogo from '../../assets/greenBS.png'; // Adjust path if needed
 
 // This component represents the admin dashboard layout
 export default function AdminDashboard() {
