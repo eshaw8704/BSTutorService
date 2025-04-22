@@ -7,7 +7,7 @@
     align-items: center;        /* center them vertically */
     justify-content: space-between; /* spread columns across full width */
     
-  /* Push content down so it doesn't hide behind the fixed header */
+  /* push content down so it doesn't hide behind the fixed header */
     padding-top: 80px;  /* match or exceed header's height */
     padding-left: 2rem;
     padding-right: 2rem;
