@@ -9,6 +9,7 @@ import adminRoutes from './routes/adminRoutes.js';
 
 // Load env vars
 dotenv.config();
+console.log("✅ Environment variables loaded", process.env.PORT);
 
 // Debug: Make sure it's loading the URI
 if (!process.env.MONGO_URI) {
@@ -31,7 +32,7 @@ app.get("/", (req, res) => {
 });
 
 // Port
-const PORT = process.env.PORT || 5050;
+const PORT = process.env.PORT;
 
 // Call connectDB before starting the server
 const startServer = async () => {
