@@ -15,7 +15,6 @@ export default function BookAppointment() {
 
   useEffect(() => {
     const id = localStorage.getItem('userId');
-    console.log("Loaded student ID from localStorage:", id);
     if (id) setStudentID(id);
 
     fetch('http://localhost:5000/api/users/tutors')
@@ -42,8 +41,8 @@ export default function BookAppointment() {
     setErrorMessage('');
     setIsLoading(true);
 
-    if (!studentID || !subject || !tutor || !appointmentDate || !appointmentTime) {
-      setErrorMessage("Please fill in all required fields.");
+    if (!appointmentDate || !appointmentTime) {
+      setErrorMessage("Please select a date and time.");
       setIsLoading(false);
       return;
     }
@@ -56,13 +55,6 @@ export default function BookAppointment() {
 
     const time24 = convertTo24Hour(appointmentTime);
     const dateTimeISO = new Date(`${year}-${month}-${day}T${time24}`).toISOString();
-
-    console.log("Submitting appointment:", {
-      student: studentID,
-      tutor,
-      subject,
-      appointmentTime: dateTimeISO
-    });
 
     try {
       const response = await fetch('http://localhost:5000/api/appointments', {
