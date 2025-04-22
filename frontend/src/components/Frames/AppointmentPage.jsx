@@ -1,3 +1,4 @@
+import './AppointmentPage.css';
 import React from 'react';
 import DashboardLayout from '../components/DashboardLayout';
 import AppointmentFrame from '../components/AppointmentFrame';

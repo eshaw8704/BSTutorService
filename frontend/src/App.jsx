@@ -13,14 +13,12 @@ import TutorDashboard from './components/Frames/TutorDashboard.jsx';
 import AdminDashboard from './components/Frames/AdminDashboard.jsx';
 import Profile from './components/Frames/Profile.jsx';
 
-import TutorPayrollPage from './components/Frames/TutorPayrollPage.jsx';
 import AdminPayrollList from './components/Frames/AdminPayrollList.jsx';
 import AdminPayrollReview from './components/Frames/AdminPayrollReview.jsx';
+import AppointmentFrame from './components/Frames/AppointmentFrame.jsx';
 
-// Import the new page that wraps AppointmentFrame in your dashboard layout
-import AppointmentPage from './pages/AppointmentPage.jsx';
-
-// You can still keep these for the actual cancel/reschedule screens
+// Appointment nested‑route setup
+import BookAppointment from './components/BookAppointment.jsx';
 import CancelAppointment from './components/CancelAppointment.jsx';
 import RescheduleAppointment from './components/RescheduleAppointment.jsx';
 
@@ -40,11 +38,14 @@ function App() {
         <Route path="/studentdashboard" element={<StudentDashboard />} />
         <Route path="/tutordashboard" element={<TutorDashboard />} />
 
-        {/* Main Appointments “hub” inside dashboard shell */}
-        <Route path="/appointments" element={<AppointmentPage />} />
-        {/* Deep‑links to the actual functionality */}
-        <Route path="/appointments/cancel" element={<CancelAppointment />} />
-        <Route path="/appointments/reschedule" element={<RescheduleAppointment />} />
+        {/* Appointments nested routes */}
+        <Route path="/appointments" element={<AppointmentFrame />}>
+          <Route index element={<div>Please select an action above.</div>} />
+          <Route path="schedule"   element={<BookAppointment />} />
+          <Route path="cancel"     element={<CancelAppointment />} />
+          <Route path="reschedule" element={<RescheduleAppointment />} />
+          {/* add other nested routes like "past", "dropin" here */}
+        </Route>
 
         {/* Admin dashboard and nested views */}
         <Route path="/admindashboard" element={<AdminDashboard />}>
