@@ -13,30 +13,110 @@ BSTutors is a web application designed to facilitate booking tutoring sessions. 
 
 ## Project Structure
 ```
-BSTutors/
-├── backend/               # Backend services
-│   ├── config/            # Configuration files
-│   ├── controllers/       # Request handlers and controllers
-│   ├── databases/         # Database connection and setup
-│   ├── models/            # Mongoose models
-│   ├── routes/            # API routing definitions
-│   ├── server.js          # Entry point for the backend server
-│   └── testConnection.js  # Script to test database connectivity
-├── frontend/              # Frontend client application
-│   ├── public/            # Publicly accessible files
-│   ├── src/               # Frontend source code
-│   │   ├── assets/        # Images and static assets
-│   │   ├── components/    # Reusable UI components
-│   │   │   ├── AdminCreation.jsx    # Admin creation page
-│   │   │   ├── LoginPage.jsx        # User login page
-│   │   │   ├── StudentCreation.jsx  # Student account creation
-│   │   │   ├── TutorCreation.jsx    # Tutor account creation
-│   │   │   ├── WelcomePage.jsx      # Landing page for the app
-│   │   │   └── Header.jsx           # Navigation header
-│   ├── App.jsx           # Main application file
-│   ├── main.jsx          # Entry point for React application
-│   └── index.css         # Global styling
-└── package.json          # Project metadata and dependencies
+BSTUTORSERVICE/
+├── .vite/                      # Vite cache
+│   ├── deps/
+│   └── deps_temp_a76d9c3a/
+├── .vscode/                    # VSCode workspace settings
+├── backend/
+│   ├── config/
+│   │   └── db.js
+│   ├── controllers/
+│   │   ├── appointmentController.js
+│   │   ├── buttonController.js
+│   │   ├── paymentController.js
+│   │   ├── payrollController.js
+│   │   ├── textInputController.js
+│   │   ├── userController.js
+│   │   └── webhookController.js
+│   ├── models/
+│   │   ├── Appointment.js
+│   │   ├── Payment.js
+│   │   ├── Payroll.js
+│   │   └── User.js
+│   ├── routes/
+│   │   ├── adminRoutes.js
+│   │   ├── appointmentRoutes.js
+│   │   ├── buttonRoutes.js
+│   │   ├── paymentRoutes.js
+│   │   ├── payrollRoutes.js
+│   │   ├── textInputRoutes.js
+│   │   ├── userRoutes.js
+│   │   └── webhookRoutes.js
+│   ├── utils/
+│   │   ├── payrollUtils.js
+│   │   ├── sendEmail.js
+│   │   └── UserDB.js
+│   ├── .env
+│   ├── package.json
+│   ├── package-lock.json
+│   └── server.js
+├── frontend/
+│   ├── node_modules/
+│   │   ├── .vite/
+│   │   └── .vite-temp/
+│   ├── src/
+│   │   ├── assets/
+│   │   │   ├── BST-logo.svg
+│   │   │   ├── greenBS.png
+│   │   │   └── yellowBS.png
+│   │   ├── components/
+│   │   │   ├── AccountCreation/
+│   │   │   │   ├── AdminCreation.css
+│   │   │   │   ├── AdminCreation.jsx
+│   │   │   │   ├── StudentCreation.css
+│   │   │   │   ├── StudentCreation.jsx
+│   │   │   │   ├── TutorCreation.css
+│   │   │   │   └── TutorCreation.jsx
+│   │   │   ├── Frames/
+│   │   │   │   ├── AdminDashboard.css
+│   │   │   │   ├── AdminDashboard.jsx
+│   │   │   │   ├── AdminPayrollList.jsx
+│   │   │   │   ├── AdminPayrollReview.jsx
+│   │   │   │   ├── AppointmentFrame.css
+│   │   │   │   ├── AppointmentFrame.jsx
+│   │   │   │   ├── Header.css
+│   │   │   │   ├── Header.jsx
+│   │   │   │   ├── LoginPage.css
+│   │   │   │   ├── LoginPage.jsx
+│   │   │   │   ├── Profile.css
+│   │   │   │   ├── Profile.jsx
+│   │   │   │   ├── StudentDashboard.css
+│   │   │   │   ├── StudentDashboard.jsx
+│   │   │   │   ├── TutorDashboard.css
+│   │   │   │   ├── TutorDashboard.jsx
+│   │   │   │   ├── TutorPayrollPage.jsx
+│   │   │   │   ├── WelcomePage.css
+│   │   │   │   └── WelcomePage.jsx
+│   │   │   └── Styles/
+│   │   │       └── PayrollPages.css
+│   │   ├── BookAppointment.css
+│   │   ├── BookAppointment.jsx
+│   │   ├── CancelAppointment.jsx
+│   │   ├── CheckoutForm.jsx
+│   │   ├── CheckoutPage.jsx
+│   │   ├── DashboardLayout.css
+│   │   ├── DashboardLayout.jsx
+│   │   ├── DashboardSidebar.css
+│   │   ├── DashboardSidebar.jsx
+│   │   ├── DateTimeSelector.css
+│   │   ├── DateTimeSelector.jsx
+│   │   ├── RescheduleAppointment.jsx
+│   │   ├── App.css
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   ├── main.jsx
+│   │   ├── stripe.js
+│   │   └── index.html
+│   ├── package.json
+│   ├── package-lock.json
+│   └── vite.config.js
+├── .gitignore
+├── eslint.config.js
+├── package.json
+├── package-lock.json
+├── README.md
+└── vite.config.backup.js
 ```
 
 ## Installation
