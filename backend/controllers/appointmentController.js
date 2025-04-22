@@ -23,34 +23,13 @@ const convertToValidTime = (isoString) => {
   return timeMap[key] || null;
 };
 
-/**
- * GET /api/appointments/upcoming
- * Returns all future appointments for the authenticated student.
- */
-export const getUpcomingForStudent = async (req, res) => {
-  try {
-    const studentId = req.user.id;            // set by your `protect` middleware
-    const now = new Date();
-
-    const upcoming = await Appointment.find({
-      student: studentId,
-      appointmentDate: { $gte: now }
-    }).sort('appointmentDate');
-
-    res.json(upcoming);
-  } catch (err) {
-    console.error('❌ Error fetching upcoming appointments:', err);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
 // GET appointments by student ID
 export const getAppointmentByStudent = async (req, res) => {
   try {
     const appointments = await Appointment.find({ student: req.params.studentID });
     res.json(appointments);
   } catch (err) {
-    console.error('❌ Error fetching appointments by student:', err);
+    console.error("❌ Error fetching appointments by student:", err);
     res.status(500).json({ message: 'Error fetching appointments by student' });
   }
 };
@@ -61,7 +40,7 @@ export const getAppointmentsByTutor = async (req, res) => {
     const appointments = await Appointment.find({ tutor: req.params.tutorID });
     res.json(appointments);
   } catch (err) {
-    console.error('❌ Error fetching appointments by tutor:', err);
+    console.error("❌ Error fetching appointments by tutor:", err);
     res.status(500).json({ message: 'Error fetching appointments by tutor' });
   }
 };

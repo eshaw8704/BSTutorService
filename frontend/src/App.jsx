@@ -17,10 +17,7 @@ import TutorPayrollPage from './components/Frames/TutorPayrollPage.jsx';
 import AdminPayrollList from './components/Frames/AdminPayrollList.jsx';
 import AdminPayrollReview from './components/Frames/AdminPayrollReview.jsx';
 
-// Import the new page that wraps AppointmentFrame in your dashboard layout
-import AppointmentPage from './pages/AppointmentPage.jsx';
-
-// You can still keep these for the actual cancel/reschedule screens
+import BookAppointment from './components/BookAppointment.jsx';
 import CancelAppointment from './components/CancelAppointment.jsx';
 import RescheduleAppointment from './components/RescheduleAppointment.jsx';
 
@@ -39,18 +36,15 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/studentdashboard" element={<StudentDashboard />} />
         <Route path="/tutordashboard" element={<TutorDashboard />} />
-
-        {/* Main Appointments “hub” inside dashboard shell */}
-        <Route path="/appointments" element={<AppointmentPage />} />
-        {/* Deep‑links to the actual functionality */}
+        <Route path="/appointments" element={<BookAppointment />} />
         <Route path="/appointments/cancel" element={<CancelAppointment />} />
         <Route path="/appointments/reschedule" element={<RescheduleAppointment />} />
 
-        {/* Admin dashboard and nested views */}
+        {/* ✅ Admin dashboard and nested views */}
         <Route path="/admindashboard" element={<AdminDashboard />}>
           <Route path="payroll" element={<AdminPayrollList />} />
           <Route path="payroll/:tutorId" element={<AdminPayrollReview />} />
-          <Route path="profile" element={<Profile />} />
+          <Route path="profile" element={<Profile />} /> {/* ✅ NEW */}
         </Route>
       </Routes>
     </>
