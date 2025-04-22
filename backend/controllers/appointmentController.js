@@ -23,24 +23,40 @@ export const getAppointmentsByTutor = async (req, res) => {
   }
 };
 
-// POST create new appointment
+// ✅ POST create new appointment
 export const createAppointment = async (req, res) => {
-  const { student, tutor, subject, time } = req.body;
+  const { student, tutor, subject, appointmentTime } = req.body;
 
   console.log("📥 Incoming appointment data:", req.body);
 
-  // Validate required fields
-  if (!student || !tutor || !subject || !time) {
+  if (!student || !tutor || !subject || !appointmentTime) {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
   try {
+    const isoDate = new Date(appointmentTime);
+
+    // Extract date portion for appointmentDate
+    const appointmentDate = new Date(
+      isoDate.getFullYear(),
+      isoDate.getMonth(),
+      isoDate.getDate()
+    );
+
+    // Format time to "hh:mm AM/PM" for appointmentTime
+    const rawHours = isoDate.getHours();
+    const rawMinutes = isoDate.getMinutes().toString().padStart(2, '0');
+    const hours12 = rawHours % 12 === 0 ? 12 : rawHours % 12;
+    const period = rawHours >= 12 ? 'PM' : 'AM';
+    const formattedTime = `${hours12}:${rawMinutes} ${period}`;
+
     const newAppointment = new Appointment({
       student,
       tutor,
       subject,
-      time,
-      status: 'scheduled'
+      appointmentDate,
+      appointmentTime: formattedTime,
+      status: 'scheduled',
     });
 
     await newAppointment.save();
