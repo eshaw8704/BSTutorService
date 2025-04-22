@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './AdminCreation.css';
 //import confetti from 'canvas-confetti';
 
+// This component allows the admin to create a new admin account
+// It includes a form with fields for first name, last name, email, and password
 function AdminCreation() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName]   = useState('');
@@ -16,7 +18,8 @@ function AdminCreation() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ firstName, lastName, email, password, role: 'admin' }),
       });
-
+      // Handle the response from the server
+      // Check if the response is ok (status code 200-299)
       const data = await response.json();
       if (response.ok) {
         alert('Admin account created successfully!');
@@ -35,6 +38,7 @@ function AdminCreation() {
     }
   };
 
+  // Render the form for creating a new admin account
   return (
     <div className="admin-creation-container">
       <h2>Create Admin Account</h2>

@@ -16,6 +16,7 @@ a {
   color: #999ef5;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #a3a5cb;
 }
@@ -57,7 +58,7 @@ button:hover {
   transform: scale(1.1); 
 }
 
-/* remove default margins */
+/* removes default margins */
 html, body {
   margin: 0;
   padding: 0;

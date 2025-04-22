@@ -1,0 +1,80 @@
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 2rem;
+  padding-top: 6rem; /* 🛠 prevent content from hiding under the fixed header */
+
+  min-height: calc(100vh - 6rem); /* ✅ subtract estimated header height */
+  box-sizing: border-box;
+
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+}
+
+.page-wrapper h2 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.tutor-list,
+.payroll-table {
+  width: 100%;
+  max-width: 600px;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.tutor-list li {
+  list-style: none;
+  margin-bottom: 0.5rem;
+}
+
+.tutor-list button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #3b82f6;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.tutor-list button:hover {
+  background-color: #2563eb;
+}
+
+input[type="number"] {
+  padding: 0.5rem;
+  margin-left: 0.5rem;
+  width: 150px;
+}
+
+button.confirm-btn {
+  margin-top: 1rem;
+  padding: 0.75rem 2rem;
+  background-color: #10b981;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button.confirm-btn:hover {
+  background-color: #059669;
+}
+
+.status-msg {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.payroll-table th,
+.payroll-table td {
+  border: 1px solid #ccc;
+  padding: 0.75rem;
+  text-align: left;
+}

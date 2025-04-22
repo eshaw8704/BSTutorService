@@ -1,13 +1,15 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import bodyParser from "body-parser";
 import { connectDB } from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
+import payrollRoutes from './routes/payrollRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
 // Load env vars
 dotenv.config();
+console.log("✅ Environment variables loaded", process.env.PORT);
 
 // Debug: Make sure it's loading the URI
 if (!process.env.MONGO_URI) {
@@ -18,11 +20,8 @@ if (!process.env.MONGO_URI) {
 connectDB();
 
 const app = express();
+app.use(express.json());
 app.use(cors());
-
-// Body parsers (MUST HAVE for req.body to work)
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
 app.use("/api/users", userRoutes);
@@ -33,7 +32,15 @@ app.get("/", (req, res) => {
 });
 
 // Port
-const PORT = process.env.PORT || 5050;
-app.listen(PORT, () => {
+const PORT = process.env.PORT;
+
+// Call connectDB before starting the server
+const startServer = async () => {
+  await connectDB(); // Connects to MongoDB
+  app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
-});
+  });
+};
+
+startServer();
+

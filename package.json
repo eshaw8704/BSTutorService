@@ -4,12 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "start:backend": "nodemon backend/server.js",
-    "start:frontend": "vite",
-    "build": "vite build",
+    "start:frontend": "npm --prefix frontend run dev",
+    "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "build": "npm --prefix frontend run build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "npm --prefix frontend run preview"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.14.2",
@@ -131,7 +131,6 @@
     "loose-envify": "^1.4.0",
     "lru-cache": "^5.1.1",
     "math-intrinsics": "^1.1.0",
-    "media-typer": "^0.3.0",
     "memory-pager": "^1.5.0",
     "merge-descriptors": "^1.0.3",
     "methods": "^1.1.2",
@@ -145,7 +144,8 @@
     "react": "^18.2.0",
     "react-datepicker": "^8.2.1",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^7.4.0"
+    "react-router-dom": "^7.4.0",
+    "wrap-ansi": "^9.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
