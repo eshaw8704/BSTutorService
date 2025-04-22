@@ -3,13 +3,19 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./DateTimeSelector.css";
 
-// Time slots for the dropdown
+// Time slots for the dropdown — exactly matches your schema enum
 const timeSlots = [
-  "08:00 AM", "09:30 AM", "10:00 AM", "11:30 AM",
-  "01:00 PM", "01:30 PM", "02:00 PM", "02:30 PM", "03:00 PM"
+  "08:00 AM",
+  "09:30 AM",
+  "10:00 AM",
+  "11:30 AM",
+  "01:00 PM",
+  "01:30 PM",
+  "02:00 PM",
+  "02:30 PM",
+  "03:00 PM"
 ];
 
-// Convert time format to 24-hour time for backend
 const convertTo24Hour = (timeStr) => {
   const [time, modifier] = timeStr.split(" ");
   let [hours, minutes] = time.split(":");
@@ -22,17 +28,17 @@ const convertTo24Hour = (timeStr) => {
   return `${hours}:${minutes}`;
 };
 
-const DateTimeSelector = ({ onDateTimeSelect }) => {
+export default function DateTimeSelector({ onDateTimeSelect }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
   const [confirmed, setConfirmed] = useState(false);
 
   const handleSubmit = () => {
     if (selectedDate && selectedTime) {
-      // Convert the selected time to 24-hour format
-      const formattedTime = convertTo24Hour(selectedTime);
-      // Pass both date and formatted time to the parent component
-      onDateTimeSelect({ date: selectedDate, time: formattedTime });
+      onDateTimeSelect({
+        date: selectedDate,
+        time: convertTo24Hour(selectedTime)
+      });
       setConfirmed(true);
     } else {
       alert("Please select both date and time");
@@ -42,10 +48,12 @@ const DateTimeSelector = ({ onDateTimeSelect }) => {
   return (
     <div className="date-time-container">
       <h2>Select Date & Time</h2>
-
       <DatePicker
         selected={selectedDate}
-        onChange={(date) => setSelectedDate(date)}
+        onChange={(date) => {
+          setSelectedDate(date);
+          setConfirmed(false);
+        }}
         dateFormat="MMMM d, yyyy"
         minDate={new Date()}
         className="date-picker"
@@ -53,11 +61,14 @@ const DateTimeSelector = ({ onDateTimeSelect }) => {
 
       <select
         value={selectedTime}
-        onChange={(e) => setSelectedTime(e.target.value)}
+        onChange={(e) => {
+          setSelectedTime(e.target.value);
+          setConfirmed(false);
+        }}
       >
         <option value="">Select Time</option>
-        {timeSlots.map((time, index) => (
-          <option key={index} value={time}>{time}</option>
+        {timeSlots.map((t) => (
+          <option key={t} value={t}>{t}</option>
         ))}
       </select>
 
@@ -65,11 +76,7 @@ const DateTimeSelector = ({ onDateTimeSelect }) => {
         Confirm
       </button>
 
-      {confirmed && (
-        <p className="confirmation-msg">✅ Time confirmed!</p>
-      )}
+      {confirmed && <p className="confirmation-msg">✅ Time confirmed!</p>}
     </div>
   );
-};
-
-export default DateTimeSelector;
+}
