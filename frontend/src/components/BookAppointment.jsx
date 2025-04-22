@@ -4,11 +4,14 @@ import DateTimeSelector from './DateTimeSelector';
 
 export default function BookAppointment() {
   const [subject, setSubject] = useState('');
-  const [appointmentDate, setAppointmentDate] = useState(null); // now a Date object
+  const [appointmentDate, setAppointmentDate] = useState(null);
   const [appointmentTime, setAppointmentTime] = useState('');
   const [tutor, setTutor] = useState('');
   const [tutors, setTutors] = useState([]);
   const [studentID, setStudentID] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const id = localStorage.getItem('userId');
@@ -34,9 +37,13 @@ export default function BookAppointment() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSuccessMessage('');
+    setErrorMessage('');
+    setIsLoading(true);
 
     if (!appointmentDate || !appointmentTime) {
-      alert("Please select a date and time.");
+      setErrorMessage("Please select a date and time.");
+      setIsLoading(false);
       return;
     }
 
@@ -63,17 +70,19 @@ export default function BookAppointment() {
 
       const data = await response.json();
       if (response.ok) {
-        alert('Appointment successfully booked!');
+        setSuccessMessage('Appointment successfully booked!');
         setSubject('');
         setAppointmentDate(null);
         setAppointmentTime('');
         setTutor('');
       } else {
-        alert(`Error: ${data.message}`);
+        setErrorMessage(data.message || 'Error booking appointment');
       }
     } catch (error) {
       console.error('Error booking appointment:', error);
-      alert('Error booking appointment');
+      setErrorMessage('Error booking appointment');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -81,7 +90,6 @@ export default function BookAppointment() {
     <div className="appointment-container">
       <h2>Book Appointment</h2>
       <form onSubmit={handleSubmit} className="appointment-form">
-        {/* Subject */}
         <select
           value={subject}
           onChange={e => setSubject(e.target.value)}
@@ -95,7 +103,6 @@ export default function BookAppointment() {
           <option value="Programming">Programming</option>
         </select>
 
-        {/* Tutor */}
         <select
           value={tutor}
           onChange={e => setTutor(e.target.value)}
@@ -109,7 +116,6 @@ export default function BookAppointment() {
           ))}
         </select>
 
-        {/* DateTimeSelector */}
         <DateTimeSelector
           onDateTimeSelect={({ date, time }) => {
             setAppointmentDate(date);
@@ -117,8 +123,12 @@ export default function BookAppointment() {
           }}
         />
 
-        {/* Submit */}
-        <button type="submit">Book Appointment</button>
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? "Booking..." : "Book Appointment"}
+        </button>
+
+        {successMessage && <div className="success-message">{successMessage}</div>}
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
       </form>
     </div>
   );
