@@ -11,7 +11,7 @@ dotenv.config();
 
 // Debug: Make sure it's loading the URI
 if (!process.env.MONGO_URI) {
-  console.error("❌ MONGO_URI not found in .env file");
+  console.error("MONGO_URI not found in .env file");
   process.exit(1);
 }
 
@@ -35,5 +35,5 @@ app.get("/", (req, res) => {
 // Port
 const PORT = process.env.PORT || 5050;
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
