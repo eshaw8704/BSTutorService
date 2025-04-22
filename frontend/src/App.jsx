@@ -17,6 +17,10 @@ import TutorPayrollPage from './components/Frames/TutorPayrollPage.jsx';
 import AdminPayrollList from './components/Frames/AdminPayrollList.jsx';
 import AdminPayrollReview from './components/Frames/AdminPayrollReview.jsx';
 
+import BookAppointment from './components/BookAppointment.jsx';
+import CancelAppointment from './components/CancelAppointment.jsx';
+import RescheduleAppointment from './components/RescheduleAppointment.jsx';
+
 function App() {
   return (
     <>
@@ -32,7 +36,10 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/studentdashboard" element={<StudentDashboard />} />
         <Route path="/tutordashboard" element={<TutorDashboard />} />
-        
+        <Route path="/appointments" element={<BookAppointment />} />
+        <Route path="/appointments/cancel" element={<CancelAppointment />} />
+        <Route path="/appointments/reschedule" element={<RescheduleAppointment />} />
+
         {/* ✅ Admin dashboard and nested views */}
         <Route path="/admindashboard" element={<AdminDashboard />}>
           <Route path="payroll" element={<AdminPayrollList />} />

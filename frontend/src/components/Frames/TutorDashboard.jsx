@@ -1,6 +1,5 @@
-// ✅ TutorDashboard.jsx (Full File with Review Pay Statement functionality)
-
 import React, { useEffect, useState } from 'react';
+import DashboardLayout from "../DashboardLayout";
 import './TutorDashboard.css';
 
 export default function TutorDashboard() {
@@ -18,11 +17,6 @@ export default function TutorDashboard() {
       .then(data => setAppointments(data))
       .catch(err => console.error("Error fetching appointments:", err));
   }, []);
-
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.href = '/login';
-  };
 
   const handlePayReview = async () => {
     const tutorId = localStorage.getItem("userId");
@@ -54,29 +48,7 @@ export default function TutorDashboard() {
   };
 
   return (
-    <div className="tutor-dashboard-wrapper">
-      {/* Top bar */}
-      <div className="top-bar">
-        <div className="logo-title">
-          <img src="/yellowBS.png" alt="Logo" className="dashboard-logo" />
-          <h1>BSTutors</h1>
-        </div>
-
-        <input className="search-bar" type="text" placeholder="Search..." />
-
-        <div className="top-actions">
-          <button className="icon-button">＋</button>
-          <button className="icon-button">⚙️</button>
-          <button className="logout-button" onClick={handleLogout}>Logout</button>
-          <img
-            className="avatar"
-            src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-            alt="Avatar"
-          />
-        </div>
-      </div>
-
-      {/* Main content */}
+    <DashboardLayout role="tutor">
       <div className="dashboard-content">
         {/* Appointments */}
         <div className="dashboard-section">
@@ -119,6 +91,6 @@ export default function TutorDashboard() {
           <button className="pay-btn" onClick={handlePayReview}>✓ Review Pay Statement</button>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
-}
+} 

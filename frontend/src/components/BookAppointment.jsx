@@ -1,31 +1,53 @@
 import React, { useState, useEffect } from 'react';
-import './Appointment.css';
+import "./BookAppointment.css";
+import DateTimeSelector from './DateTimeSelector';
 
-export default function Appointment() {
+export default function BookAppointment() {
   const [subject, setSubject] = useState('');
-  const [appointmentDate, setAppointmentDate] = useState('');
+  const [appointmentDate, setAppointmentDate] = useState(null); // now a Date object
   const [appointmentTime, setAppointmentTime] = useState('');
   const [tutor, setTutor] = useState('');
   const [tutors, setTutors] = useState([]);
   const [studentID, setStudentID] = useState('');
 
   useEffect(() => {
-    // 1) load student ID from localStorage
     const id = localStorage.getItem('userId');
     if (id) setStudentID(id);
 
-    // 2) fetch all tutors
     fetch('http://localhost:5000/api/users/tutors')
       .then(res => res.json())
       .then(data => setTutors(data))
       .catch(err => console.error('Error fetching tutors:', err));
   }, []);
 
+  const convertTo24Hour = (timeStr) => {
+    const [time, modifier] = timeStr.split(" ");
+    let [hours, minutes] = time.split(":");
+    if (modifier === "PM" && hours !== "12") {
+      hours = parseInt(hours, 10) + 12;
+    }
+    if (modifier === "AM" && hours === "12") {
+      hours = "00";
+    }
+    return `${hours}:${minutes}`;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // combine date + time into a single ISO string
-    const dateTimeISO = new Date(`${appointmentDate}T${appointmentTime}`).toISOString();
+    if (!appointmentDate || !appointmentTime) {
+      alert("Please select a date and time.");
+      return;
+    }
+
+    const [year, month, day] = [
+      appointmentDate.getFullYear(),
+      String(appointmentDate.getMonth() + 1).padStart(2, '0'),
+      String(appointmentDate.getDate()).padStart(2, '0')
+    ];
+
+    const time24 = convertTo24Hour(appointmentTime);
+    const dateTimeISO = new Date(`${year}-${month}-${day}T${time24}`).toISOString();
 
     try {
       const response = await fetch('http://localhost:5000/api/appointments', {
@@ -42,9 +64,8 @@ export default function Appointment() {
       const data = await response.json();
       if (response.ok) {
         alert('Appointment successfully booked!');
-        // reset form
         setSubject('');
-        setAppointmentDate('');
+        setAppointmentDate(null);
         setAppointmentTime('');
         setTutor('');
       } else {
@@ -88,26 +109,16 @@ export default function Appointment() {
           ))}
         </select>
 
-        {/* Date */}
-        <input
-          type="date"
-          value={appointmentDate}
-          onChange={e => setAppointmentDate(e.target.value)}
-          required
-        />
-
-        {/* Time */}
-        <input
-          type="time"
-          value={appointmentTime}
-          onChange={e => setAppointmentTime(e.target.value)}
-          required
+        {/* DateTimeSelector */}
+        <DateTimeSelector
+          onDateTimeSelect={({ date, time }) => {
+            setAppointmentDate(date);
+            setAppointmentTime(time);
+          }}
         />
 
         {/* Submit */}
-        <button type="submit">
-          Book Appointment
-        </button>
+        <button type="submit">Book Appointment</button>
       </form>
     </div>
   );

@@ -1,45 +1,13 @@
 import React from 'react';
+import DashboardLayout from "../DashboardLayout";
 import './StudentDashboard.css';
-import { useNavigate } from 'react-router-dom';
 
 const StudentDashboard = () => {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    navigate('/login');
-  };
-
-  const handleProfileClick = () => {
-    navigate('/profile');
-  };
-
-  const handleSettingsClick = () => {
-    navigate('/settings');
-  };
-
-  const handleScheduleClick = () => {
-    navigate('/appointments');
-  };
-
   return (
-    <div className="dashboard-wrapper">
-
-      <div className="top-right-controls">
-        <button className="settings-btn" onClick={handleSettingsClick}>⚙️</button>
-        <button className="logout-btn" onClick={handleLogout}>Logout</button>
-        <button className="profile-btn" onClick={handleProfileClick}>
-          <img
-            src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
-            alt="Profile"
-            className="profile-pic"
-          />
-        </button>
-      </div>
-
+    <DashboardLayout role="student">
       <div className="dashboard-main">
-
         <div className="left-panel">
-          <button className="schedule-btn" onClick={handleScheduleClick}>
+          <button className="schedule-btn" onClick={() => window.location.href = '/appointments'}>
             Edit Appointments
           </button>
 
@@ -63,7 +31,7 @@ const StudentDashboard = () => {
           </p>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 };
 
