@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import './DateTimeSelector.css';
+import "./DateTimeSelector.css";
 
 const timeSlots = [
   "08:00 AM", "09:30 AM", "10:00 AM", "11:30 AM",
@@ -11,30 +11,27 @@ const timeSlots = [
 const DateTimeSelector = ({ onDateTimeSelect }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
-  const [error, setError] = useState("");
+  const [confirmed, setConfirmed] = useState(false);
 
   const handleSubmit = () => {
     if (selectedDate && selectedTime) {
-      setError("");
       onDateTimeSelect({ date: selectedDate, time: selectedTime });
+      setConfirmed(true);
     } else {
-      setError("Please select both date and time.");
+      alert("Please select both date and time");
     }
   };
 
   return (
     <div className="date-time-container">
       <h2>Select Date & Time</h2>
+
       <DatePicker
         selected={selectedDate}
         onChange={(date) => setSelectedDate(date)}
-        dateFormat="MMMM d, yyyy"           // ✅ Full month name
-        showMonthDropdown                   // ✅ Allow changing months
-        showYearDropdown                    // ✅ Allow changing years
-        dropdownMode="select"
-        minDate={new Date(2023, 0, 1)}
+        dateFormat="MMMM d, yyyy"
+        minDate={new Date()}
         className="date-picker"
-        placeholderText="Choose a date"
       />
 
       <select
@@ -47,11 +44,15 @@ const DateTimeSelector = ({ onDateTimeSelect }) => {
         ))}
       </select>
 
-      <button type="button" onClick={handleSubmit}>Confirm</button>
+      <button type="button" onClick={handleSubmit}>
+        Confirm
+      </button>
 
-      {error && <div className="error-message">{error}</div>}
+      {confirmed && (
+        <p className="confirmation-msg">✅ Time confirmed!</p>
+      )}
     </div>
   );
 };
 
-export default DateTimeSelector;
+export default DateTimeSelector

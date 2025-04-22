@@ -9,13 +9,13 @@ import {
 const router = express.Router();
 
 // GET appointments for a specific student
-router.get('/appointments/:studentID', getAppointmentByStudent);
+router.get('/:studentID', getAppointmentByStudent);
 
 // GET appointments for a specific tutor
 router.get('/appointments/tutor/:tutorID', getAppointmentsByTutor);
 
 // POST create a new appointment
-router.post('/appointments', createAppointment);
+router.post('/', createAppointment);
 
 // PATCH mark appointment as completed and update payroll
 router.patch('/appointments/:appointmentId/complete', completeAppointment);
