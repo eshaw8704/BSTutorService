@@ -1,0 +1,196 @@
+/* Admin Dashboard CSS */
+/* This CSS file styles the Admin Dashboard component, including the layout, header, sidebar, and main content area. */
+.admin-dashboard-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  height: 100vh;
+  background-color: #FFF7F7; /* Pastel pink background */
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background-color: #fbeaf5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  z-index: 10;
+  border-bottom: 2px solid #fff;
+}
+
+/* Fixed Header at Top */
+.admin-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background-color: #fbeaf5; /* Slightly different pastel pink for header */
+  display: flex;
+  align-items: center;
+  z-index: 10;
+  /* Remove the weird line: no border-bottom */
+  border-bottom: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.sidebar-nav ul li {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sidebar-nav ul li.sidebar-link:hover {
+  background-color: #b183dc; /* Light purple background on hover */
+  color: white;
+  font-size: 1.05em;
+  border-radius: 6px;
+  padding-left: 5px;
+}
+
+
+/* Left side of header: BSTutors logo, name, plus admin buttons */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-left: 1rem;
+}
+
+.header-logo {
+  width: 50px;
+  height: auto;
+}
+
+/* Admin nav buttons aligned next to the logo */
+.header-admin-buttons {
+  margin-left: auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  transform: translateX(-45px);
+}
+
+.header-admin-buttons button {
+  background-color: #8e24aa; /* Purple background */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+  transform: translateX(-10px);
+
+}
+
+.header-admin-buttons button:hover {
+    background-color: #732b8c; /* Darker on hover */
+  }
+
+/* Sidebar starts below the header */
+.sidebar {
+  grid-column: 1 / 2;
+  margin-top: 80px; /* push content below fixed header */
+  background-color: #f2d1e2; /* pastel purple for sidebar */
+  padding: 1rem;
+}
+
+/* Purple ellipse is now a clickable button labeled "Appointments" */
+.appointments-ellipse {
+  width: 180px;
+  height: 50px;
+  background-color: #9d78a5; 
+  border: none;
+  border-radius: 25px;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+  padding: 0.5rem 1rem;
+}
+
+.appointments-ellipse:hover {
+  background-color: #865b91; /* darker on hover */
+}
+
+.sidebar-heading {
+  margin-bottom: 1.8rem;
+}
+
+/* Nav items in the sidebar */
+.sidebar-nav h4 {
+  margin: 1rem 0 0.5rem;
+}
+.sidebar-nav ul {
+  list-style: none;
+  padding-left: 0;
+}
+.sidebar-nav li {
+  margin: 1rem 0;
+}
+.nav-label {
+  margin-top: 2rem;
+  font-style: italic;
+  color: #666;
+}
+
+/* Main content area */
+.admin-main {
+  grid-column: 2 / 3;
+  margin-top: 100px; /* offset below fixed header */
+  padding: 1rem;
+}
+
+/* Info cards in a row */
+.cards-row {
+  display: flex;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+.info-card {
+  background-color: #fff;
+  width: 180px;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1.7px 10px rgba(112, 25, 25, 0.1);
+  text-align: center;
+}
+.info-card h4 {
+  margin: 0 0 0.5rem;
+}
+.info-card p {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+/* Upcoming sessions table */
+.upcoming-sessions table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.upcoming-sessions th,
+.upcoming-sessions td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.upcoming-sessions thead {
+  background-color: #e5cce0;
+}
+
+.upcoming-sessions tr:hover {
+  background-color: #f9f9f9;
+}
+
+.main-content {
+    margin-top: 80px; /* push content below fixed header */
+    padding: 1rem;
+  }

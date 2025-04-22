@@ -1,9 +1,23 @@
 import express from 'express';
-import { createAppointment } from '../controllers/appointmentController.js';
+import {
+  getAppointmentByStudent,
+  getAppointmentsByTutor,
+  createAppointment,
+  completeAppointment,
+} from '../controllers/appointmentController.js';
 
 const router = express.Router();
 
-// Route to get appointments by student ID
+// GET appointments for a specific student
+router.get('/appointments/:studentID', getAppointmentByStudent);
+
+// GET appointments for a specific tutor
+router.get('/appointments/tutor/:tutorID', getAppointmentsByTutor);
+
+// POST create a new appointment
 router.post('/appointments', createAppointment);
+
+// PATCH mark appointment as completed and update payroll
+router.patch('/appointments/:appointmentId/complete', completeAppointment);
 
 export default router;
