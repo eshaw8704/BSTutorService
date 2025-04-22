@@ -15,7 +15,7 @@ const DateTimeSelector = ({ onDateTimeSelect }) => {
 
   const handleSubmit = () => {
     if (selectedDate && selectedTime) {
-      setError(""); // clear error
+      setError("");
       onDateTimeSelect({ date: selectedDate, time: selectedTime });
     } else {
       setError("Please select both date and time.");
@@ -27,12 +27,16 @@ const DateTimeSelector = ({ onDateTimeSelect }) => {
       <h2>Select Date & Time</h2>
       <DatePicker
         selected={selectedDate}
-        onChange={date => setSelectedDate(date)}
-        dateFormat="MMMM d, yyyy"
+        onChange={(date) => setSelectedDate(date)}
+        dateFormat="MMMM d, yyyy"           // ✅ Full month name
+        showMonthDropdown                   // ✅ Allow changing months
+        showYearDropdown                    // ✅ Allow changing years
+        dropdownMode="select"
+        minDate={new Date(2023, 0, 1)}
         className="date-picker"
-        minDate={new Date()}
         placeholderText="Choose a date"
       />
+
       <select
         value={selectedTime}
         onChange={(e) => setSelectedTime(e.target.value)}
@@ -42,6 +46,7 @@ const DateTimeSelector = ({ onDateTimeSelect }) => {
           <option key={index} value={time}>{time}</option>
         ))}
       </select>
+
       <button type="button" onClick={handleSubmit}>Confirm</button>
 
       {error && <div className="error-message">{error}</div>}
