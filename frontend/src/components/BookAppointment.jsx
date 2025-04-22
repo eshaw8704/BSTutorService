@@ -4,20 +4,24 @@ import DateTimeSelector from './DateTimeSelector';
 
 export default function BookAppointment() {
   const [subject, setSubject] = useState('');
-  const [appointmentDate, setAppointmentDate] = useState(null);
+  const [appointmentDate, setAppointmentDate] = useState(null); // Ensure this is properly set
   const [appointmentTime, setAppointmentTime] = useState('');
   const [tutor, setTutor] = useState('');
   const [tutors, setTutors] = useState([]);
-  const [studentID, setStudentID] = useState('');
+  const [studentID, setStudentID] = useState(''); // Added state for student ID
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const id = localStorage.getItem('userId');
-    if (id) setStudentID(id);
+    const id = localStorage.getItem('userId'); // Fetching userId from localStorage
+    if (id) {
+      setStudentID(id); // Set studentID state if found
+    } else {
+      console.error("User ID not found in localStorage");
+    }
 
-    fetch('http://localhost:5000/api/users/tutors')
+    fetch('http://localhost:5000/api/users/tutors') // Fetch tutors for the select dropdown
       .then(res => res.json())
       .then(data => setTutors(data))
       .catch(err => console.error('Error fetching tutors:', err));
@@ -42,11 +46,12 @@ export default function BookAppointment() {
     setIsLoading(true);
 
     if (!appointmentDate || !appointmentTime) {
-      setErrorMessage("Please select a date and time.");
+      setErrorMessage("Please select both date and time.");
       setIsLoading(false);
       return;
     }
 
+    // Ensure appointmentDate is a valid Date object
     const [year, month, day] = [
       appointmentDate.getFullYear(),
       String(appointmentDate.getMonth() + 1).padStart(2, '0'),
@@ -56,15 +61,25 @@ export default function BookAppointment() {
     const time24 = convertTo24Hour(appointmentTime);
     const dateTimeISO = new Date(`${year}-${month}-${day}T${time24}`).toISOString();
 
+    // Log to ensure data is in correct format
+    console.log("Sending Appointment Data:", {
+      student: studentID,
+      tutor,
+      subject,
+      appointmentTime: dateTimeISO,
+      appointmentDate: appointmentDate, // Ensure appointmentDate is a Date object
+    });
+
     try {
       const response = await fetch('http://localhost:5000/api/appointments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          student: studentID,
+          student: studentID, // Passing studentID as the student's ID in the request body
           tutor,
           subject,
-          appointmentTime: dateTimeISO,
+          appointmentTime: dateTimeISO, // ensure this is in the right format
+          appointmentDate: appointmentDate, // Send appointmentDate as a Date object
         }),
       });
 
@@ -118,8 +133,8 @@ export default function BookAppointment() {
 
         <DateTimeSelector
           onDateTimeSelect={({ date, time }) => {
-            setAppointmentDate(date);
-            setAppointmentTime(time);
+            setAppointmentDate(date);  // Update appointmentDate
+            setAppointmentTime(time);  // Update appointmentTime
           }}
         />
 

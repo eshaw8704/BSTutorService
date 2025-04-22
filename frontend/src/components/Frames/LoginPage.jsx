@@ -36,7 +36,8 @@ function LoginPage() {
         // ✅ Guard clause to prevent errors
         if (data.user && data.user._id && data.user.role) {
           localStorage.setItem('user', JSON.stringify(data.user));
-        
+          localStorage.setItem('userId', data.user._id); // ✅ Save userId separately
+
           if (data.user.role === 'admin') {
             navigate('/admindashboard');
           } else if (data.user.role === 'tutor') {
@@ -47,8 +48,7 @@ function LoginPage() {
             alert('Unknown role. Redirecting to home.');
             navigate('/');
           }
-        }
-         else {
+        } else {
           console.error("Missing user info in response:", data);
           alert("Login failed: Incomplete user data.");
           return;
