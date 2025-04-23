@@ -5,51 +5,54 @@ import { useNavigate, Outlet } from 'react-router-dom';
 const AppointmentFrame = () => {
   const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
-  const studentID = localStorage.getItem('userId');
-  const token     = localStorage.getItem('token');
+  const token = localStorage.getItem('token');
 
-  // Load existing appointments for this student
   useEffect(() => {
-    if (!studentID) return;
-    fetch(`/api/appointments/${studentID}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
+    if (!token) return;
+
+    console.debug('Fetching upcoming appointments…');
+    fetch(`/api/appointments/upcoming`, {
+      headers: { 'Authorization': `Bearer ${token}` }
     })
+    fetch('/api/appointments/upcoming', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'x-stub-user-id': localStorage.getItem('userId')
+      }
+    })    
       .then(res => {
+        console.debug('Response status:', res.status);
         if (!res.ok) throw new Error(`Status ${res.status}`);
         return res.json();
       })
-      .then(setAppointments)
-      .catch(err => console.error('Error fetching appointments:', err));
-  }, [studentID, token]);
+      .then(data => {
+        console.debug('Fetched data:', data);
+        setAppointments(data);
+      })
+      .catch(err => console.error('Error fetching upcoming appointments:', err));
+  }, [token]);
 
-  const handleNavigate = (subpath) => {
-    navigate(subpath);
-  };
+  const handleNavigate = subpath => navigate(subpath);
 
   return (
     <div className="appointment-frame">
       <div className="frame-actions">
-        <button onClick={() => handleNavigate('schedule')}   className="action-button">📅 Schedule</button>
-        <button onClick={() => handleNavigate('cancel')}     className="action-button">❌ Cancel</button>
-        <button onClick={() => handleNavigate('reschedule')} className="action-button">⏰ Reschedule</button>
-        <button onClick={() => handleNavigate('past')}       className="action-button">⬅️ Past</button>
-        <button onClick={() => handleNavigate('dropin')}     className="action-button">⬇️ Drop‑In</button>
+        {/* …buttons… */}
       </div>
 
       <div className="frame-content">
-        {/* Example: show a quick list of today’s bookings */}
-        <h3>Your Appointments</h3>
+        <h3>Your Upcoming Appointments</h3>
         <ul>
-          {appointments.map(a => (
-            <li key={a._id}>
-              {new Date(a.appointmentDate).toLocaleDateString()} @ {a.appointmentTime}
-            </li>
-          ))}
+          {appointments.length === 0
+            ? <li>No upcoming appointments</li>
+            : appointments.map(a => (
+                <li key={a._id}>
+                  {new Date(a.appointmentDate).toLocaleDateString()} @ {a.appointmentTime}
+                </li>
+              ))
+          }
         </ul>
 
-        {/* And now render whichever nested route the user clicked */}
         <Outlet />
       </div>
     </div>
