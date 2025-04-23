@@ -63,3 +63,46 @@
     border-radius: 5px;
     margin-top: 10px;
 }
+
+.appointment-form .date-time-panel {
+    background-color: #6a0dad !important;
+    padding: 1rem;
+    border-radius: 5px;
+    margin: 1rem 0;
+    color: #ffffff;              /* white text everywhere */
+  }
+
+/* backdrop */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  /* modal box */
+  .modal-content {
+    position: relative;
+    background: #fff;
+    padding: 2rem 1.5rem 1.5rem;
+    border-radius: 8px;
+    max-width: 360px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  
+  /* the “×” button */
+  .modal-close {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }

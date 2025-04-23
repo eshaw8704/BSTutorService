@@ -12,6 +12,7 @@ export default function BookAppointment() {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
 
   useEffect(() => {
     const id = localStorage.getItem('userId'); // Fetching userId from localStorage
@@ -90,6 +91,7 @@ export default function BookAppointment() {
         setAppointmentDate(null);
         setAppointmentTime('');
         setTutor('');
+        setShowConfirmation(true);
       } else {
         setErrorMessage(data.message || 'Error booking appointment');
       }
@@ -131,13 +133,14 @@ export default function BookAppointment() {
           ))}
         </select>
 
-        <DateTimeSelector
-          onDateTimeSelect={({ date, time }) => {
-            setAppointmentDate(date);  // Update appointmentDate
-            setAppointmentTime(time);  // Update appointmentTime
-          }}
-        />
-
+    <div className="date-time-panel">
+     <DateTimeSelector
+        onDateTimeSelect={({ date, time }) => {
+          setAppointmentDate(date);
+          setAppointmentTime(time);
+        }}
+      />
+    </div>
         <button type="submit" disabled={isLoading}>
           {isLoading ? "Booking..." : "Book Appointment"}
         </button>
@@ -145,6 +148,23 @@ export default function BookAppointment() {
         {successMessage && <div className="success-message">{successMessage}</div>}
         {errorMessage && <div className="error-message">{errorMessage}</div>}
       </form>
+
+      {showConfirmation && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button
+              className="modal-close"
+              onClick={() => setShowConfirmation(false)}
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            <h2>Booking Confirmed</h2>
+            <p>An email was sent to you with all the details.</p>
+          </div>
+        </div>
+      )}
     </div>
+    
   );
 }
