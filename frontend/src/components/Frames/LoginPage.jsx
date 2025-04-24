@@ -30,6 +30,8 @@ function LoginPage() {
 
         try {
           confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+          localStorage.setItem('token', data.token);
+
         } catch (confettiError) {
           console.warn('Confetti error:', confettiError);
         }
@@ -50,8 +52,7 @@ function LoginPage() {
             alert('Unknown role. Redirecting to home.');
             navigate('/');
           }
-        }
-         else {
+        } else {
           console.error("Missing user info in response:", data);
           alert("Login failed: Incomplete user data.");
           return;

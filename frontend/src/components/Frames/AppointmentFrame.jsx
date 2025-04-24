@@ -1,42 +1,59 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './AppointmentFrame.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 
 const AppointmentFrame = () => {
   const navigate = useNavigate();
+  const [appointments, setAppointments] = useState([]);
+  const token = localStorage.getItem('token');
 
-  const handleNavigate = (path) => {
-    navigate(path);
-  };
+  useEffect(() => {
+    if (!token) return;
+
+    console.debug('Fetching upcoming appointments…');
+    fetch(`/api/appointments/upcoming`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+    fetch('/api/appointments/upcoming', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'x-stub-user-id': localStorage.getItem('userId')
+      }
+    })    
+      .then(res => {
+        console.debug('Response status:', res.status);
+        if (!res.ok) throw new Error(`Status ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        console.debug('Fetched data:', data);
+        setAppointments(data);
+      })
+      .catch(err => console.error('Error fetching upcoming appointments:', err));
+  }, [token]);
+
+  const handleNavigate = subpath => navigate(subpath);
 
   return (
     <div className="appointment-frame">
-      <header className="frame-header">
-        <img src="/logo.png" alt="BSTutors Logo" className="frame-logo" />
-        <h2 className="frame-title">APPOINTMENTS</h2>
-        <div className="frame-controls">
-          <button className="frame-btn">Logout</button>
-          <button className="frame-btn">⚙️</button>
-          <button className="frame-btn">👤</button>
-        </div>
-      </header>
-
       <div className="frame-actions">
-        <button onClick={() => handleNavigate('/schedule')} className="action-button">
-          📅 Schedule Appointment
-        </button>
-        <button onClick={() => handleNavigate('/cancel')} className="action-button">
-          ❌ Cancel Appointment
-        </button>
-        <button onClick={() => handleNavigate('/reschedule')} className="action-button">
-          📅 Reschedule Appointment
-        </button>
-        <button onClick={() => handleNavigate('/past')} className="action-button">
-          ⬅️ Past Appointments
-        </button>
-        <button onClick={() => handleNavigate('/dropin')} className="action-button">
-          ⬇️ Drop-In Sessions
-        </button>
+        {/* …buttons… */}
+      </div>
+
+      <div className="frame-content">
+        <h3>Your Upcoming Appointments</h3>
+        <ul>
+          {appointments.length === 0
+            ? <li>No upcoming appointments</li>
+            : appointments.map(a => (
+                <li key={a._id}>
+                  {new Date(a.appointmentDate).toLocaleDateString()} @ {a.appointmentTime}
+                </li>
+              ))
+          }
+        </ul>
+
+        <Outlet />
       </div>
     </div>
   );

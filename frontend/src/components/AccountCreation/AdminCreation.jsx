@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './AdminCreation.css';
-import confetti from 'canvas-confetti';
+//import confetti from 'canvas-confetti';
 
 // This component allows the admin to create a new admin account
 // It includes a form with fields for first name, last name, email, and password
@@ -28,7 +28,7 @@ function AdminCreation() {
         setLastName('');
         setEmail('');
         setPassword('');
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        //confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
       } else {
         alert(`Error: ${data.message}`);
       }

@@ -2,8 +2,10 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
+  root: 'frontend',      // ← look in ./frontend/ for index.html & src/
   plugins: [react()],
   server: {
+    host: true,
     port: 5173,
     proxy: {
       '/api': {
@@ -13,4 +15,8 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    outDir: '../dist',    // ← emit build into /dist at project root
+    emptyOutDir: true
+  }
 });

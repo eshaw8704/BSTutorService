@@ -1,23 +1,32 @@
 import express from 'express';
 import {
+  getUpcomingForStudent,
   getAppointmentByStudent,
   getAppointmentsByTutor,
   createAppointment,
   completeAppointment,
+  getLoggedAppointments
 } from '../controllers/appointmentController.js';
+import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// GET appointments for a specific student
-router.get('/appointments/:studentID', getAppointmentByStudent);
+// 🔹 GET /api/appointments/upcoming
+router.get('/upcoming', protect, getUpcomingForStudent);
 
-// GET appointments for a specific tutor
-router.get('/appointments/tutor/:tutorID', getAppointmentsByTutor);
+// 🔹 GET /api/appointments/logged
+router.get('/logged', protect, getLoggedAppointments);
 
-// POST create a new appointment
-router.post('/appointments', createAppointment);
+// 🔹 POST /api/appointments
+router.post('/', protect, createAppointment);
 
-// PATCH mark appointment as completed and update payroll
-router.patch('/appointments/:appointmentId/complete', completeAppointment);
+// 🔹 PATCH /api/appointments/:appointmentId/complete
+router.patch('/:appointmentId/complete', protect, completeAppointment);
+
+// 🔹 GET /api/appointments/tutor/:tutorID
+router.get('/tutor/:tutorID', protect, getAppointmentsByTutor);
+
+// 🔹 GET /api/appointments/:studentID
+router.get('/:studentID', protect, getAppointmentByStudent);
 
 export default router;

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
+import DashboardLayout from "../DashboardLayout";
 import './TutorDashboard.css';
 
 export default function TutorDashboard() {
@@ -25,6 +26,10 @@ export default function TutorDashboard() {
 
   // fetch only “Booked” sessions for this tutor
   const fetchUpcoming = async () => {
+  const handlePayReview = async () => {
+    const tutorId = localStorage.getItem("userId");
+    const adminId = "66117562b8d123456789abcd"; // Replace with real admin ID
+
     try {
       const res  = await fetch(`/api/appointments/tutor/${tutorId}`);
       const data = await res.json();
@@ -129,4 +134,5 @@ export default function TutorDashboard() {
       </div>
     </>
   );
+} 
 }

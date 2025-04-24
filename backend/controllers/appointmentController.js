@@ -1,13 +1,67 @@
 import Appointment from '../models/Appointment.js';
 import { updateUnconfirmedHours } from '../utils/payrollUtils.js';
 
+// Function to convert an ISO timestamp into one of your enum strings
+const convertToValidTime = (isoString) => {
+  const date = new Date(isoString);
+  const hours = date.getHours();           // 0–23
+  const minutes = date.getMinutes();       // 0–59
+  const key = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+
+  const timeMap = {
+    '8:00':  '08:00 AM',
+    '9:30':  '09:30 AM',
+    '10:00': '10:00 AM',
+    '11:30': '11:30 AM',
+    '13:00': '01:00 PM',
+    '13:30': '01:30 PM',
+    '14:00': '02:00 PM',
+    '14:30': '02:30 PM',
+    '15:00': '03:00 PM'
+  };
+
+  return timeMap[key] || null;
+};
+
+export const getUpcomingForStudent = async (req, res) => {
+  try {
+    const studentId = req.user.id;            // set by your `protect` middleware
+
+    // Include all of today by starting at midnight
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+
+    const upcoming = await Appointment.find({
+      student: studentId,
+      appointmentDate: { $gte: now }
+    }).sort('appointmentDate');
+
+    // Debug log to inspect exactly what's returned
+    console.log(
+      `getUpcomingForStudent for ${studentId} since ${now.toISOString()}:`,
+      upcoming.map(a => ({
+        id: a._id.toString(),
+        date: a.appointmentDate.toISOString(),
+        time: a.appointmentTime
+      }))
+    );
+
+    res.json(upcoming);
+  } catch (err) {
+    console.error('❌ Error fetching upcoming appointments:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+/*console.log('getUpcomingForStudent for', req.user.id, 'now:', now, 'results:', upcoming);
+*/ 
 // GET appointments by student ID
 export const getAppointmentByStudent = async (req, res) => {
   try {
     const appointments = await Appointment.find({ student: req.params.studentID });
     res.json(appointments);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching appointments' });
+    console.error('❌ Error fetching appointments by student:', err);
+    res.status(500).json({ message: 'Error fetching appointments by student' });
   }
 };
 
@@ -17,58 +71,75 @@ export const getAppointmentsByTutor = async (req, res) => {
     const appointments = await Appointment.find({ tutor: req.params.tutorID });
     res.json(appointments);
   } catch (err) {
-    res.status(500).json({ message: 'Error fetching appointments' });
+    console.error('❌ Error fetching appointments by tutor:', err);
+    res.status(500).json({ message: 'Error fetching appointments by tutor' });
   }
 };
 
 // POST create new appointment
 export const createAppointment = async (req, res) => {
-  try {
-    const { student, tutor, subject, time } = req.body;
+  const { student, tutor, subject, appointmentTime, appointmentDate } = req.body;
+  console.log("📥 Incoming appointment data:", req.body);
 
-    const newAppointment = new Appointment({
+  if (!student || !tutor || !subject || !appointmentTime || !appointmentDate) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  // Parse the date
+  const parsedDate = new Date(appointmentDate);
+  if (isNaN(parsedDate)) {
+    return res.status(400).json({ message: "Invalid appointment date" });
+  }
+
+  // Convert ISO time into your enum
+  const validTime = convertToValidTime(appointmentTime);
+  if (!validTime) {
+    return res.status(400).json({ message: "Invalid appointment time" });
+  }
+
+  try {
+    const newAppt = new Appointment({
       student,
       tutor,
       subject,
-      time,
+      appointmentTime: validTime,
+      appointmentDate: parsedDate,
       status: 'scheduled'
     });
-
-    await newAppointment.save();
-    res.status(201).json(newAppointment);
+    await newAppt.save();
+    console.log("✅ Appointment created:", newAppt);
+    res.status(201).json(newAppt);
   } catch (err) {
+    console.error("❌ Failed to create appointment:", err);
     res.status(400).json({ message: 'Failed to create appointment' });
   }
 };
 
-// PATCH mark appointment as complete and update tutor payroll
+// PATCH mark appointment as completed and update tutor payroll
 export const completeAppointment = async (req, res) => {
   try {
-    const appointment = await Appointment.findById(req.params.appointmentId);
-    if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
-
-    if (appointment.status === 'completed') {
+    const appt = await Appointment.findById(req.params.appointmentId);
+    if (!appt) return res.status(404).json({ message: 'Appointment not found' });
+    if (appt.status === 'completed') {
       return res.status(400).json({ message: 'Appointment already marked complete' });
     }
-
-    appointment.status = 'completed';
-    await appointment.save();
-
-    // Increment nonConfirmedHours for the tutor
-    await updateUnconfirmedHours(appointment.tutor);
-
-    res.json({ message: 'Appointment completed and payroll updated' });
+    appt.status = 'completed';
+    await appt.save();
+    await updateUnconfirmedHours(appt.tutor);
+    res.json({ message: 'Appointment completed successfully' });
   } catch (err) {
+    console.error("❌ Failed to complete appointment:", err);
     res.status(500).json({ message: 'Failed to complete appointment' });
   }
-  
 };
+
+// GET all completed appointments (admin)
 export const getLoggedAppointments = async (req, res) => {
   try {
-    const appointments = await Appointment.find({ status: 'completed' });
-    res.json(appointments);
+    const appts = await Appointment.find({ status: 'completed' });
+    res.json(appts);
   } catch (err) {
+    console.error("❌ Failed to get logged appointments:", err);
     res.status(500).json({ message: 'Failed to get logged appointments' });
   }
 };
-
