@@ -26,6 +26,8 @@ app.use(cors());
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/appointments", appointmentRoutes);
+app.use('/api/payroll', payrollRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running...");
@@ -43,4 +45,3 @@ const startServer = async () => {
 };
 
 startServer();
-

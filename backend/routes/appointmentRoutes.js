@@ -2,14 +2,14 @@ import express from 'express';
 import {
   getAppointmentByStudent,
   getAppointmentsByTutor,
+  getLoggedAppointments,
   createAppointment,
-  completeAppointment,
-  getLoggedAppointments 
+  completeAppointment
 } from '../controllers/appointmentController.js';
 
 const router = express.Router();
 
-// Create a new appointment
+// Create a new appointment (student-facing)
 router.post('/', createAppointment);
 
 // Get all appointments for a specific student
@@ -17,6 +17,9 @@ router.get('/:studentID', getAppointmentByStudent);
 
 // Get all appointments for a specific tutor
 router.get('/appointments/tutor/:tutorID', getAppointmentsByTutor);
+
+// Get appointments for the logged-in user
+router.get('/mine', getLoggedAppointments);
 
 // Mark an appointment as completed
 router.patch('/:appointmentId/complete', completeAppointment);

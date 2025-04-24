@@ -1,11 +1,23 @@
 import express from 'express';
-import { getLoggedAppointments } from '../controllers/appointmentController.js';
+import {
+  getAllAppointments,
+  updateAppointment,
+  cancelAppointment,
+  getLoggedAppointments  // or import from adminController if you split
+} from '../controllers/adminController.js';
 
-// This route handles admin-specific operations related to appointments
 const router = express.Router();
 
-// Endpoint to get all logged (completed) appointments
+// View all appointments
+router.get('/appointments', getAllAppointments);
+
+// Reschedule an appointment
+router.put('/appointments/:appointmentId', updateAppointment);
+
+// Cancel an appointment
+router.put('/appointments/:appointmentId/cancel', cancelAppointment);
+
+// View all completed (logged) appointments
 router.get('/logged-appointments', getLoggedAppointments);
 
 export default router;
-// Will allow the admin to view all appointments that have been marked as completed.

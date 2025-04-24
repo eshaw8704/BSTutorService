@@ -111,5 +111,4 @@ export const getLoggedAppointments = async (req, res) => {
     res.status(500).json({ message: 'Failed to get logged appointments' });
   }
 };
-
 // No further export statement needed—each function above is already a named export
