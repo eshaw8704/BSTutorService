@@ -71,7 +71,7 @@ export const createAppointment = async (req, res) => {
       subject,
       appointmentTime: validAppointmentTime,
       appointmentDate: parsedAppointmentDate,
-      status: 'scheduled',
+      status: 'Scheduled' // Default status
     });
 
     await newAppointment.save();
