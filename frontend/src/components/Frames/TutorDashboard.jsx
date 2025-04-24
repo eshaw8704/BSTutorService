@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate }              from 'react-router-dom';
-import Header                       from './Header';
+import { useNavigate } from 'react-router-dom';
+import Header from './Header';
 import './TutorDashboard.css';
 
 export default function TutorDashboard() {
@@ -12,66 +12,46 @@ export default function TutorDashboard() {
   const [upcoming,    setUpcoming]    = useState([]);
   const [history,     setHistory]     = useState([]);
 
-  // replace with your real auth / context
-  const tutorId = 'CURRENT_TUTOR_ID';
+  // get the logged-in tutor’s ID from localStorage
+  const tutorId = localStorage.getItem('userId');
 
-  // Fetch only “Booked” sessions
-  const fetchUpcoming = async () => {
-    const res = await fetch(`/api/appointments/tutor/${tutorId}`);
-    if (res.ok) setUpcoming(await res.json());
+  // helper to show “10:00 AM – 11:00 AM” for a Date string
+  const formatTimeRange = (dateString, durationMinutes = 60) => {
+    const start = new Date(dateString);
+    const end   = new Date(start.getTime() + durationMinutes * 60000);
+    const opts  = { hour: 'numeric', minute: '2-digit' };
+    return `${start.toLocaleTimeString([], opts)} – ${end.toLocaleTimeString([], opts)}`;
   };
 
-  // Fetch only “Completed” sessions, via your admin route (or you can make your own tutor/completed route)
-  const fetchCompleted = async () => {
-    const res = await fetch(`/api/admin/logged-appointments?tutorId=${tutorId}`);
-    if (res.ok) {
-      const { appointments } = await res.json();
-      setCompleted(appointments);
-      // assume 1 hour per session; adjust if you store durations
-      setHoursLogged(appointments.length);
+  // fetch only “Booked” sessions for this tutor
+  const fetchUpcoming = async () => {
+    try {
+      const res  = await fetch(`/api/appointments/tutor/${tutorId}`);
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to load');
+      // adapt these fields to match your backend shape:
+      const formatted = data.map(appt => ({
+        id:      appt._id,
+        time:    formatTimeRange(appt.startTime),
+        student: `${appt.student.firstName} ${appt.student.lastName}`
+      }));
+      setUpcoming(formatted);
+    } catch (err) {
+      console.error('Error fetching upcoming sessions:', err);
     }
   };
 
-  // mark one session completed
-  const handleComplete = async (apptId) => {
-    await fetch(`/api/appointments/${apptId}/complete`, { method: 'PATCH' });
-    // refresh both lists
+  // on first render, load profile/stats if you have them, then live-load upcoming
+  useEffect(() => {
+    // — if you have a profile endpoint, you could fetch and setProfile here —
     fetchUpcoming();
-    fetchCompleted();
-  };
-
-  // on mount
-  useEffect(() => {
-     Promise.all([fetchUpcoming(), fetchCompleted()]).then(() => setLoading(false));
-  }, []);  
-
-  useEffect(() => {
-    // replace with real API calls
-    setProfile({
-      firstName:    'Tutor',
-      lastName:     'Toots',
-      subject:      'Math',
-      qualifications: 'MSc Mathematics'
-    });
-    setHoursLogged(  42 );
-    setSessionsDone( 18 );
-    setUpcoming([
-      { time: '10:00 AM – 12:00 PM', student: 'Adam Smith' },
-      { time: ' 1:00 PM –  3:00 PM', student: 'Jane Doe'   },
-    ]);
-    setHistory([
-      { time: ' 8:00 AM – 10:00 AM', student: 'Bob Brown'  },
-      { time: ' 6:00 PM –  8:00 PM', student: 'Sara Lee'   },
-    ]);
-  }, []);
+  }, [tutorId]);
 
   return (
     <>
-      {/* same fixed Header */}
       <Header tutorMode={true} />
 
       <div className="tutor-dashboard">
-        {/* Sidebar */}
         <aside className="sidebar">
           <button
             className="appointments-ellipse"
@@ -80,19 +60,17 @@ export default function TutorDashboard() {
             Appointments
           </button>
           <nav className="sidebar-nav">
-            <h4>Welcome, {profile.firstName}</h4>
+            <h4>Welcome, {profile.firstName || 'Tutor'}</h4>
             <ul>
-              <li>Profile</li>
-              <li>Availability</li>
-              <li>Session History</li>
-              <li>Payroll</li>
+              <li className="nav-link">Profile</li>
+              <li className="nav-link">Availability</li>
+              <li className="nav-link">Session History</li>
+              <li className="nav-link">Payroll</li>
             </ul>
           </nav>
         </aside>
 
-        {/* Main content */}
         <main className="tutor-main">
-          {/* Stats cards */}
           <section className="cards-row">
             <div className="info-card">
               <h4>Hours Logged</h4>
@@ -108,7 +86,6 @@ export default function TutorDashboard() {
             </div>
           </section>
 
-          {/* Upcoming Sessions */}
           <section className="session-section">
             <h3>Upcoming Sessions</h3>
             <table>
@@ -119,8 +96,8 @@ export default function TutorDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {upcoming.map((s,i) => (
-                  <tr key={i}>
+                {upcoming.map((s) => (
+                  <tr key={s.id}>
                     <td>{s.time}</td>
                     <td>{s.student}</td>
                   </tr>
@@ -129,7 +106,6 @@ export default function TutorDashboard() {
             </table>
           </section>
 
-          {/* Session History */}
           <section className="session-section">
             <h3>Session History</h3>
             <table>
@@ -140,7 +116,7 @@ export default function TutorDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {history.map((s,i) => (
+                {history.map((s, i) => (
                   <tr key={i}>
                     <td>{s.time}</td>
                     <td>{s.student}</td>
