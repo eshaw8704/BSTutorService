@@ -16,7 +16,6 @@ import Profile from './components/Frames/Profile.jsx';
 import AdminPayrollList from './components/Frames/AdminPayrollList.jsx';
 import AdminPayrollReview from './components/Frames/AdminPayrollReview.jsx';
 import AppointmentFrame from './components/Frames/AppointmentFrame.jsx';
-import UpcomingAppointments from './components/Frames/UpcomingAppointments';
 
 // Appointment nested‑route setup
 import BookAppointment from './components/BookAppointment.jsx';
@@ -45,7 +44,6 @@ function App() {
           <Route path="schedule"   element={<BookAppointment />} />
           <Route path="cancel"     element={<CancelAppointment />} />
           <Route path="reschedule" element={<RescheduleAppointment />} />
-          <Route path="upcoming" element={<UpcomingAppointments />} />
           {/* add other nested routes like "past", "dropin" here */}
         </Route>
 

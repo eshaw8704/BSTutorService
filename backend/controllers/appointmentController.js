@@ -111,7 +111,13 @@ export const createAppointment = async (req, res) => {
     res.status(201).json(newAppt);
   } catch (err) {
     console.error("❌ Failed to create appointment:", err);
-    res.status(400).json({ message: 'Failed to create appointment' });
+    //res.status(400).json({ message: 'Failed to create appointment' });
+    // 1) Duplicate‐key from your unique index on (tutor, appointmentDate, appointmentTime)
+  if (err.code === 11000) {
+    return res
+      .status(409)    // 409 Conflict
+      .json({ message: "That tutor is already booked at this date & time." });
+  }
   }
 };
 
