@@ -1,54 +1,59 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
-import DashboardLayout from "../DashboardLayout";
 import './TutorDashboard.css';
 
 export default function TutorDashboard() {
   const navigate = useNavigate();
 
-  const [profile,     setProfile]     = useState({});
+  const [profile, setProfile] = useState({});
   const [hoursLogged, setHoursLogged] = useState(0);
-  const [sessionsDone,setSessionsDone]= useState(0);
-  const [upcoming,    setUpcoming]    = useState([]);
-  const [history,     setHistory]     = useState([]);
+  const [sessionsDone, setSessionsDone] = useState(0);
+  const [upcoming, setUpcoming] = useState([]);
+  const [history, setHistory] = useState([]);
 
-  // get the logged-in tutor’s ID from localStorage
   const tutorId = localStorage.getItem('userId');
+  const token = localStorage.getItem('token');
 
-  // helper to show “10:00 AM – 11:00 AM” for a Date string
   const formatTimeRange = (dateString, durationMinutes = 60) => {
     const start = new Date(dateString);
-    const end   = new Date(start.getTime() + durationMinutes * 60000);
-    const opts  = { hour: 'numeric', minute: '2-digit' };
+    const end = new Date(start.getTime() + durationMinutes * 60000);
+    const opts = { hour: 'numeric', minute: '2-digit' };
     return `${start.toLocaleTimeString([], opts)} – ${end.toLocaleTimeString([], opts)}`;
   };
 
-  // fetch only “Booked” sessions for this tutor
   const fetchUpcoming = async () => {
-  const handlePayReview = async () => {
-    const tutorId = localStorage.getItem("userId");
-    const adminId = "66117562b8d123456789abcd"; // Replace with real admin ID
+    console.log("🧠 tutorId:", tutorId);
+    console.log("🔐 token:", token);
 
     try {
-      const res  = await fetch(`/api/appointments/tutor/${tutorId}`);
+      const res = await fetch(`/api/appointments/tutor/${tutorId}`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Fetch failed: ${res.status} - ${errorText}`);
+      }
+
       const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Failed to load');
-      // adapt these fields to match your backend shape:
       const formatted = data.map(appt => ({
-        id:      appt._id,
-        time:    formatTimeRange(appt.startTime),
-        student: `${appt.student.firstName} ${appt.student.lastName}`
+        id: appt._id,
+        time: formatTimeRange(appt.startTime),
+        student: `${appt.student.firstName} ${appt.student.lastName}`,
+        tutorId: appt.tutor  // optional if needed
       }));
+
       setUpcoming(formatted);
     } catch (err) {
       console.error('Error fetching upcoming sessions:', err);
     }
   };
 
-  // on first render, load profile/stats if you have them, then live-load upcoming
   useEffect(() => {
-    // — if you have a profile endpoint, you could fetch and setProfile here —
     fetchUpcoming();
   }, [tutorId]);
 
@@ -93,46 +98,53 @@ export default function TutorDashboard() {
 
           <section className="session-section">
             <h3>Upcoming Sessions</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Time</th>
-                  <th>Student</th>
-                </tr>
-              </thead>
-              <tbody>
-                {upcoming.map((s) => (
-                  <tr key={s.id}>
-                    <td>{s.time}</td>
-                    <td>{s.student}</td>
+            {upcoming.length > 0 ? (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Student</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {upcoming.map((s) => (
+                    <tr key={s.id}>
+                      <td>{s.time}</td>
+                      <td>{s.student}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No upcoming sessions found for you.</p>
+            )}
           </section>
 
           <section className="session-section">
             <h3>Session History</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Time</th>
-                  <th>Student</th>
-                </tr>
-              </thead>
-              <tbody>
-                {history.map((s, i) => (
-                  <tr key={i}>
-                    <td>{s.time}</td>
-                    <td>{s.student}</td>
+            {history.length > 0 ? (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Student</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {history.map((s, i) => (
+                    <tr key={i}>
+                      <td>{s.time}</td>
+                      <td>{s.student}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No session history available.</p>
+            )}
           </section>
         </main>
       </div>
     </>
   );
-} 
 }
