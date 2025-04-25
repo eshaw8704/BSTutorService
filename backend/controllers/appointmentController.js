@@ -23,19 +23,28 @@ const convertToValidTime = (isoString) => {
   return timeMap[key] || null;
 };
 
-/**
- * GET /api/appointments/upcoming
- * Returns all future appointments for the authenticated student.
- */
 export const getUpcomingForStudent = async (req, res) => {
   try {
     const studentId = req.user.id;            // set by your `protect` middleware
+
+    // Include all of today by starting at midnight
     const now = new Date();
+    now.setHours(0, 0, 0, 0);
 
     const upcoming = await Appointment.find({
       student: studentId,
       appointmentDate: { $gte: now }
     }).sort('appointmentDate');
+
+    // Debug log to inspect exactly what's returned
+    console.log(
+      `getUpcomingForStudent for ${studentId} since ${now.toISOString()}:`,
+      upcoming.map(a => ({
+        id: a._id.toString(),
+        date: a.appointmentDate.toISOString(),
+        time: a.appointmentTime
+      }))
+    );
 
     res.json(upcoming);
   } catch (err) {
@@ -43,7 +52,8 @@ export const getUpcomingForStudent = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
+/*console.log('getUpcomingForStudent for', req.user.id, 'now:', now, 'results:', upcoming);
+*/ 
 // GET appointments by student ID
 export const getAppointmentByStudent = async (req, res) => {
   try {
@@ -101,7 +111,13 @@ export const createAppointment = async (req, res) => {
     res.status(201).json(newAppt);
   } catch (err) {
     console.error("❌ Failed to create appointment:", err);
-    res.status(400).json({ message: 'Failed to create appointment' });
+    //res.status(400).json({ message: 'Failed to create appointment' });
+    // 1) Duplicate‐key from your unique index on (tutor, appointmentDate, appointmentTime)
+  if (err.code === 11000) {
+    return res
+      .status(409)    // 409 Conflict
+      .json({ message: "That tutor is already booked at this date & time." });
+  }
   }
 };
 
