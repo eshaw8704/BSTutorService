@@ -1,0 +1,181 @@
+.admin-dashboard-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  height: 100vh;
+  background-color: #FFF7F7;
+}
+
+.admin-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background-color: #fbeaf5;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 10;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-left: 1rem;
+}
+
+.header-logo {
+  width: 50px;
+  height: auto;
+}
+
+.header-admin-buttons {
+  margin-left: auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  transform: translateX(-45px);
+}
+
+.admin-dashboard-button {
+  background-color: #8e24aa;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.admin-dashboard-button:hover {
+  background-color: #732b8c;
+  transform: scale(1.05);
+}
+
+.logout {
+  background-color: #d32f2f;
+}
+
+.logout:hover {
+  background-color: #a51b1b;
+}
+
+.sidebar {
+  margin-top: 80px;
+  background-color: #f2d1e2;
+  padding: 1rem;
+}
+
+.appointments-ellipse {
+  width: 180px;
+  height: 50px;
+  background-color: #9d78a5; 
+  border: none;
+  border-radius: 25px;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: center;
+  padding: 0.5rem 1rem;
+}
+
+.appointments-ellipse:hover {
+  background-color: #865b91;
+}
+
+.sidebar-heading {
+  margin-bottom: 1.8rem;
+}
+
+.sidebar-nav h4 {
+  margin: 1rem 0 0.5rem;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.sidebar-nav li {
+  margin: 0.8rem 0;
+}
+
+.sidebar-link {
+  padding: 8px 16px;
+  margin: 8px 0;
+  border-radius: 10px;
+  font-weight: 500;
+  color: #333;
+  display: block;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 12px rgba(155, 89, 182, 0.5);
+  transform: scale(1.05);
+  font-weight: 600;
+  color: #4a0072;
+}
+
+.nav-label {
+  margin-top: 2rem;
+  font-style: italic;
+  color: #666;
+}
+
+.admin-main {
+  grid-column: 2 / 3;
+  margin-top: 100px;
+  padding: 1rem;
+}
+
+.cards-row {
+  display: flex;
+  gap: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.info-card {
+  background-color: #fff;
+  width: 180px;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1.7px 10px rgba(112, 25, 25, 0.1);
+  text-align: center;
+}
+
+.info-card h4 {
+  margin: 0 0 0.5rem;
+}
+
+.info-card p {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.upcoming-sessions table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.upcoming-sessions th,
+.upcoming-sessions td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.upcoming-sessions thead {
+  background-color: #e5cce0;
+}
+
+.upcoming-sessions tr:hover {
+  background-color: #f9f9f9;
+}

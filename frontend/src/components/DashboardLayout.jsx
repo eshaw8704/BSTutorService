@@ -1,0 +1,21 @@
+// DashboardLayout.jsx
+import React from 'react';
+import Header from "./Frames/Header";
+import DashboardSidebar from './DashboardSidebar';
+import './DashboardLayout.css';
+
+const DashboardLayout = ({ role, children }) => {
+  return (
+    <>
+      <Header />
+      <div className="dashboard-layout">
+        <DashboardSidebar role={role} />
+        <main className="dashboard-main-content">
+          {children}
+        </main>
+      </div>
+    </>
+  );
+};
+
+export default DashboardLayout;

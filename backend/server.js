@@ -1,23 +1,50 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import bodyParser from "body-parser";
 import { connectDB } from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
+import appointmentRoutes from "./routes/appointmentRoutes.js";
+import payrollRoutes from './routes/payrollRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
 
+// Load env vars
 dotenv.config();
-connectDB(); 
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
+console.log("✅ Environment variables loaded", process.env.PORT);
 
-app.use("/api/users", userRoutes); 
+// Debug: Make sure it's loading the URI
+if (!process.env.MONGO_URI) {
+  console.error("❌ MONGO_URI not found in .env file");
+  process.exit(1);
+}
+
+connectDB();
+
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+// Routes
+app.use("/api/users", userRoutes);
+app.use('/api', appointmentRoutes);
+app.use('/api/payroll', payrollRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api', appointmentRoutes);
+app.use("/api/appointments", appointmentRoutes);
 
 app.get("/", (req, res) => {
-    res.send("API is running...");
+  res.send("API is running...");
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+// Port
+const PORT = process.env.PORT;
+
+// Call connectDB before starting the server
+const startServer = async () => {
+  await connectDB(); // Connects to MongoDB
+  app.listen(PORT, () => {
+  console.log(`✅ Server running on http://localhost:${PORT}`);
+  });
+};
+
+startServer();
+
