@@ -1,5 +1,5 @@
 .admin-navbar {
-    width: 220px;
+    width: 210px;
     min-height: calc(100vh - 70px); /* adjust if header height changes */
     background-color: #6a0dad;
     padding: 1rem;
