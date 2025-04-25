@@ -31,7 +31,8 @@
   }
   
   .logout {
-    margin-top: auto;
+    margin-top: auto;      /* pushes this as far down as possible */
+    margin-bottom: 30px; 
     background-color: #d32f2f;
     color: white;
   }

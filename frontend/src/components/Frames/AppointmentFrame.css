@@ -3,7 +3,7 @@
 .appointment-frame {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    padding-top: 80px; 
     font-family: Arial, sans-serif;
     background-color: #f5f5f5;
     color: #333;
