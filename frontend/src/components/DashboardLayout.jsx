@@ -1,3 +1,4 @@
+// DashboardLayout.jsx
 import React from 'react';
 import Header from "./Frames/Header";
 import DashboardSidebar from './DashboardSidebar';
@@ -9,7 +10,9 @@ const DashboardLayout = ({ role, children }) => {
       <Header />
       <div className="dashboard-layout">
         <DashboardSidebar role={role} />
-        <div className="dashboard-main-content">{children}</div>
+        <main className="dashboard-main-content">
+          {children}
+        </main>
       </div>
     </>
   );
