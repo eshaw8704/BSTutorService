@@ -16,7 +16,7 @@ const StudentDashboard = () => {
             Authorization: `Bearer ${localStorage.getItem('token')}`
           }
         });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) throw new Error('Could not load');
         setAppointments(await res.json());
       } catch (err) {
         setError(err.message);
@@ -33,44 +33,48 @@ const StudentDashboard = () => {
         <div className="left-panel">
           <button
             className="schedule-btn"
-            onClick={() => window.location.href = '/appointments/schedule'}
+            onClick={() => window.location.href = '/appointments'}
           >
-            Schedule / Edit Appointments
+            Edit Appointments
           </button>
 
           <div className="appointments-box">
             <h3>Appointments</h3>
             <p className="subheading">Upcoming</p>
 
-            {loading ? (
-              <p>Loading…</p>
-            ) : error ? (
-              <p className="error">Error: {error}</p>
-            ) : appointments.length === 0 ? (
-              <p>No upcoming appointments.</p>
-            ) : (
-              <ul className="appointment-list">
-                {appointments.map(appt => {
-                  const dt = new Date(appt.appointmentDate);
-                  const dateStr = dt.toLocaleDateString(undefined, {
-                    month: '2-digit', day: '2-digit', year: 'numeric'
-                  });
-                  const timeStr = appt.appointmentTime; // already formatted
-                  return (
-                    <li key={appt._id}>
-                      📅 {dateStr} — {timeStr} ({appt.subject})
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
+            {loading
+              ? <p>Loading…</p>
+              : error
+                ? <p className="error">Error: {error}</p>
+                : appointments.length === 0
+                  ? <p>No upcoming appointments.</p>
+                  : (
+                    <ul className="appointment-list">
+                      {appointments.map(appt => {
+                        const dt = new Date(appt.appointmentDate);
+                        const dateStr = dt.toLocaleDateString(undefined, {
+                          month: '2-digit', day: '2-digit', year: 'numeric'
+                        });
+                        const weekday = dt.toLocaleDateString(undefined, { weekday: 'long' });
+                        const timeStr = dt.toLocaleTimeString(undefined, {
+                          hour: 'numeric', minute: '2-digit'
+                        });
+                        return (
+                          <li key={appt._id}>
+                            📅 {dateStr} — {weekday} {timeStr}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )
+            }
           </div>
         </div>
 
         <div className="info-box">
           <h2 className="dashboard-title">Student Dashboard</h2>
           <p className="dashboard-welcome">
-            Welcome back! Manage your upcoming sessions or explore other features.
+            This page allows you to access all features…
           </p>
         </div>
       </div>
