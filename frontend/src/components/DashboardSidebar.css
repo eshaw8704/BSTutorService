@@ -1,7 +1,7 @@
 .admin-navbar {
     width: 210px;
     min-height: calc(100vh - 70px); /* adjust if header height changes */
-    background-color: #6a0dad;
+    background-color: #f2d1e2;
     padding: 1rem;
     position: fixed;
     top: 70px; /* below the fixed header */
@@ -16,6 +16,7 @@
   .nav-btn {
     background: none;
     border: none;
+    background-color: #e3afca;
     color: white;
     text-align: left;
     padding: 0.8rem 1rem;
@@ -26,18 +27,18 @@
   }
   
   .nav-btn:hover {
-    background-color: #4b077b;
+    background-color: #b183dc;
     border-radius: 5px;
   }
   
   .logout {
     margin-top: auto;      /* pushes this as far down as possible */
     margin-bottom: 30px; 
-    background-color: #d32f2f;
+    background-color: #8e24aa;;
     color: white;
   }
   
   .logout:hover {
-    background-color: #a50f1b;
+    background-color: #732b8c;;
   }
   
