@@ -7,7 +7,7 @@ import AdminCreation from './components/AdminCreation';
 import LoginPage from './components/LoginPage';
 import Header from './components/Header';
 import StudentDashboard from './components/StudentDashboard';
-import AppointmentFrame from './components/AppointmentFrame'; // ✅ new import
+import AppointmentFrame from './components/AppointmentFrame'; 
 
 function App() {
   return (
@@ -23,7 +23,7 @@ function App() {
         <Route path="/admin" element={<AdminCreation />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/dashboard" element={<StudentDashboard />} />
-        <Route path="/appointments" element={<AppointmentFrame />} /> {/* ✅ new route */}
+        <Route path="/appointments" element={<AppointmentFrame />} />
       </Routes>
     </>
   );
