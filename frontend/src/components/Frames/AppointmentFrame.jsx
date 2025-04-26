@@ -4,6 +4,8 @@ import { useNavigate, Outlet } from 'react-router-dom';
 import UpcomingAppointmentsFrame from '../UpcomingAppointments';
 import CancelAppointment from '../CancelAppointment';
 import RescheduleAppointment from '../RescheduleAppointment';
+import BookAppointment  from '../BookAppointment';
+
 
 const AppointmentFrame = () => {
   const navigate = useNavigate();
@@ -47,7 +49,7 @@ const AppointmentFrame = () => {
         <p className="subheading">Upcoming</p>
         <UpcomingAppointmentsFrame />
         <ul>
-          {appointments.map(a => (
+        {appointments.map(a => (
             <li key={a._id}>
               {new Date(a.appointmentDate).toLocaleDateString()} @ {a.appointmentTime}
             </li>

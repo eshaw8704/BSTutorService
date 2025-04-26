@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import DashboardLayout from "../DashboardLayout";
 import './TutorDashboard.css';
+import UpcomingAppointmentsFrame from '../UpcomingAppointments';
+
 
 export default function TutorDashboard() {
   const [appointments, setAppointments] = useState([]);
