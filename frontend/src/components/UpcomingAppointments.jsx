@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './UpcomingAppointments.css';
 
-export default function UpcomingAppointments() {
+export default function UpcomingAppointmentsFrame() {
   const [appointments, setAppointments] = useState([]);
   const token = localStorage.getItem('token');
 
   useEffect(() => {
     if (!token) return;
-    fetch(`/api/appointments/getUpcomingForStudent/${studentId}`, {
+    fetch('/api/appointments/upcoming', {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type':  'application/json'

@@ -21,9 +21,6 @@ const DashboardSidebar = ({ role }) => {
 
   const tutorLinks = [
     { label: 'Dashboard', path: '/tutordashboard' },
-    { label: 'Payments', path: '/tutor/payments' },
-    { label: 'Schedule', path: '/tutor/schedule' },
-    { label: 'Students', path: '/tutor/students' },
     { label: 'Profile', path: '/tutor/profile' },
   ];
 
