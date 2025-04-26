@@ -43,7 +43,7 @@ const AppointmentFrame = () => {
         <button onClick={() => handleNavigate('dropin')}     className="action-button">⬇️ Drop‑In</button>
       </div>
 
-      <div className="frame-content">
+      <div className="schedule-content">
         {/* Example: show a quick list of today’s bookings */}
         <h3>Your Appointments</h3>
         <p className="subheading">Upcoming</p>
