@@ -26,4 +26,16 @@
       border-radius: 0;
     }
   }
-  
+  /* Dark Mode Overrides */
+@media (prefers-color-scheme: dark) {
+  .appointment-page {
+    background-color: #1e1e2f;
+    color: #eee;
+  }
+
+  .appointment-page .appointment-frame {
+    background-color: #2e2e3f;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    color: #eee;
+  }
+}

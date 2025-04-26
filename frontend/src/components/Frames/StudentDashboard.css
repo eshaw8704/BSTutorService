@@ -166,3 +166,80 @@
   align-items: right;
   margin-bottom: 2rem;
 }
+
+/* Dark Mode Overrides */
+@media (prefers-color-scheme: dark) {
+  .dashboard-wrapper {
+    background-color: #1e1e2f;
+  }
+
+  .dashboard-header {
+    background-color: #2e2e3f;
+    color: #eee;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+  }
+
+  .settings-btn {
+    background-color: #8c44ec;
+    color: #fff;
+  }
+  .settings-btn:hover {
+    background-color: #a05eff;
+  }
+
+  .logout-btn {
+    background-color: #872bc0;
+    color: #fff;
+  }
+  .logout-btn:hover {
+    background-color: #803ce7;
+  }
+
+  .profile-pic {
+    border-color: #8c44ec;
+  }
+
+  .schedule-btn {
+    background-color: #8c44ec;
+    color: #fff;
+  }
+  .schedule-btn:hover {
+    background-color: #a05eff;
+  }
+
+  .appointments-box {
+    background-color: #2e2e3f;
+    color: #eee;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+  }
+
+  .subheading {
+    color: #ccc;
+  }
+
+  .appointment-list li {
+    color: #ccc;
+    border-bottom: 1px solid #444;
+  }
+
+  .appointments-box p {
+    color: #ccc;
+  }
+
+  .appointments-box .error {
+    color: #ff6b6b;
+  }
+
+  .info-box {
+    background-color: #2e2e3f;
+    color: #eee;
+  }
+
+  .dashboard-title {
+    color: #eee;
+  }
+
+  .dashboard-welcome {
+    color: #ccc;
+  }
+}

@@ -36,3 +36,25 @@
       border-radius: 0;
     }
   }
+  /* Dark Mode Overrides */
+@media (prefers-color-scheme: dark) {
+  .upcoming-appointments-frame {
+    background: #2e2e3f;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    color: #ccc;
+  }
+
+  .upcoming-appointments-frame h2 {
+    color: #eee;
+  }
+
+  .upcoming-appointments-frame li {
+    border-bottom: 1px solid #444;
+    color: #ddd;
+  }
+
+  /* Remove bottom border on last item */
+  .upcoming-appointments-frame li:last-child {
+    border-bottom: none;
+  }
+}

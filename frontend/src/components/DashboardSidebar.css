@@ -33,8 +33,9 @@
   }
   
   .logout {
-    margin-top: auto;      /* pushes this as far down as possible */
+    /*margin-top: auto;       pushes this as far down as possible */
     margin-bottom: 30px; 
+    font-size: 1rem;
     background-color: #8e24aa;;
     color: white;
   }
@@ -43,7 +44,6 @@
     background-color: #732b8c;;
   }
   
-=======
 .admin-sidebar {
   width: 250px;
   background-color: #f8d7ff;
@@ -98,11 +98,64 @@
 
 
 .logout-btn {
-  margin-top: auto;
-  background-color: #d32f2f;
+  margin-bottom: auto;
+  background-color: #9f2fd3;
   color: white;
 }
 
 .logout-btn:hover {
-  background-color: #a50f1b;
+  background-color: #6b11c5;
+}
+/* Dark Mode Overrides */
+@media (prefers-color-scheme: dark) {
+  /* Navbar version */
+  .admin-navbar {
+    background-color: #2e2e3f;
+    color: #eee;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.7);
+  }
+  .nav-btn {
+    background-color: #3e3e5f;
+    color: #fff;
+  }
+  .nav-btn:hover {
+    background-color: #5e5e7f;
+  }
+  .logout {      /* pushes this as far down as possible */
+    margin-bottom: 10px;
+    font-size: 1rem;
+    background-color: #a03cee;
+    color: #fff;
+  }
+  .logout:hover {
+    background-color: #c05eff;
+  }
+
+  /* Sidebar version */
+  .admin-sidebar {
+    background-color: #1e1e2f;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.7);
+  }
+  .sidebar-heading {
+    color: #ddd;
+  }
+  .sidebar-btn {
+    background-color: #2e2e3f;
+    color: #eee;
+  }
+  .sidebar-btn:hover {
+    background-color: rgba(140, 68, 236, 0.6);
+  }
+  .sidebar-btn.active {
+    background-color: rgba(176, 102, 255, 0.6);
+  }
+  .logout-btn {
+    /*margin-end: auto;*/
+    margin-bottom: 30px;
+    background-color: #872bc0;
+    color: #fff;
+  }
+  .logout-btn:hover {
+    background-color: #803ce7;
+  }
 }
