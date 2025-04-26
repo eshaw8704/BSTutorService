@@ -7,6 +7,7 @@ import appointmentRoutes from "./routes/appointmentRoutes.js";
 import payrollRoutes from './routes/payrollRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 
+
 // Load env vars
 dotenv.config();
 console.log("✅ Environment variables loaded", process.env.PORT);
@@ -25,6 +26,10 @@ app.use(cors());
 
 // Routes
 app.use("/api/users", userRoutes);
+app.use('/api', appointmentRoutes);
+app.use('/api/payroll', payrollRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api', appointmentRoutes);
 app.use("/api/appointments", appointmentRoutes);
 
 app.get("/", (req, res) => {

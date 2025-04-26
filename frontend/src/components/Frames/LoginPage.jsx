@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // ✅ ADD THIS LINE
 import './LoginPage.css';
 import confetti from 'canvas-confetti';
+
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -36,8 +37,9 @@ function LoginPage() {
         // ✅ Guard clause to prevent errors
         if (data.user && data.user._id && data.user.role) {
           localStorage.setItem('user', JSON.stringify(data.user));
-          localStorage.setItem('userId', data.user._id); // ✅ Save userId separately
+          localStorage.setItem('userId', data.user._id); 
 
+        
           if (data.user.role === 'admin') {
             navigate('/admindashboard');
           } else if (data.user.role === 'tutor') {
