@@ -7,6 +7,7 @@ import appointmentRoutes from "./routes/appointmentRoutes.js";
 import payrollRoutes from './routes/payrollRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
 
+
 // Load env vars
 dotenv.config();
 console.log("✅ Environment variables loaded", process.env.PORT);
