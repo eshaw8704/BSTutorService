@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminDashboard.css';
+import DashboardLayout from "../DashboardLayout";
 import greenLogo from '../../assets/greenBS.png';
 
 // This component represents the admin dashboard layout
