@@ -1,96 +1,126 @@
 import React, { useEffect, useState } from 'react';
-import DashboardLayout from "../DashboardLayout";
+import { useNavigate }               from 'react-router-dom';
+import Header                        from './Header';
+import TutorPayrollPage              from './TutorPayrollPage';
 import './TutorDashboard.css';
 
 export default function TutorDashboard() {
-  const [appointments, setAppointments] = useState([]);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const tutorId = localStorage.getItem("userId");
-    if (!tutorId) {
-      console.error("Tutor ID not found in localStorage.");
-      return;
-    }
+  // ───────── state ─────────
+  const [activeView,   setActiveView]   = useState('overview');   // <── NEW
+  const [profile,      setProfile]      = useState({});
+  const [hoursLogged,  setHoursLogged]  = useState(0);
+  const [sessionsDone, setSessionsDone] = useState(0);
+  const [upcoming,     setUpcoming]     = useState([]);
+  const [history,      setHistory]      = useState([]);
 
-    fetch(`http://localhost:5000/api/appointments/tutor/${tutorId}`)
-      .then(res => res.json())
-      .then(data => setAppointments(data))
-      .catch(err => console.error("Error fetching appointments:", err));
-  }, []);
+  const tutorId = localStorage.getItem('userId');
+  const token   = localStorage.getItem('token');
 
-  const handlePayReview = async () => {
-    const tutorId = localStorage.getItem("userId");
-    const adminId = "66117562b8d123456789abcd"; // Replace with real admin ID
-
-    try {
-      const res = await fetch('http://localhost:5000/api/payroll', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tutor: tutorId,
-          confirmedHours: 10,        // Example static values
-          nonConfirmedHours: 2,
-          confirmedBy: adminId
-        })
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        alert("Payroll recorded successfully!");
-        console.log(data);
-      } else {
-        alert(`Error: ${data.message}`);
-      }
-    } catch (error) {
-      console.error("Error submitting payroll:", error);
-      alert("Error submitting payroll");
-    }
+  // ───────── helpers ─────────
+  const formatTimeRange = (dateString, duration = 60) => {
+    const start = new Date(dateString);
+    const end   = new Date(start.getTime() + duration * 60000);
+    const opts  = { hour: 'numeric', minute: '2-digit' };
+    return `${start.toLocaleTimeString([], opts)} – ${end.toLocaleTimeString([], opts)}`;
   };
 
-  return (
-    <DashboardLayout role="tutor">
-      <div className="dashboard-content">
-        {/* Appointments */}
-        <div className="dashboard-section">
-          <h2>Appointments</h2>
-          <div className="card">
-            <h3>Upcoming</h3>
-            {appointments.length > 0 ? (
-              appointments.map((apt, i) => (
-                <div key={apt._id || i} className="appointment">
-                  <strong>Tutoring Appointment</strong>
-                  <p>{new Date(apt.appointmentTime).toLocaleString()}</p>
-                  <p>Student: {apt.student?.firstName} {apt.student?.lastName}</p>
-                  <p>Subject: {apt.subject}</p>
-                </div>
-              ))
-            ) : (
-              <p>No upcoming appointments</p>
-            )}
-          </div>
-        </div>
+  const fetchUpcoming = async () => {
+    try {
+      const res = await fetch(`/api/appointments/tutor/${tutorId}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const data = await res.json();
+      setUpcoming(
+        data.map(a => ({
+          id: a._id,
+          time:    formatTimeRange(a.startTime),
+          student: `${a.student.firstName} ${a.student.lastName}`
+        }))
+      );
+    } catch (err) { console.error('Error fetching sessions:', err); }
+  };
 
-        {/* Dashboard Info */}
-        <div className="dashboard-section">
-          <div className="card">
-            <h3>Tutor Dashboard</h3>
-            <p>This page allows tutors to look at appointment schedules, review pay statements, and receive notifications on upcoming events.</p>
-          </div>
-        </div>
+  useEffect(() => { if (tutorId) fetchUpcoming(); }, [tutorId]);
 
-        {/* Notifications */}
-        <div className="dashboard-section">
-          <div className="card">
-            <h3>Notifications</h3>
-            <p>No new notifications</p>
-          </div>
-        </div>
+  // ───────── render helpers ─────────
+  const Overview = () => (
+    <>
+      <section className="cards-row">
+        <div className="info-card"><h4>Hours Logged</h4><p>{hoursLogged}</p></div>
+        <div className="info-card"><h4>Sessions Completed</h4><p>{sessionsDone}</p></div>
+        <div className="info-card"><h4>Upcoming Sessions</h4><p>{upcoming.length}</p></div>
+      </section>
 
-        {/* Pay Statement */}
-        <div className="dashboard-section full-width">
-          <button className="pay-btn" onClick={handlePayReview}>✓ Review Pay Statement</button>
-        </div>
-      </div>
-    </DashboardLayout>
+      <section className="session-section">
+        <h3>Upcoming Sessions</h3>
+        {upcoming.length
+          ? <Table data={upcoming}/>
+          : <p>No upcoming sessions found.</p>}
+      </section>
+
+      <section className="session-section">
+        <h3>Session History</h3>
+        {history.length
+          ? <Table data={history}/>
+          : <p>No session history available.</p>}
+      </section>
+    </>
   );
-} 
+
+  const Table = ({ data }) => (
+    <table>
+      <thead><tr><th>Time</th><th>Student</th></tr></thead>
+      <tbody>
+        {data.map(row => (
+          <tr key={row.id || row.time}>
+            <td>{row.time}</td>
+            <td>{row.student}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+
+  // ───────── main JSX ─────────
+  return (
+    <>
+      <Header tutorMode />
+
+      <div className="tutor-dashboard">
+        {/* ───── sidebar ───── */}
+        <aside className="sidebar">
+          <button
+            className="appointments-ellipse"
+            onClick={() => setActiveView('overview')}
+          >
+            Appointments
+          </button>
+
+          <nav className="sidebar-nav">
+            <h4>Welcome, {profile.firstName || 'Tutor'}</h4>
+            <ul>
+              <li className="nav-link">Profile</li>
+              <li className="nav-link">Availability</li>
+              <li className="nav-link">Session History</li>
+              <li
+                className={`nav-link ${activeView === 'payroll' ? 'active' : ''}`}
+                onClick={() => setActiveView('payroll')}
+              >
+                Payroll
+              </li>
+            </ul>
+          </nav>
+        </aside>
+
+        {/* ───── central panel ───── */}
+        <main className="tutor-main">
+          {activeView === 'overview' && <Overview />}
+          {activeView === 'payroll'  && <TutorPayrollPage />}
+        </main>
+      </div>
+    </>
+  );
+}
