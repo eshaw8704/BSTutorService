@@ -10,7 +10,7 @@ const DashboardSidebar = ({ role }) => {
     navigate('/login');
   };
 
-<<<<<<< HEAD
+
   const studentLinks = [
     { label: 'Dashboard', path: '/studentdashboard' },
     { label: 'Book', path: '/appointments' },
@@ -31,7 +31,7 @@ const DashboardSidebar = ({ role }) => {
     { label: 'Profile', path: '/admin/profile' },
     { label: 'Settings', path: '/admin/settings' },
   ];
-=======
+
   const linksByRole = {
     admin: [
       { label: 'Main', path: '/admindashboard' },
@@ -52,7 +52,6 @@ const DashboardSidebar = ({ role }) => {
       { label: 'Profile', path: '/student/profile' },
     ]
   };
->>>>>>> efa0e972d380f6de14480bd18fb63a034fc7b2a4
 
   const links = linksByRole[role] || [];
 
