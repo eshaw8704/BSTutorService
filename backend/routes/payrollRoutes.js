@@ -4,58 +4,52 @@ import Payroll from '../models/Payroll.js';
 
 const router = express.Router();
 
-/**
- * GET /api/payroll/tutor/:tutorId
- * – Returns (and auto-creates if missing) a payroll record for that tutor.
- */
+// ─── GET a single tutor’s payroll ───
 router.get('/tutor/:tutorId', async (req, res) => {
   try {
     const { tutorId } = req.params;
-    let record = await Payroll.findOne({ tutor: tutorId })
-      .populate('tutor', 'firstName lastName')
-      .populate('confirmedBy', 'firstName lastName');
-
-    if (!record) {
-      record = await Payroll.create({ tutor: tutorId });
+    const payroll = await Payroll
+      .findOne({ tutor: tutorId })
+      .populate('tutor', 'firstName lastName');
+    if (!payroll) {
+      return res.status(404).json({ message: 'Payroll not found' });
     }
-
-    // wrap in array to match front-end expectations
-    res.json([record]);
+    res.json(payroll);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error fetching payroll.' });
+    console.error('Error fetching payroll:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
-/**
- * POST /api/payroll
- * Body: { tutor, hoursWorked, date? }
- * – Appends hoursWorked to nonConfirmedHours.
- */
+// ─── POST to confirm payroll ───
 router.post('/', async (req, res) => {
   try {
-    const { tutor, hoursWorked = 0, date } = req.body;
-    if (!tutor) return res.status(400).json({ message: 'Missing tutor ID.'});
-
-    let record = await Payroll.findOne({ tutor });
-    if (!record) {
-      record = await Payroll.create({
-        tutor,
-        nonConfirmedHours: hoursWorked,
-        createdAt: date || undefined
-      });
-    } else {
-      record.nonConfirmedHours += hoursWorked;
-      if (date) record.createdAt = date;
-      await record.save();
+    // accept either field name:
+    const tutorId     = req.body.tutor   ?? req.body.tutorId;
+    const confirmedBy = req.body.confirmedBy;
+    if (!tutorId || !confirmedBy) {
+      return res.status(400).json({ message: 'Missing tutorId or confirmedBy' });
     }
 
-    res.json(record);
+    const payroll = await Payroll.findOne({ tutor: tutorId });
+    if (!payroll) {
+      return res.status(404).json({ message: 'Payroll not found' });
+    }
+
+    // Move all unconfirmed into confirmed
+    payroll.confirmedHours    += payroll.nonConfirmedHours;
+    payroll.nonConfirmedHours  = 0;
+    payroll.confirmedBy        = confirmedBy;
+    payroll.confirmedAt        = new Date();
+
+    await payroll.save();
+    await payroll.populate('tutor', 'firstName lastName');
+    res.json(payroll);
+
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Error adding hours.' });
+    console.error('Error confirming payroll:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
-// ← this is the key line your server.js import needs
 export default router;
