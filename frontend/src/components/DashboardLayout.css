@@ -9,7 +9,6 @@
   margin-left: 250px;
   padding: 2rem;
   width: calc(100% - 250px);
-<<<<<<< HEAD
 }
 /* Dark Mode Overrides */
 @media (prefers-color-scheme: dark) {
@@ -31,7 +30,3 @@
   left: 0;   
     /* make the text bold */
 }
-
-=======
-}
->>>>>>> parent of 65e2c70 (xx)
