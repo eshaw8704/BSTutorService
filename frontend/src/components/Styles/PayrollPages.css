@@ -1,10 +1,10 @@
 /* PayrollPages.css */
 
 :root {
-  --bst-purple: #9146FF;
-  --bst-pink:   #F2E7E8;
-  --text-dark:  #333333;
-  --border-gray:#CCCCCC;
+  --bst-purple:   #9146FF;
+  --bst-pink:     #F2E7E8;
+  --text-dark:    #333333;
+  --border-gray:  #CCCCCC;
 }
 
 /* ─── Wrapper & Header ─── */
@@ -85,6 +85,30 @@
   opacity: 0.9;
 }
 
+/* ─── Tutor List Buttons ─── */
+.tutor-list {
+  width: 100%;
+  max-width: 600px;
+  padding: 0;
+  margin: 1rem 0;
+  list-style: none;
+}
+.tutor-list li {
+  margin-bottom: 0.5rem;
+}
+.tutor-list button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: var(--bst-purple);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+.tutor-list button:hover {
+  opacity: 0.9;
+}
+
 /* ─── Table ─── */
 .payroll-table {
   width: 100%;
@@ -103,6 +127,26 @@
   color: var(--text-dark);
 }
 
+/* ─── Confirm Button ─── */
+.confirm-btn {
+  margin-top: 1rem;
+  padding: 0.75rem 2rem;
+  background-color: var(--bst-purple);
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+.confirm-btn:hover {
+  opacity: 0.9;
+}
+.confirm-btn:disabled {
+  background-color: var(--border-gray);
+  cursor: not-allowed;
+}
+
 /* ─── Inputs & Buttons Elsewhere ─── */
 input[type="number"],
 input[type="date"] {
@@ -111,11 +155,14 @@ input[type="date"] {
   border-radius: 4px;
 }
 
+/* ─── Status Messages ─── */
 .status-msg {
   margin-top: 1rem;
   font-weight: bold;
 }
-
 .status-msg.error {
-  color: #E53E3E; /* red for errors */
+  color: #E53E3E; /* red */
+}
+.status-msg.success {
+  color: #10B981; /* green */
 }
