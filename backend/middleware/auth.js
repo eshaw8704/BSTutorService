@@ -18,4 +18,3 @@ export const protect = (req, res, next) => {
     req.user = { id: req.headers['x-stub-user-id'] || '000000000000000000000000' };
     next();
   };
-  
