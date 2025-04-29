@@ -4,39 +4,36 @@ import DateTimeSelector from './DateTimeSelector';
 
 export default function BookAppointment() {
   const [subject, setSubject] = useState('');
-  const [appointmentDate, setAppointmentDate] = useState(null); // Ensure this is properly set
+  const [appointmentDate, setAppointmentDate] = useState(null);
   const [appointmentTime, setAppointmentTime] = useState('');
   const [tutor, setTutor] = useState('');
   const [tutors, setTutors] = useState([]);
-  const [studentID, setStudentID] = useState(''); // Added state for student ID
+  const [studentID, setStudentID] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const token = localStorage.getItem('token'); // JWT
 
   useEffect(() => {
-    const id = localStorage.getItem('userId'); // Fetching userId from localStorage
+    const id = localStorage.getItem('userId');
     if (id) {
-      setStudentID(id); // Set studentID state if found
-    } else {
-      console.error("User ID not found in localStorage");
+      setStudentID(id);
     }
 
-    fetch('http://localhost:5000/api/users/tutors') // Fetch tutors for the select dropdown
+    fetch('/api/users/tutors', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
       .then(res => res.json())
       .then(data => setTutors(data))
       .catch(err => console.error('Error fetching tutors:', err));
-  }, []);
+  }, [token]);
 
   const convertTo24Hour = (timeStr) => {
     const [time, modifier] = timeStr.split(" ");
     let [hours, minutes] = time.split(":");
-    if (modifier === "PM" && hours !== "12") {
-      hours = parseInt(hours, 10) + 12;
-    }
-    if (modifier === "AM" && hours === "12") {
-      hours = "00";
-    }
+    if (modifier === "PM" && hours !== "12") hours = parseInt(hours, 10) + 12;
+    if (modifier === "AM" && hours === "12") hours = "00";
     return `${hours}:${minutes}`;
   };
 
@@ -52,35 +49,35 @@ export default function BookAppointment() {
       return;
     }
 
-    // Ensure appointmentDate is a valid Date object
     const [year, month, day] = [
       appointmentDate.getFullYear(),
       String(appointmentDate.getMonth() + 1).padStart(2, '0'),
       String(appointmentDate.getDate()).padStart(2, '0')
     ];
-
     const time24 = convertTo24Hour(appointmentTime);
     const dateTimeISO = new Date(`${year}-${month}-${day}T${time24}`).toISOString();
 
-    // Log to ensure data is in correct format
     console.log("Sending Appointment Data:", {
       student: studentID,
       tutor,
       subject,
       appointmentTime: dateTimeISO,
-      appointmentDate: appointmentDate, // Ensure appointmentDate is a Date object
+      appointmentDate: appointmentDate,
     });
 
     try {
-      const response = await fetch('http://localhost:5000/api/appointments', {
+      const response = await fetch('/api/appointments', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({
-          student: studentID, // Passing studentID as the student's ID in the request body
+          student: studentID,
           tutor,
           subject,
-          appointmentTime: dateTimeISO, // ensure this is in the right format
-          appointmentDate: appointmentDate, // Send appointmentDate as a Date object
+          appointmentTime: dateTimeISO,
+          appointmentDate: appointmentDate
         }),
       });
 
@@ -107,11 +104,7 @@ export default function BookAppointment() {
     <div className="appointment-container">
       <h2>Book Appointment</h2>
       <form onSubmit={handleSubmit} className="appointment-form">
-        <select
-          value={subject}
-          onChange={e => setSubject(e.target.value)}
-          required
-        >
+        <select value={subject} onChange={e => setSubject(e.target.value)} required>
           <option value="">Select Subject</option>
           <option value="Math">Math</option>
           <option value="Science">Science</option>
@@ -120,11 +113,7 @@ export default function BookAppointment() {
           <option value="Programming">Programming</option>
         </select>
 
-        <select
-          value={tutor}
-          onChange={e => setTutor(e.target.value)}
-          required
-        >
+        <select value={tutor} onChange={e => setTutor(e.target.value)} required>
           <option value="">Select Tutor</option>
           {tutors.map(t => (
             <option key={t._id} value={t._id}>
@@ -133,14 +122,13 @@ export default function BookAppointment() {
           ))}
         </select>
 
-    <div className="date-time-panel">
-     <DateTimeSelector
-        onDateTimeSelect={({ date, time }) => {
-          setAppointmentDate(date);
-          setAppointmentTime(time);
-        }}
-      />
-    </div>
+        <DateTimeSelector
+          onDateTimeSelect={({ date, time }) => {
+            setAppointmentDate(date);
+            setAppointmentTime(time);
+          }}
+        />
+
         <button type="submit" disabled={isLoading}>
           {isLoading ? "Booking..." : "Book Appointment"}
         </button>

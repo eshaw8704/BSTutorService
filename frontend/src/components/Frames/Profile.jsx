@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import DashboardLayout from "../DashboardLayout";
 import './Profile.css';
 
 export default function Profile() {

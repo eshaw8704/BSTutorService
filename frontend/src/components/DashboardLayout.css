@@ -1,12 +1,23 @@
 .dashboard-layout {
-    display: flex;
-    min-height: 100vh;
-    padding-top: 70px; /* height of header */
+  display: flex;
+  min-height: 100vh;
+  padding-top: 70px;
+  background-color: #fff0f5;
+}
+
+.dashboard-main-content {
+  margin-left: 250px;
+  padding: 2rem;
+  width: calc(100% - 250px);
+}
+/* Dark Mode Overrides */
+@media (prefers-color-scheme: dark) {
+  .dashboard-layout {
+    background-color: #1e1e2f;
+    color: #eee;
   }
-  
   .dashboard-main-content {
-    margin-left: 220px; /* width of sidebar */
-    width: calc(100% - 220px);
-    padding: 2rem;
+    background-color: #2e2e3f;
+    color: #eee;
   }
-  
+}

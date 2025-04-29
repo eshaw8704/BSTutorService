@@ -1,57 +1,23 @@
-/* Admin Dashboard CSS */
-/* This CSS file styles the Admin Dashboard component, including the layout, header, sidebar, and main content area. */
 .admin-dashboard-layout {
   display: grid;
   grid-template-columns: 240px 1fr;
   height: 100vh;
-  background-color: #FFF7F7; /* Pastel pink background */
+  background-color: #FFF7F7;
 }
 
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 80px;
-  background-color: #fbeaf5;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 1rem;
-  z-index: 10;
-  border-bottom: 2px solid #fff;
-}
-
-/* Fixed Header at Top */
 .admin-header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 80px;
-  background-color: #fbeaf5; /* Slightly different pastel pink for header */
+  background-color: #fbeaf5;
   display: flex;
   align-items: center;
-  z-index: 10;
-  /* Remove the weird line: no border-bottom */
-  border-bottom: none;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.sidebar-nav ul li {
-  cursor: pointer;
-  transition: all 0.2s ease;
+  z-index: 10;
 }
 
-.sidebar-nav ul li.sidebar-link:hover {
-  background-color: #b183dc; /* Light purple background on hover */
-  color: white;
-  font-size: 1.05em;
-  border-radius: 6px;
-  padding-left: 5px;
-}
-
-
-/* Left side of header: BSTutors logo, name, plus admin buttons */
 .header-left {
   display: flex;
   align-items: center;
@@ -64,7 +30,6 @@
   height: auto;
 }
 
-/* Admin nav buttons aligned next to the logo */
 .header-admin-buttons {
   margin-left: auto;
   display: flex;
@@ -73,32 +38,36 @@
   transform: translateX(-45px);
 }
 
-.header-admin-buttons button {
-  background-color: #8e24aa; /* Purple background */
+.admin-dashboard-button {
+  background-color: #8e24aa;
   color: #fff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
-  transition: background-color 0.2s;
-  transform: translateX(-10px);
-
+  transition: background-color 0.2s, transform 0.2s;
 }
 
-.header-admin-buttons button:hover {
-    background-color: #732b8c; /* Darker on hover */
-  }
+.admin-dashboard-button:hover {
+  background-color: #732b8c;
+  transform: scale(1.05);
+}
 
-/* Sidebar starts below the header */
+.logout {
+  background-color: #d32f2f;
+}
+
+.logout:hover {
+  background-color: #a51b1b;
+}
+
 .sidebar {
-  grid-column: 1 / 2;
-  margin-top: 80px; /* push content below fixed header */
-  background-color: #f2d1e2; /* pastel purple for sidebar */
+  margin-top: 80px;
+  background-color: #f2d1e2;
   padding: 1rem;
 }
 
-/* Purple ellipse is now a clickable button labeled "Appointments" */
 .appointments-ellipse {
   width: 180px;
   height: 50px;
@@ -113,43 +82,63 @@
 }
 
 .appointments-ellipse:hover {
-  background-color: #865b91; /* darker on hover */
+  background-color: #865b91;
 }
 
 .sidebar-heading {
   margin-bottom: 1.8rem;
 }
 
-/* Nav items in the sidebar */
 .sidebar-nav h4 {
   margin: 1rem 0 0.5rem;
 }
+
 .sidebar-nav ul {
   list-style: none;
   padding-left: 0;
 }
+
 .sidebar-nav li {
-  margin: 1rem 0;
+  margin: 0.8rem 0;
 }
+
+.sidebar-link {
+  padding: 8px 16px;
+  margin: 8px 0;
+  border-radius: 10px;
+  font-weight: 500;
+  color: #333;
+  display: block;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 12px rgba(155, 89, 182, 0.5);
+  transform: scale(1.05);
+  font-weight: 600;
+  color: #4a0072;
+}
+
 .nav-label {
   margin-top: 2rem;
   font-style: italic;
   color: #666;
 }
 
-/* Main content area */
 .admin-main {
   grid-column: 2 / 3;
-  margin-top: 100px; /* offset below fixed header */
+  margin-top: 100px;
   padding: 1rem;
 }
 
-/* Info cards in a row */
 .cards-row {
   display: flex;
   gap: 1.2rem;
   margin-bottom: 2rem;
 }
+
 .info-card {
   background-color: #fff;
   width: 180px;
@@ -158,16 +147,17 @@
   box-shadow: 0 1.7px 10px rgba(112, 25, 25, 0.1);
   text-align: center;
 }
+
 .info-card h4 {
   margin: 0 0 0.5rem;
 }
+
 .info-card p {
   margin: 0;
   font-size: 1.2rem;
   color: #333;
 }
 
-/* Upcoming sessions table */
 .upcoming-sessions table {
   width: 100%;
   border-collapse: collapse;
@@ -189,8 +179,3 @@
 .upcoming-sessions tr:hover {
   background-color: #f9f9f9;
 }
-
-.main-content {
-    margin-top: 80px; /* push content below fixed header */
-    padding: 1rem;
-  }

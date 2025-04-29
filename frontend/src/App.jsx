@@ -13,10 +13,11 @@ import TutorDashboard from './components/Frames/TutorDashboard.jsx';
 import AdminDashboard from './components/Frames/AdminDashboard.jsx';
 import Profile from './components/Frames/Profile.jsx';
 
-import TutorPayrollPage from './components/Frames/TutorPayrollPage.jsx';
 import AdminPayrollList from './components/Frames/AdminPayrollList.jsx';
 import AdminPayrollReview from './components/Frames/AdminPayrollReview.jsx';
+import AppointmentFrame from './components/Frames/AppointmentFrame.jsx';
 
+// Appointment nested‑route setup
 import BookAppointment from './components/BookAppointment.jsx';
 import CancelAppointment from './components/CancelAppointment.jsx';
 import RescheduleAppointment from './components/RescheduleAppointment.jsx';
@@ -37,17 +38,23 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/studentdashboard" element={<StudentDashboard />} />
         <Route path="/tutordashboard" element={<TutorDashboard />} />
-        {/* Appointments management */}
-        <Route path="/appointments" element={<BookAppointment />} />
-        <Route path="/appointments/cancel" element={<CancelAppointment />} />
-        <Route path="/appointments/reschedule" element={<RescheduleAppointment />} />
-        <Route path="appointments" element={<AdminAppointments />} />
 
-        {/* ✅ Admin dashboard and nested views */}
+        {/* Appointments nested routes */}
+        <Route path="/appointments" element={<AppointmentFrame />}>
+          <Route index element={<div>Please select an action above.</div>} />
+          <Route path="schedule"   element={<BookAppointment />} />
+          <Route path="cancel"     element={<CancelAppointment />} />
+          <Route path="reschedule" element={<RescheduleAppointment />} />
+          {/* add other nested routes like "past", "dropin" here */}
+        </Route>
+
+        {/* Admin dashboard and nested views */}
         <Route path="/admindashboard" element={<AdminDashboard />}>
           <Route path="payroll" element={<AdminPayrollList />} />
           <Route path="payroll/:tutorId" element={<AdminPayrollReview />} />
-          <Route path="profile" element={<Profile />} /> {/* ✅ NEW */}
+          <Route path="profile" element={<Profile />} />
+          <Route path="schedules" element={<AdminAppointments />} />
+          {/* add other nested routes like "past", "dropin" here */}
         </Route>
       </Routes>
     </>

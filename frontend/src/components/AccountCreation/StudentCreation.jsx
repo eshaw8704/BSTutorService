@@ -18,7 +18,7 @@ function StudentCreation() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/users', {
+      const response = await fetch('http://localhost:5000/api/users/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ firstName, lastName, email, password, role: 'student' }),
@@ -40,7 +40,7 @@ function StudentCreation() {
           spread: 70,
           origin: { y: 0.6 },
         });*/
-        navigate('/dashboard'); // <-- Redirect to dashboard after success
+        navigate('/studentdashboard'); // <-- Redirect to dashboard after success
       } else {
         alert(`Error: ${data.message}`);
       }

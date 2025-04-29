@@ -1,81 +1,204 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import "./BookAppointment.css";
+import DateTimeSelector from './DateTimeSelector';
 
 export default function AdminAppointments() {
-  const [appts, setAppts] = useState([]);
-  const [editing, setEditing] = useState(null);
-  const [loading, setLoading] = useState(false);
+  // List and form toggle
+  const [appointments, setAppointments] = useState([]);
+  const [showForm, setShowForm] = useState(false);
 
-  // Fetch all appointments
+  // Form fields
+  const [subject, setSubject] = useState('');
+  const [appointmentDate, setAppointmentDate] = useState(null);
+  const [appointmentTime, setAppointmentTime] = useState('');
+  const [tutor, setTutor] = useState('');
+  const [student, setStudent] = useState('');
+
+  // Dropdown data
+  const [tutors, setTutors] = useState([]);
+  const [students, setStudents] = useState([]);
+
+  // UI state
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const token = localStorage.getItem('token');
+
   useEffect(() => {
-    setLoading(true);
-    axios.get('/api/admin/appointments')
-      .then(res => setAppts(res.data))
-      .catch(err => console.error(err))
-      .finally(() => setLoading(false));
-  }, []);
+    // Fetch existing appointments
+    fetch('/api/admin/appointments', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => setAppointments(data))
+      .catch(err => console.error('Error fetching appointments:', err));
 
-  const handleSave = (id, date, time) => {
-    axios.put(`/api/admin/appointments/${id}`, { appointmentDate: date, appointmentTime: time })
-      .then(res => {
-        setAppts(a => a.map(x => x._id === id ? res.data : x));
-        setEditing(null);
-      })
-      .catch(err => console.error(err));
+    // Fetch students and tutors for form
+    fetch('/api/users/students', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => setStudents(data))
+      .catch(err => console.error('Error fetching students:', err));
+
+    fetch('/api/users/tutors', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => setTutors(data))
+      .catch(err => console.error('Error fetching tutors:', err));
+  }, [token]);
+
+  const convertTo24Hour = (timeStr) => {
+    const [time, modifier] = timeStr.split(" ");
+    let [hours, minutes] = time.split(":");
+    if (modifier === "PM" && hours !== "12") hours = parseInt(hours, 10) + 12;
+    if (modifier === "AM" && hours === "12") hours = "00";
+    return `${hours}:${minutes}`;
   };
 
-  const handleCancel = id => {
-    axios.put(`/api/admin/appointments/${id}/cancel`)
-      .then(res => setAppts(a => a.map(x => x._id === id ? res.data : x)))
-      .catch(err => console.error(err));
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage('');
+    setSuccessMessage('');
+    setIsLoading(true);
 
-  if (loading) return <p>Loading...</p>;
+    if (!appointmentDate || !appointmentTime) {
+      setErrorMessage("Please select both date and time.");
+      setIsLoading(false);
+      return;
+    }
+
+    const [year, month, day] = [
+      appointmentDate.getFullYear(),
+      String(appointmentDate.getMonth() + 1).padStart(2, '0'),
+      String(appointmentDate.getDate()).padStart(2, '0')
+    ];
+    const time24 = convertTo24Hour(appointmentTime);
+    const dateTimeISO = new Date(`${year}-${month}-${day}T${time24}`).toISOString();
+
+    try {
+      const response = await fetch('/api/admin/appointments', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ student, tutor, subject, appointmentTime: dateTimeISO })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setSuccessMessage('Appointment created successfully!');
+        setSubject('');
+        setAppointmentDate(null);
+        setAppointmentTime('');
+        setTutor('');
+        setStudent('');
+        setShowConfirmation(true);
+        // refresh list
+        setAppointments(prev => [...prev, data]);
+      } else {
+        setErrorMessage(data.message || 'Error creating appointment');
+      }
+    } catch (err) {
+      console.error('Error creating appointment:', err);
+      setErrorMessage('Error creating appointment');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div>
-      <h2>Appointments Admin</h2>
-      <table>
-        <thead>
-          <tr><th>Student</th><th>Tutor</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr>
-        </thead>
-        <tbody>
-          {appts.map(a => (
-            <tr key={a._id}>
-              <td>{a.student.firstName} {a.student.lastName}</td>
-              <td>{a.tutor.firstName} {a.tutor.lastName}</td>
-              <td>{new Date(a.appointmentDate).toLocaleDateString()}</td>
-              <td>{a.appointmentTime}</td>
-              <td>{a.status}</td>
-              <td>
-                <button onClick={() => setEditing(a)}>Edit</button>
-                {a.status !== 'Cancelled' && <button onClick={() => handleCancel(a._id)}>Cancel</button>}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="appointment-container">
+      <h2>Admin: Appointments</h2>
 
-      {editing && (
-        <div className="modal">
-          <h3>Reschedule</h3>
-          <DatePicker
-            selected={new Date(editing.appointmentDate)}
-            onChange={date => setEditing(e => ({ ...e, appointmentDate: date }))}
-          />
-          <DatePicker
-            selected={new Date("1970-01-01T" + editing.appointmentTime)}
-            onChange={time => setEditing(e => ({ ...e, appointmentTime: time.toLocaleTimeString('en-US', { hour12: true, hour: '2-digit', minute: '2-digit' }) }))}
-            showTimeSelect
-            showTimeSelectOnly
-            timeIntervals={30}
-            dateFormat="h:mm aa"
-          />
-          <button onClick={() => handleSave(editing._id, editing.appointmentDate, editing.appointmentTime)}>Save</button>
-          <button onClick={() => setEditing(null)}>Cancel</button>
-        </div>
+      {!showForm ? (
+        <>
+          <button className="new-btn" onClick={() => setShowForm(true)}>
+            + New Appointment
+          </button>
+
+          {appointments.length ? (
+            <ul className="appointment-list">
+              {appointments.map(appt => (
+                <li key={appt._id} className="appointment-item">
+                  <strong>{appt.subject}</strong> — {new Date(appt.appointmentTime).toLocaleString()}
+                  <br />
+                  Student: {appt.studentName} | Tutor: {appt.tutorName}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No appointments found.</p>
+          )}
+        </>
+      ) : (
+        <>
+          <button className="back-btn" onClick={() => setShowForm(false)}>
+            &larr; Back to List
+          </button>
+          <form onSubmit={handleSubmit} className="appointment-form">
+            <select value={subject} onChange={e => setSubject(e.target.value)} required>
+              <option value="">Select Subject</option>
+              <option value="Math">Math</option>
+              <option value="Science">Science</option>
+              <option value="English">English</option>
+              <option value="History">History</option>
+              <option value="Programming">Programming</option>
+            </select>
+
+            <select value={student} onChange={e => setStudent(e.target.value)} required>
+              <option value="">Select Student</option>
+              {students.map(s => (
+                <option key={s._id} value={s._id}>
+                  {s.firstName} {s.lastName}
+                </option>
+              ))}
+            </select>
+
+            <select value={tutor} onChange={e => setTutor(e.target.value)} required>
+              <option value="">Select Tutor</option>
+              {tutors.map(t => (
+                <option key={t._id} value={t._id}>
+                  {t.firstName} {t.lastName}
+                </option>
+              ))}
+            </select>
+
+            <DateTimeSelector
+              onDateTimeSelect={({ date, time }) => {
+                setAppointmentDate(date);
+                setAppointmentTime(time);
+              }}
+            />
+
+            <button type="submit" disabled={isLoading}>
+              {isLoading ? "Creating..." : "Create Appointment"}
+            </button>
+
+            {successMessage && <div className="success-message">{successMessage}</div>}
+            {errorMessage && <div className="error-message">{errorMessage}</div>}
+          </form>
+
+          {showConfirmation && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <button
+                  className="modal-close"
+                  onClick={() => setShowConfirmation(false)}
+                  aria-label="Close"
+                >
+                  &times;
+                </button>
+                <h2>Appointment Created</h2>
+                <p>An email notification was sent to the student and tutor.</p>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
