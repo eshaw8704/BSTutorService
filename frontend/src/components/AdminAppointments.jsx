@@ -15,6 +15,30 @@ export default function AdminAppointments() {
       .catch(err => console.error('Error fetching appointments:', err));
   }, [token]);
 
+  const handleCancel = async (id) => {
+    if (!window.confirm('Are you sure you want to cancel this appointment?')) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/admin/appointments/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      console.log('DELETE status', res.status);
+
+      if (res.status === 204) {
+        // 2) Remove from state so the table updates
+        setAppointments(prev => prev.filter(a => a._id !== id));
+      } else {
+        console.error('Failed to cancel appointment', await res.json());
+      }
+    } catch (err) {
+      console.error('Error cancelling appointment:', err);
+    }
+  };
+
   return (
     <div className="appointment-container">
       <h2>Booked Appointments</h2>
@@ -32,25 +56,29 @@ export default function AdminAppointments() {
             </tr>
           </thead>
           <tbody>
-            {appointments.map(appt => {
-              const dateObj = new Date(appt.appointmentTime);
-              const date = dateObj.toLocaleDateString();
-              const time = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-              return (
-                <tr key={appt._id} className="appointment-item">
-                  <td>{appt.subject}</td>
-                  <td>{appt.studentName}</td>
-                  <td>{appt.tutorName}</td>
-                  <td>{appt.appointmentDate ? new Date(appt.appointmentDate).toLocaleDateString('en-US'): 'TBD'}</td>
-                  <td>{appt.appointmentTime || 'TBD'}</td>
-                  <td>
-                    <button className="cancel-btn">
-                      Cancel
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
+            {appointments.map(appt => (
+              <tr key={appt._id} className="appointment-item">
+                <td>{appt.subject}</td>
+                <td>{appt.studentName}</td>
+                <td>{appt.tutorName}</td>
+                <td>
+                  {appt.appointmentDate
+                    ? new Date(appt.appointmentDate).toLocaleDateString('en-US'): 'TBD'}
+                </td>
+                <td>
+                  {appt.appointmentTime || 'TBD'}
+                </td>
+                <td>
+                  {/* 3) Wire the button to handleCancel */}
+                  <button
+                    className="cancel-btn"
+                    onClick={() => handleCancel(appt._id)}
+                  >
+                    Cancel
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       ) : (
