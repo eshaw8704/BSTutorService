@@ -19,6 +19,7 @@ router.get('/appointments', protect, async (req, res) => {
       subject: a.subject,
       // keep the raw ISO string; let the front end decide how to split date/time
       appointmentTime: a.appointmentTime,
+      appointmentDate: a.appointmentDate,
       studentName: `${a.student.firstName} ${a.student.lastName}`,
       tutorName:   `${a.tutor.firstName} ${a.tutor.lastName}`,
     }));
@@ -29,4 +30,5 @@ router.get('/appointments', protect, async (req, res) => {
     res.status(500).json({ message: 'Server error fetching appointments.' });
   }
 });
+
 export default router;

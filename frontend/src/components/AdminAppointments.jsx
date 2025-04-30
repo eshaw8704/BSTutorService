@@ -41,7 +41,7 @@ export default function AdminAppointments() {
                   <td>{appt.subject}</td>
                   <td>{appt.studentName}</td>
                   <td>{appt.tutorName}</td>
-                  <td>{appt.appointmentDate || 'TBD'}</td>
+                  <td>{appt.appointmentDate ? new Date(appt.appointmentDate).toLocaleDateString('en-US'): 'TBD'}</td>
                   <td>{appt.appointmentTime || 'TBD'}</td>
                   <td>
                     <button className="cancel-btn">
