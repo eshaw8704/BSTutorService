@@ -70,16 +70,19 @@ export const getAppointmentByStudent = async (req, res) => {
 export const getAppointmentsByTutor = async (req, res) => {
   try {
     const appointments = await Appointment.find({
-      tutor: req.params.tutorID,
-      status: 'scheduled' // ✅ filter only upcoming scheduled sessions
-    }).populate('student', 'firstName lastName'); // ✅ populate student info
+      tutor: req.params.tutorID
+      // Remove status filter for testing
+    }).populate('student', 'firstName lastName');
+    console.log('📥 Fetching appts for tutor:', req.params.tutorID);
 
+    console.log('📤 All tutor appointments:', appointments);
     res.json(appointments);
   } catch (err) {
     console.error('❌ Error fetching appointments by tutor:', err);
     res.status(500).json({ message: 'Error fetching appointments by tutor' });
   }
 };
+
 
 
 // POST create new appointment
