@@ -1,5 +1,12 @@
-{
+/* 1) Universal box-sizing reset */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+/* 2) Remove default body margins */
+body {
   margin: 0;
   padding: 0;
 }
