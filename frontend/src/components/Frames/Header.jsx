@@ -40,9 +40,9 @@ export default function Header({ adminMode, tutorMode }) {
           ) : (
             // Tutor links
             <>
-              <button onClick={() => navigate('/tutor/profile')}>Profile</button>
-              <button onClick={() => navigate('/tutor/settings')}>Settings</button>
-              <button onClick={() => navigate('/tutor/payroll')}>Payroll</button>
+              <button onClick={() => navigate('/tutordashboard/profile')}>Profile</button>
+              <button onClick={() => navigate('/tutordashboard/settings')}>Settings</button>
+              <button onClick={() => navigate('/tutordashboard/payroll')}>Payroll</button>
             </>
           )}
           <button onClick={handleLogout}>Logout</button>

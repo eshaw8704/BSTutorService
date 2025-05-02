@@ -28,8 +28,18 @@ import AppointmentFrame from './components/Frames/AppointmentFrame';
 export default function App() {
   return (
     <Routes>
+     {/* Public routes without Header */}
+      <Route path="/" element={<WelcomePage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/student" element={<StudentCreation />} />
+      <Route path="/tutor" element={<TutorCreation />} />
+      <Route path="/admin" element={<AdminCreation />} />
+     
       {/* Legacy redirect */}
-      <Route path="/admindashboard" element={<Navigate to="/admin/dashboard" replace />} />
+      {/* Dashboard-related routes with Header */}
+      <Route path="/studentdashboard" element={<DashboardLayout role="student"><StudentDashboard /></DashboardLayout>} />
+      <Route path="/tutordashboard" element={<DashboardLayout role="tutor"><TutorDashboard /></DashboardLayout>} />
+      <Route path="/admindashboard" element={<DashboardLayout role="admin"><AdminDashboardHome /></DashboardLayout>} />
 
       {/* Public */}
       <Route path="/"       element={<WelcomePage />} />
@@ -39,8 +49,14 @@ export default function App() {
       <Route path="/admin"   element={<AdminCreation />} />
 
       {/* Student/Tutor Dashboards */}
-      <Route path="/studentdashboard" element={<StudentDashboard />} />
-      <Route path="/tutordashboard"   element={<TutorDashboard />} />
+      <Route path="/studentdashboard" element={<StudentDashboard />}>
+        <Route path="profile" element={<Profile />} />       {/* Add Profile route */}
+        <Route path="settings" element={<Settings />} />     {/* Add Settings route */}
+      </Route>
+      <Route path="/tutordashboard" element={<TutorDashboard />}>
+        <Route path="profile" element={<Profile />} />       {/* Add Profile route */}
+        <Route path="settings" element={<Settings />} />     {/* Add Settings route */}
+      </Route>
 
       {/* Stand-alone Appointments */}
       <Route path="/appointments/*" element={<AppointmentFrame />}>
