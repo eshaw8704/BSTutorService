@@ -13,7 +13,8 @@ const StudentDashboard = () => {
         const res = await fetch('/api/appointments/upcoming', {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'x-stub-user-id': localStorage.getItem('userId')
           }
         });
         if (!res.ok) throw new Error('Could not load');

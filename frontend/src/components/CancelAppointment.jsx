@@ -19,6 +19,9 @@ export default function CancelAppointment() {
     try {
       const res = await fetch(`http://localhost:5000/api/appointments/${id}`, {
         method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }
       });
       if (res.ok) {
         alert('Appointment canceled successfully');

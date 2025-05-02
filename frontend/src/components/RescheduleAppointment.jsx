@@ -24,13 +24,16 @@ export default function RescheduleAppointment() {
     let [hours, minutes] = time.split(':');
     if (modifier === 'PM' && hours !== '12') hours = String(parseInt(hours) + 12);
     if (modifier === 'AM' && hours === '12') hours = '00';
-
+  
     const dateTimeISO = new Date(`${year}-${month}-${day}T${hours}:${minutes}`).toISOString();
-
+  
     try {
-      const res = await fetch(`http://localhost:5000/api/appointments/${selectedAppointment._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch(`http://localhost:5000/api/appointments/${selectedAppointment._id}/update`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
         body: JSON.stringify({ appointmentTime: dateTimeISO }),
       });
       if (res.ok) {
@@ -44,7 +47,7 @@ export default function RescheduleAppointment() {
       alert('Error rescheduling');
     }
   };
-
+  
   return (
     <div className="appointment-container">
       <h2>Reschedule Appointment</h2>

@@ -22,13 +22,13 @@ const AppointmentFrame = () => {
       </header>
 
       <div className="frame-actions">
-        <button onClick={() => handleNavigate('/schedule')} className="action-button">
+        <button onClick={() => handleNavigate('/appointments/schedule')} className="action-button">
           📅 Schedule Appointment
         </button>
-        <button onClick={() => handleNavigate('/cancel')} className="action-button">
+        <button onClick={() => handleNavigate('/appointments/cancel')} className="action-button">
           ❌ Cancel Appointment
         </button>
-        <button onClick={() => handleNavigate('/reschedule')} className="action-button">
+        <button onClick={() => handleNavigate('/appointments/reschedule')} className="action-button">
           📅 Reschedule Appointment
         </button>
         <button onClick={() => handleNavigate('/past')} className="action-button">
