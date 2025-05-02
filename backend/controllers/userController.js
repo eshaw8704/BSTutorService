@@ -81,12 +81,46 @@ export const loginUser = async (req, res) => {
 };
 
 // GET /api/users/profile
-// Returns the logged-in user’s full profile (no password)
-export const getProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.id).select('-password');
+// Returns the logged-in user (no password)
+export const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json(user);
+  } catch (err) {
+    console.error('getProfile error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// PUT /api/users/profile
+// Update current user’s profile
+export const updateProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id);
   if (!user) {
     res.status(404);
     throw new Error('User not found');
   }
-  res.json(user);
+
+  // Only these fields are updatable
+  user.firstName      = req.body.firstName      ?? user.firstName;
+  user.lastName       = req.body.lastName       ?? user.lastName;
+  user.experience     = req.body.experience     ?? user.experience;
+  user.institution    = req.body.institution    ?? user.institution;
+  user.biography      = req.body.biography      ?? user.biography;
+  user.profilePicture = req.body.profilePicture ?? user.profilePicture;
+
+  const updated = await user.save();
+
+  res.json({
+    _id:            updated._id,
+    firstName:      updated.firstName,
+    lastName:       updated.lastName,
+    email:          updated.email,
+    role:           updated.role,
+    experience:     updated.experience,
+    institution:    updated.institution,
+    biography:      updated.biography,
+    profilePicture: updated.profilePicture,
+  });
 });

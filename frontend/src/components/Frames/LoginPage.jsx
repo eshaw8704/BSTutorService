@@ -37,6 +37,7 @@ function LoginPage() {
         if (data.user && data.user._id && data.user.role) {
           localStorage.setItem('user', JSON.stringify(data.user));
           localStorage.setItem('userId', data.user._id); 
+          localStorage.setItem('token', data.token); // Store token for future requests
 
         
           if (data.user.role === 'admin') {
@@ -55,7 +56,8 @@ function LoginPage() {
           return;
         }
 
-      } else {
+      } 
+      else {
         // ❗ Specific backend error handling
         if (data.message === 'User not found.') {
           console.error("❌ User not found for email:", email);

@@ -7,7 +7,10 @@ import './DashboardLayout.css';
 const DashboardLayout = ({ role, children }) => {
   return (
     <>
-      <Header />
+      <Header
+        adminMode={role === 'admin'}
+        tutorMode={role === 'tutor'}
+      />
       <div className="dashboard-layout">
         <DashboardSidebar role={role} />
         <main className="dashboard-main-content">

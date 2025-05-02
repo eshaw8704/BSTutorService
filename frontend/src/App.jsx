@@ -12,6 +12,7 @@ import StudentDashboard       from './components/Frames/StudentDashboard.jsx';
 import TutorDashboard         from './components/Frames/TutorDashboard.jsx';
 import AdminDashboard         from './components/Frames/AdminDashboard.jsx';
 import Profile                from './components/Frames/Profile.jsx';
+import DashboardLayout        from './components/DashboardLayout.jsx';  // layout
 
 import AppointmentFrame       from './components/Frames/AppointmentFrame.jsx';
 import BookAppointment        from './components/BookAppointment.jsx';
@@ -39,10 +40,31 @@ export default function App() {
         <Route path="/tutordashboard"   element={<TutorDashboard />} />
         <Route path="/admindashboard"   element={<AdminDashboard />} />
 
-        {/* Profile */}
-        <Route path="/student/profile"  element={<Profile />} />
-        <Route path="/tutor/profile"    element={<Profile />} />
-        <Route path="/admin/profile"    element={<Profile />} />
+        {/* Profile (wrapped in DashboardLayout for header/sidebar) */}
+         <Route
+          path="/student/profile"
+          element={
+            <DashboardLayout role="student">
+              <Profile />
+            </DashboardLayout>
+          }
+        />
+       <Route
+          path="/tutor/profile"
+          element={
+           <DashboardLayout role="tutor">
+              <Profile />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/admin/profile"
+          element={
+            <DashboardLayout role="admin">
+              <Profile />
+            </DashboardLayout>
+          }
+        />
 
         {/* Appointments */}
         <Route path="/appointments/*"   element={<AppointmentFrame />}>

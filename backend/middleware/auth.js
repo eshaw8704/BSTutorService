@@ -1,21 +1,25 @@
 // backend/middleware/auth.js
+import jwt from 'jsonwebtoken';
+import User from '../models/User.js'; // if you want to fetch user data
+
 /**
- * Dummy protect middleware.
- * In production, verify a JWT (e.g. with jsonwebtoken) and set req.user.id.
+ * Protect routes by verifying JWT and attaching req.user.id
  */
 export const protect = (req, res, next) => {
-    const auth = req.headers.authorization;
-    if (!auth || !auth.startsWith('Bearer ')) {
-      return res.status(401).json({ message: 'Not authorized' });
-    }
-  
-    // TODO: replace this stub with real token verification
-    // const token = auth.split(' ')[1];
-    // const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // req.user = { id: decoded.id };
-  
-    // For now, just set a placeholder user ID so your /upcoming route works
-    req.user = { id: req.headers['x-stub-user-id'] || '000000000000000000000000' };
+  const auth = req.headers.authorization;
+  if (!auth || !auth.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Not authorized, token missing' });
+  }
+
+  const token = auth.split(' ')[1];
+  try {
+    // Verify the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // Attach user ID for downstream controllers
+    req.user = { id: decoded.id };
     next();
-  };
-  
+  } catch (err) {
+    console.error('Auth middleware error:', err);
+    res.status(401).json({ message: 'Not authorized, token invalid' });
+  }
+};
