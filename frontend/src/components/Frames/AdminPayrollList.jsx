@@ -1,30 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import '../Styles/PayrollPages.css';
 
-const AdminPayrollList = () => {
-  const navigate = useNavigate();
+export default function AdminPayrollList({ onSelect }) {
   const [tutors, setTutors] = useState([]);
-  const [error, setError] = useState('');
+  const [error,  setError]  = useState('');
 
   useEffect(() => {
-    const fetchTutors = async () => {
-      try {
-        const res = await fetch('http://localhost:5000/api/users/tutors');
-        const data = await res.json();
-
-        if (res.ok) {
-          setTutors(data);
-        } else {
-          setError(data.message || "Failed to fetch tutors.");
-        }
-      } catch (err) {
-        console.error("❌ Fetch error:", err);
-        setError("Could not load tutors.");
-      }
-    };
-
-    fetchTutors();
+    fetch('/api/users/tutors')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setTutors(data);
+        else setError(data.message || 'Failed to fetch tutors');
+      })
+      .catch(err => {
+        console.error(err);
+        setError('Error loading tutors');
+      });
   }, []);
 
   return (
@@ -36,10 +27,10 @@ const AdminPayrollList = () => {
         <p>No tutors found.</p>
       ) : (
         <ul className="tutor-list">
-          {tutors.map((tutor) => (
-            <li key={tutor._id}>
-              <button onClick={() => navigate(`/adminpayroll/${tutor._id}`)}>
-                {tutor.firstName} {tutor.lastName}
+          {tutors.map(t => (
+            <li key={t._id}>
+              <button onClick={() => onSelect(t._id)}>
+                {t.firstName} {t.lastName}
               </button>
             </li>
           ))}
@@ -47,6 +38,4 @@ const AdminPayrollList = () => {
       )}
     </div>
   );
-};
-
-export default AdminPayrollList;
+}

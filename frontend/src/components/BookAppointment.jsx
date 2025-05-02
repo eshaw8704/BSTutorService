@@ -97,7 +97,9 @@ export default function BookAppointment() {
         setAppointmentDate(null);
         setAppointmentTime('');
         setTutor('');
+
         setShowConfirmation(true);
+
       } else {
         setErrorMessage(data.message || 'Error booking appointment');
       }

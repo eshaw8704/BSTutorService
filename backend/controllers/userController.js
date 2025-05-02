@@ -1,7 +1,10 @@
 // controllers/userController.js
-import User from '../models/User.js';
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import asyncHandler from 'express-async-handler';
+import User from '../models/User.js';
 
+// This function generates a JWT token for the user
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: '30d',
@@ -77,3 +80,13 @@ export const loginUser = async (req, res) => {
   }
 };
 
+// GET /api/users/profile
+// Returns the logged-in user’s full profile (no password)
+export const getProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id).select('-password');
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+  res.json(user);
+});

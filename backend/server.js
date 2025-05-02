@@ -2,14 +2,16 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { connectDB } from "./config/db.js";
-import userRoutes from "./routes/userRoutes.js";
+
+import userRoutes        from "./routes/userRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
-import payrollRoutes from './routes/payrollRoutes.js';
-import adminRoutes from './routes/adminRoutes.js';
+import payrollRoutes     from "./routes/payrollRoutes.js";
+import adminRoutes       from "./routes/adminRoutes.js";
+import trafficRoutes from "./routes/trafficRoutes.js"; 
 
 
-// Load env vars
 dotenv.config();
+
 console.log("✅ Environment variables loaded", process.env.PORT);
 
 // Debug: Make sure it's loading the URI
@@ -18,35 +20,38 @@ if (!process.env.MONGO_URI) {
   process.exit(1);
 }
 
-connectDB();
+
+
+// Connect to MongoDB
+connectDB()
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch(err => {
+    console.error("❌ MongoDB connection error:", err);
+    process.exit(1);
+  });
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Routes
-app.use("/api/users", userRoutes);
-app.use('/api', appointmentRoutes);
-app.use('/api/payroll', payrollRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api', appointmentRoutes);
+// Mount routers
+app.use("/api/users",        userRoutes);
 app.use("/api/appointments", appointmentRoutes);
-app.use('/api/payroll', payrollRoutes);
-app.use('/api/admin', adminRoutes);
 
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
+app.use("/api/payroll",      payrollRoutes);
+app.use("/api/admin",        adminRoutes);
+app.use("/api/traffic",      trafficRoutes);
 
-// Port
-const PORT = process.env.PORT;
 
-// Call connectDB before starting the server
-const startServer = async () => {
-  await connectDB(); // Connects to MongoDB
-  app.listen(PORT, () => {
+// Health check
+app.get("/", (_req, res) => res.send("API is running…"));
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
+
   });
 };
 
 startServer();
+

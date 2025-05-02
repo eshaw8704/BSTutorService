@@ -1,5 +1,12 @@
-{
+/* 1) Universal box-sizing reset */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+/* 2) Remove default body margins */
+body {
   margin: 0;
   padding: 0;
 }
@@ -54,6 +61,7 @@
   cursor: pointer;
   font-size: 2rem;
 }
+
 
 .logout-btn:hover {
   background-color: #f0e9f8;
@@ -135,15 +143,6 @@
   list-style: none;
   padding-left: 0;
   margin-top: 10px;
-}
-
-.appointments-box p {
-  margin: 0.5rem 0;
-  color: #666;
-}
-
-.appointments-box .error {
-  color: #c0392b;
 }
 
 .info-box {
