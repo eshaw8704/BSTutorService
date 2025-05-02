@@ -179,3 +179,40 @@
 .upcoming-sessions tr:hover {
   background-color: #f9f9f9;
 }
+
+.schedules-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+.schedules-table th,
+.schedules-table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+.meetings-list h2 {
+  margin-bottom: 0.5rem;
+}
+
+/* Banner container */
+.welcome-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #e0f7fa;
+  color: #006064;
+  padding: 0.75rem 1rem;
+  border-radius: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+/* Close “×” button */
+.banner-close {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #006064;
+}
