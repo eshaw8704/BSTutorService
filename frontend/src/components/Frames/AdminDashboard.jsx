@@ -1,14 +1,17 @@
-// components/Frames/AdminDashboard.jsx
+// ✅ AdminDashboard.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminDashboard.css';
 import greenLogo from '../../assets/greenBS.png';
-import AdminPayrollList   from './AdminPayrollList';
+
+import AdminPayrollList from './AdminPayrollList';
 import AdminPayrollReview from './AdminPayrollReview';
+import AdminAppointments from './AdminAppointments';
+import AdminUsers from './AdminUsers';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const [activeView,    setActiveView]    = React.useState('dashboard');
+  const [activeView, setActiveView] = React.useState('dashboard');
   const [selectedTutor, setSelectedTutor] = React.useState(null);
 
   const handleLogout = () => {
@@ -33,7 +36,7 @@ export default function AdminDashboard() {
 
       <aside className="sidebar">
         <div className="sidebar-heading">
-          <button className="appointments-ellipse" onClick={() => navigate('/admin/appointments')}>
+          <button className="appointments-ellipse" onClick={() => setActiveView('appointments')}>
             Appointments
           </button>
         </div>
@@ -41,8 +44,9 @@ export default function AdminDashboard() {
           <h4>Welcome, Admin</h4>
           <ul>
             <li className="sidebar-link" onClick={() => setActiveView('dashboard')}>Main</li>
-            <li className="sidebar-link">Users</li>
+            <li className="sidebar-link" onClick={() => setActiveView('users')}>Users</li>
             <li className="sidebar-link" onClick={() => setActiveView('payroll')}>Payroll</li>
+            <li className="sidebar-link" onClick={() => setActiveView('appointments')}>Appointments</li>
             <li className="sidebar-link">Schedules</li>
             <li className="nav-label">Tutors</li>
           </ul>
@@ -52,14 +56,12 @@ export default function AdminDashboard() {
       <main className="admin-main">
         {activeView === 'dashboard' && (
           <>
-            <div className="cards-row">
-              {/* … your info cards … */}
-            </div>
-            <div className="upcoming-sessions">
-              {/* … your sessions table … */}
-            </div>
+            <div className="cards-row"></div>
+            <div className="upcoming-sessions"></div>
           </>
         )}
+
+        {activeView === 'users' && <AdminUsers />}
 
         {activeView === 'payroll' && (
           <AdminPayrollList
@@ -76,6 +78,8 @@ export default function AdminDashboard() {
             onBack={() => setActiveView('payroll')}
           />
         )}
+
+        {activeView === 'appointments' && <AdminAppointments />}
       </main>
     </div>
   );

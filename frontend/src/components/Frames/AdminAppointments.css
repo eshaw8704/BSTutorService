@@ -1,0 +1,77 @@
+.page-wrapper {
+    padding: 2rem;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+  }
+  
+  .page-wrapper h2 {
+    margin-bottom: 1rem;
+    font-size: 1.75rem;
+    color: #333;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 0.5rem;
+  }
+  
+  .tab-toggle {
+    margin-bottom: 1.5rem;
+  }
+  
+  .tab-toggle button {
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+    background-color: #e8e8e8;
+    border: none;
+    border-radius: 5px 5px 0 0;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+  }
+  
+  .tab-toggle button:hover {
+    background-color: #d5d5d5;
+  }
+  
+  .tab-toggle .active {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  
+  .appointments-table thead {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .appointments-table th,
+  .appointments-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .appointments-table tbody tr:hover {
+    background-color: #f5faff;
+  }
+  
+  .status-msg {
+    margin-top: 1rem;
+    font-weight: bold;
+  }
+  
+  .status-msg.success {
+    color: green;
+  }
+  
+  .status-msg.error {
+    color: red;
+  }
+  
