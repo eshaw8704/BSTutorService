@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import DashboardLayout from "../DashboardLayout";
 import './StudentDashboard.css';
 
@@ -32,10 +32,7 @@ const StudentDashboard = () => {
     <DashboardLayout role="student">
       <div className="dashboard-main">
         <div className="left-panel">
-          <button
-            className="schedule-btn"
-            onClick={() => window.location.href = '/appointments'}
-          >
+          <button className="schedule-btn" onClick={() => window.location.href = '/appointments'}>
             Edit Appointments
           </button>
 
