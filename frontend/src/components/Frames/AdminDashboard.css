@@ -216,3 +216,12 @@
   cursor: pointer;
   color: #006064;
 }
+
+/* Quick Stats container */
+.stats-cards {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: #fff; /* or whatever bg you like */
+}
+
