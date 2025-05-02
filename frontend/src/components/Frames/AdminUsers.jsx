@@ -1,5 +1,7 @@
+// src/components/Frames/AdminUsers.jsx
+
 import React, { useEffect, useState } from 'react';
-import './AdminUsers.css'; // Create this if you don’t have it yet
+import './AdminUsers.css'; // make sure this path matches
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
@@ -104,9 +106,27 @@ export default function AdminUsers() {
                     <option>admin</option>
                   </select>
                 </td>
-                <td><input name="firstName" value={formData.firstName} onChange={handleChange} /></td>
-                <td><input name="lastName" value={formData.lastName} onChange={handleChange} /></td>
-                <td><input name="email" value={formData.email} onChange={handleChange} /></td>
+                <td>
+                  <input
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleChange}
+                  />
+                </td>
+                <td>
+                  <input
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleChange}
+                  />
+                </td>
+                <td>
+                  <input
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                </td>
                 <td>
                   <button onClick={saveUser}>Save</button>
                   <button onClick={cancelEdit} className="cancel">Cancel</button>
