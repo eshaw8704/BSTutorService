@@ -122,7 +122,7 @@
     background-color: #5e5e7f;
   }
   .logout {      /* pushes this as far down as possible */
-    margin-bottom: 10px;
+    margin-bottom: 30px;
     font-size: 1rem;
     background-color: #a03cee;
     color: #fff;
@@ -151,7 +151,7 @@
   }
   .logout-btn {
     /*margin-end: auto;*/
-    margin-bottom: 30px;
+    margin-bottom: 60px;
     background-color: #872bc0;
     color: #fff;
   }

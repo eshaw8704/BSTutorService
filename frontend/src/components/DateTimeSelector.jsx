@@ -98,7 +98,7 @@ export default function DateTimeSelector({ onDateTimeSelect }) {
       <button type="button" onClick={handleConfirm}>
         Confirm
       </button>
-      //not needed there is already confirm button for appointment
+      Almost there! Please confirm your selection.
       {confirmed && <p className="confirmation-msg">✅ Time confirmed!</p>}
     </div>
   );
