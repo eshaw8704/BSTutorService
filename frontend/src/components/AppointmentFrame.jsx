@@ -24,22 +24,26 @@ const AppointmentFrame = () => {
       </header>
 
       <div className="frame-actions">
-        <button onClick={() => handleNavigate('schedule')} className="action-button">
-          📅 Schedule Appointment
-        </button>
-        <button onClick={() => handleNavigate('cancel')}>
-          ❌ Cancel Appointment
-        </button>
-        <button onClick={() => handleNavigate('reschedule')}>
-          🔁 Reschedule Appointment
-        </button>
-        <button onClick={() => handleNavigate('past')} className="action-button">
-          ⬅️ Past Appointments
-        </button>
-        <button onClick={() => handleNavigate('dropin')} className="action-button">
-          ⬇️ Drop-In Sessions
-        </button>
-      </div>
+  <button onClick={() => navigate('/studentdashboard')} className="back-button">
+    🔙 Back to Dashboard
+  </button>
+  <button onClick={() => handleNavigate('schedule')} className="action-button">
+    📅 Schedule Appointment
+  </button>
+  <button onClick={() => handleNavigate('cancel')} className="action-button">
+    ❌ Cancel Appointment
+  </button>
+  <button onClick={() => handleNavigate('reschedule')} className="action-button">
+    🔁 Reschedule Appointment
+  </button>
+  <button onClick={() => handleNavigate('past')} className="action-button">
+    ⬅️ Past Appointments
+  </button>
+  <button onClick={() => handleNavigate('dropin')} className="action-button">
+    ⬇️ Drop-In Sessions
+  </button>
+</div>
+
 
       <div className="frame-content">
         <Outlet />

@@ -20,6 +20,7 @@ import RescheduleAppointment  from './components/RescheduleAppointment.jsx';
 
 import AdminPayrollList       from './components/Frames/AdminPayrollList.jsx';
 import AdminPayrollReview     from './components/Frames/AdminPayrollReview.jsx';
+import AdminTrafficDashboard from './components/Frames/AdminTrafficDashboard.jsx';
 
 export default function App() {
   return (
@@ -33,6 +34,7 @@ export default function App() {
         <Route path="/student"     element={<StudentCreation />} />
         <Route path="/tutor"       element={<TutorCreation />} />
         <Route path="/admin"       element={<AdminCreation />} />
+        <Route path="traffic" element={<AdminTrafficDashboard />} />
 
         {/* Dashboards */}
         <Route path="/studentdashboard" element={<StudentDashboard />} />

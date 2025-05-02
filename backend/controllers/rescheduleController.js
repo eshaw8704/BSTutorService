@@ -1,4 +1,5 @@
 import Appointment from '../models/Appointment.js';
+import { sendEmailReceipt } from '../utils/sendEmail.js';
 
 // Convert ISO time into enum format
 const convertToValidTime = (isoString) => {
@@ -27,7 +28,7 @@ export const changeAppointment = async (req, res) => {
   console.log("📬 Incoming:", req.body);
 
   try {
-    const appointment = await Appointment.findById(req.params.appointmentId);
+    const appointment = await Appointment.findById(req.params.appointmentId).populate('student tutor', 'firstName lastName email');
     if (!appointment) {
       return res.status(404).json({ message: "Appointment not found" });
     }
@@ -41,7 +42,7 @@ export const changeAppointment = async (req, res) => {
       appointment.appointmentDate = parsedDate;
     }
 
-    // Convert appointmentTime to enum
+    // Update time using enum
     if (req.body.appointmentTime) {
       const enumTime = convertToValidTime(req.body.appointmentTime);
       if (!enumTime) {
@@ -52,7 +53,42 @@ export const changeAppointment = async (req, res) => {
 
     await appointment.save();
 
-    console.log("✅ Appointment successfully updated");
+    // Send email to student
+    if (appointment.student?.email) {
+      await sendEmailReceipt({
+        to: appointment.student.email,
+        subject: 'Appointment Rescheduled',
+        html: `
+          <h2>Hello ${appointment.student.firstName}!</h2>
+          <p>Your appointment has been rescheduled:</p>
+          <ul>
+            <li><strong>Subject:</strong> ${appointment.subject}</li>
+            <li><strong>New Date:</strong> ${appointment.appointmentDate.toLocaleDateString()}</li>
+            <li><strong>New Time:</strong> ${appointment.appointmentTime}</li>
+          </ul>
+        `
+      });
+    }
+
+    // Send email to tutor
+    if (appointment.tutor?.email) {
+      await sendEmailReceipt({
+        to: appointment.tutor.email,
+        subject: 'Appointment Rescheduled by Student',
+        html: `
+          <h2>Hello ${appointment.tutor.firstName}!</h2>
+          <p>An appointment has been rescheduled by a student:</p>
+          <ul>
+            <li><strong>Student:</strong> ${appointment.student.firstName} ${appointment.student.lastName}</li>
+            <li><strong>Subject:</strong> ${appointment.subject}</li>
+            <li><strong>New Date:</strong> ${appointment.appointmentDate.toLocaleDateString()}</li>
+            <li><strong>New Time:</strong> ${appointment.appointmentTime}</li>
+          </ul>
+        `
+      });
+    }
+
+    console.log("✅ Appointment updated and emails sent.");
     res.json({ message: "Appointment updated", appointment });
   } catch (err) {
     console.error("❌ Reschedule failed:", err.message, err.stack);

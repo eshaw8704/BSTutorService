@@ -7,6 +7,8 @@ import userRoutes        from "./routes/userRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
 import payrollRoutes     from "./routes/payrollRoutes.js";
 import adminRoutes       from "./routes/adminRoutes.js";
+import trafficRoutes from "./routes/trafficRoutes.js"; 
+
 
 dotenv.config();
 
@@ -27,6 +29,7 @@ app.use("/api/users",        userRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/payroll",      payrollRoutes);
 app.use("/api/admin",        adminRoutes);
+app.use("/api/traffic",      trafficRoutes);
 
 // Health check
 app.get("/", (_req, res) => res.send("API is running…"));
