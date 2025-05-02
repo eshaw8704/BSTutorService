@@ -8,7 +8,7 @@ import { connectDB } from './config/db.js';
 import userRoutes        from './routes/userRoutes.js';
 import appointmentRoutes from './routes/appointmentRoutes.js';
 import payrollRoutes     from './routes/payrollRoutes.js';
-import trafficRoutes     from './routes/trafficRoutes.js';   // Traffic endpoints
+import trafficRoutes     from './routes/trafficroutes.js';   // Traffic endpoints
 import adminRoutes       from './routes/adminRoutes.js';
 import paymentRoutes     from './routes/paymentRoutes.js';
 import webhookRoutes     from './routes/webhookRoutes.js';
