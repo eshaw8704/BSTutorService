@@ -2,7 +2,6 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   background-color: #ffffff;
   color: rgba(3, 3, 3, 0.87);
 
@@ -17,6 +16,7 @@ a {
   color: #999ef5;
   text-decoration: inherit;
 }
+
 a:hover {
   color: #a3a5cb;
 }
@@ -58,7 +58,7 @@ button:hover {
   transform: scale(1.1); 
 }
 
-/* remove default margins */
+/* removes default margins */
 html, body {
   margin: 0;
   padding: 0;

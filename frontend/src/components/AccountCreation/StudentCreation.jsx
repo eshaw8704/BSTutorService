@@ -1,44 +1,61 @@
 import React, { useState } from 'react';
-import './AdminCreation.css';
-import confetti from 'canvas-confetti';
+import './StudentCreation.css';
+//import confetti from 'canvas-confetti';
 
-function AdminCreation() {
+import { useNavigate } from 'react-router-dom'; // <-- Import for navigation
+import './StudentCreation.css';
+
+function StudentCreation() {
+
+  // state variables to manage form inputs
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName]   = useState('');
-  const [email, setEmail]         = useState('');
-  const [password, setPassword]   = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate(); // <-- Initialize the navigate hook
 
+  // function to handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch('http://localhost:5000/api/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, lastName, email, password, role: 'admin' }),
+        body: JSON.stringify({ firstName, lastName, email, password, role: 'student' }),
       });
-
+  
+      // parse the response
       const data = await response.json();
       if (response.ok) {
-        alert('Admin account created successfully!');
-        //Populate Clone DB for data validation
+        alert('Student account created successfully!');
+        // populate Clone DB for data validation
+        // reset fields
         setFirstName('');
         setLastName('');
         setEmail('');
         setPassword('');
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        // confetti trigger
+        /*confetti({
+          particleCount: 100,
+          spread: 70,
+          origin: { y: 0.6 },
+        });*/
+        navigate('/dashboard'); // <-- Redirect to dashboard after success
       } else {
         alert(`Error: ${data.message}`);
       }
     } catch (error) {
-      console.error('Error creating admin:', error);
-      alert('Error creating admin account');
+      console.error('Error creating user:', error);
+      alert('Error creating user');
     }
   };
+  
 
+  // render the component
   return (
-    <div className="admin-creation-container">
-      <h2>Create Admin Account</h2>
-      <form onSubmit={handleSubmit} className="admin-form">
+    <div className="student-creation-container">
+      <h2>Create Student Account</h2>
+      <form onSubmit={handleSubmit} className="student-form">
         <input
           type="text"
           placeholder="First Name"
@@ -59,7 +76,7 @@ function AdminCreation() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-        />
+        /> 
         <input
           type="password"
           placeholder="Password"
@@ -73,4 +90,4 @@ function AdminCreation() {
   );
 }
 
-export default AdminCreation;
+export default StudentCreation;

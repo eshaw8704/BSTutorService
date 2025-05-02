@@ -1,0 +1,12 @@
+.dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+    padding-top: 70px; /* height of header */
+  }
+  
+  .dashboard-main-content {
+    margin-left: 220px; /* width of sidebar */
+    width: calc(100% - 220px);
+    padding: 2rem;
+  }
+  
