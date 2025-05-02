@@ -1,0 +1,26 @@
+/* components/TrafficChart.css */
+
+.traffic-chart {
+    position: relative;
+    width: 100%;
+    max-width: 800px;    /* cap the chart width */
+    margin: 2rem auto;   /* center it with vertical spacing */
+    padding: 1rem;       /* inner spacing around the chart */
+    background: #fff;     /* white background for contrast */
+    border-radius: 8px;  /* rounded corners */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .traffic-chart canvas {
+    /* force the canvas to fill the container responsively */
+    width: 100% !important;
+    height: auto   !important;
+  }
+  
+  @media (max-width: 600px) {
+    .traffic-chart {
+      margin: 1rem;
+      padding: 0.5rem;
+    }
+  }
+  

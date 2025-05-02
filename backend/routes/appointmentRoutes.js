@@ -2,17 +2,6 @@ import express from 'express';
 import Appointment from '../models/Appointment.js';
 
 import {
-<<<<<<< HEAD
-    getAppointmentByStudent,
-    getAppointmentsByTutor,
-    createAppointment,
-    completeAppointment,
-    getLoggedAppointments,
-    deleteAppointment,
-    getUpcomingForStudent,
-    updateAppointment,
-  } from '../controllers/appointmentController.js';
-=======
   getAppointmentByStudent,
   getAppointmentsByTutor,
   createAppointment,
@@ -21,10 +10,11 @@ import {
   deleteAppointment,
   changeAppointment,
   getUpcomingForStudent
+  updateAppointment,
 } from '../controllers/appointmentController.js';
->>>>>>> parent of c37e860 (Merge branch 'Liz-1' into matt)
 
 import { protect } from '../middleware/auth.js';
+import { changeAppointment } from '../controllers/rescheduleController.js';
 
 const router = express.Router();
 
@@ -33,6 +23,8 @@ router.get('/upcoming', protect, getUpcomingForStudent);
 
 // 🔹 POST /api/appointments
 router.post('/', protect, createAppointment);
+
+router.patch('/:appointmentId/update', protect, updateAppointment);
 
 // 🔹 GET /api/appointments/:studentID
 router.get('/:studentID', protect, getAppointmentByStudent);
@@ -79,8 +71,6 @@ router.get('/all/history', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch appointment history' });
   }
 });
-<<<<<<< HEAD
-=======
 
->>>>>>> parent of c37e860 (Merge branch 'Liz-1' into matt)
+
 export default router;

@@ -12,17 +12,15 @@ export default function AdminPayrollReview() {
   const [error, setError]     = useState('');
   const [confirming, setConfirming] = useState(false);
 
-  // fixed rate
   const rate = 20;
 
-  // Fetch on mount
   useEffect(() => {
     async function fetchPayroll() {
+      setLoading(true);
       try {
         const res  = await fetch(`/api/payroll/tutor/${tutorId}`);
         if (!res.ok) throw new Error(await res.text());
-        const data = await res.json();
-        setPayroll(data);
+        setPayroll(await res.json());
       } catch (err) {
         setError(err.message);
       } finally {
@@ -32,28 +30,14 @@ export default function AdminPayrollReview() {
     fetchPayroll();
   }, [tutorId]);
 
-  // Confirm handler
   const handleConfirm = async () => {
     setConfirming(true);
-
-    // Optimistically merge hours in UI
-    setPayroll(prev => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        confirmedHours:   (prev.confirmedHours   ?? 0) + (prev.unconfirmedHours ?? 0),
-        unconfirmedHours: 0,
-        confirmed:        true,
-        confirmedAt:      new Date().toISOString(),
-      };
-    });
-
     try {
       const adminId = localStorage.getItem('userId');
       const res = await fetch(`/api/payroll/tutor/${tutorId}`, {
-        method:  'PUT',
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ confirmedBy: adminId })
+        body: JSON.stringify({ confirmedBy: adminId }),
       });
       if (!res.ok) throw new Error(await res.text());
       const updated = await res.json();
@@ -69,11 +53,9 @@ export default function AdminPayrollReview() {
   if (error)    return <p className="status-msg error">{error}</p>;
   if (!payroll) return <p className="status-msg">No payroll data available.</p>;
 
-  // Pull out fields
   const confirmedHours   = payroll.confirmedHours   ?? 0;
   const unconfirmedHours = payroll.unconfirmedHours ?? 0;
-  const confirmed        = payroll.confirmed       ?? false;
-  const earnings         = rate * confirmedHours;
+  const earnings         = (confirmedHours * rate).toFixed(2);
 
   return (
     <div className="review-page">
@@ -98,21 +80,26 @@ export default function AdminPayrollReview() {
         </div>
         <div className="field">
           <span className="label">Earnings:</span>
-          <span>${earnings.toFixed(2)}</span>
+          <span>${earnings}</span>
         </div>
 
-        {!confirmed ? (
-          <button
-            className="confirm-btn"
-            onClick={handleConfirm}
-            disabled={confirming}
-          >
-            {confirming ? 'Confirming…' : 'Confirm Payroll'}
-          </button>
-        ) : (
-          <div className="confirmed">
+        {/* Always show button */}
+        <button
+          className="confirm-btn"
+          onClick={handleConfirm}
+          disabled={confirming}
+        >
+          {confirming ? 'Confirming…' : 'Confirm Payroll'}
+        </button>
+
+        {/* Show last‐confirmed notice if we have a timestamp */}
+        {payroll.confirmedAt && (
+          <div className="confirmed" style={{ marginTop: '1rem' }}>
             <span className="check-icon">✅</span>
-            <span>Payroll confirmed</span>
+            <span>
+              Last confirmed on{' '}
+              {new Date(payroll.confirmedAt).toLocaleString()}
+            </span>
           </div>
         )}
       </div>

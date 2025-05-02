@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import TutorPayrollPage from './TutorPayrollPage';
 import './TutorDashboard.css';
+import UpcomingAppointmentsFrame from '../UpcomingAppointments';
+
 
 export default function TutorDashboard() {
   const navigate = useNavigate();
