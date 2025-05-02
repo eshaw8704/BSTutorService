@@ -4,7 +4,14 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import { protect } from '../middleware/auth.js';
-import { getProfile, updateProfile } from '../controllers/userController.js';
+import {
+    getProfile,
+    updateProfile,
+    updateEmail,
+    updatePassword,
+    deleteUser
+  } from '../controllers/userController.js';
+
 
 const router = express.Router();
 
@@ -106,5 +113,12 @@ router.get(
 );
 
 router.put('/profile', protect, updateProfile);
+
+
+// … your existing /register, /login, /tutors, /profile (GET)
+router.put('/email',    protect, updateEmail);
+router.put('/password', protect, updatePassword);
+router.delete('/profile', protect, deleteUser);
+
 
 export default router;

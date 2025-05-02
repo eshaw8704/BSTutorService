@@ -124,3 +124,33 @@ export const updateProfile = asyncHandler(async (req, res) => {
     profilePicture: updated.profilePicture,
   });
 });
+
+export const updateEmail = async (req, res) => {
+  const { email } = req.body;
+  try {
+    await User.findByIdAndUpdate(req.user.id, { email });
+    res.json({ message: 'Email updated' });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+export const updatePassword = async (req, res) => {
+  const { password } = req.body;
+  try {
+    const hashed = await bcrypt.hash(password, 10);
+    await User.findByIdAndUpdate(req.user.id, { password: hashed });
+    res.json({ message: 'Password updated' });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.user.id);
+    res.json({ message: 'User deleted:(' });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};

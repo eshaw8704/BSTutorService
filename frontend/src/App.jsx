@@ -21,6 +21,7 @@ import RescheduleAppointment  from './components/RescheduleAppointment.jsx';
 
 import AdminPayrollList       from './components/Frames/AdminPayrollList.jsx';
 import AdminPayrollReview     from './components/Frames/AdminPayrollReview.jsx';
+import Settings               from './components/Frames/Settings.jsx';
 
 export default function App() {
   return (
@@ -65,6 +66,7 @@ export default function App() {
             </DashboardLayout>
           }
         />
+        <Route path="/admin/settings"   element={<Settings />} />
 
         {/* Appointments */}
         <Route path="/appointments/*"   element={<AppointmentFrame />}>
