@@ -6,6 +6,7 @@ import {
   completeAppointment,
   getLoggedAppointments,
   updateAppointment,
+  getUpcomingForStudent,
   deleteAppointment,
 } from '../controllers/appointmentController.js';
 import { protect } from '../middleware/auth.js';
