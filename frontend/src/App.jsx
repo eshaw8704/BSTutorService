@@ -1,3 +1,5 @@
+// src/App.jsx
+
 import React from 'react';
 import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
 
@@ -22,8 +24,12 @@ import TutorDashboard   from './components/Frames/TutorDashboard';
 import Profile          from './components/Frames/Profile';
 import Settings         from './components/Frames/Settings';
 
-// — AppointmentFrame (nested under /appointments)
-import AppointmentFrame from './components/Frames/AppointmentFrame';
+// — AppointmentFrame (wrapper for nested routes)
+import AppointmentFrame       from './components/Frames/AppointmentFrame';
+// — Individual appointment views
+import BookAppointment        from './components/BookAppointment';
+import RescheduleAppointment  from './components/RescheduleAppointment';
+import CancelAppointment      from './components/CancelAppointment';
 
 export default function App() {
   return (
@@ -44,10 +50,10 @@ export default function App() {
 
       {/* Stand-alone Appointments */}
       <Route path="/appointments/*" element={<AppointmentFrame />}>
-        <Route index             element={<Navigate to="schedule" replace />} />
-        <Route path="schedule"   element={<AppointmentFrame.Schedule />} />
-        <Route path="reschedule" element={<AppointmentFrame.Reschedule />} />
-        <Route path="cancel"     element={<AppointmentFrame.Cancel />} />
+        <Route index element={<Navigate to="schedule" replace />} />
+        <Route path="schedule"   element={<BookAppointment />} />
+        <Route path="reschedule" element={<RescheduleAppointment />} />
+        <Route path="cancel"     element={<CancelAppointment />} />
       </Route>
 
       {/* —— ADMIN AREA —— */}
@@ -62,10 +68,10 @@ export default function App() {
         {/* /admin → /admin/dashboard */}
         <Route index element={<Navigate to="dashboard" replace />} />
 
-        <Route path="dashboard"    element={<AdminDashboardHome />} />
-        <Route path="users"        element={<AdminUsers />} />
-        <Route path="invoices/*"   element={<Outlet />}>
-          <Route index      element={<AdminPayrollList />} />
+        <Route path="dashboard"  element={<AdminDashboardHome />} />
+        <Route path="users"      element={<AdminUsers />} />
+        <Route path="invoices/*" element={<Outlet />}>
+          <Route index         element={<AdminPayrollList />} />
           <Route path=":tutorId" element={<AdminPayrollReview />} />
         </Route>
         <Route path="appointments" element={<AdminAppointments />} />
