@@ -17,6 +17,7 @@ import AppointmentFrame       from './components/Frames/AppointmentFrame.jsx';
 import BookAppointment        from './components/BookAppointment.jsx';
 import CancelAppointment      from './components/CancelAppointment.jsx';
 import RescheduleAppointment  from './components/RescheduleAppointment.jsx';
+//import DropInAppointments     from './components/Styles/DropInAppointments.jsx';
 
 import AdminPayrollList       from './components/Frames/AdminPayrollList.jsx';
 import AdminPayrollReview     from './components/Frames/AdminPayrollReview.jsx';

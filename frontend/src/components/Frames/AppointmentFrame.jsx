@@ -5,6 +5,7 @@ import UpcomingAppointmentsFrame from '../UpcomingAppointments';
 import CancelAppointment from '../CancelAppointment';
 import RescheduleAppointment from '../RescheduleAppointment';
 import BookAppointment  from '../BookAppointment';
+//import DropInAppointment from '../DropInAppointment';
 
 
 const AppointmentFrame = () => {
@@ -39,8 +40,8 @@ const AppointmentFrame = () => {
         <button onClick={() => handleNavigate('schedule')}   className="action-button">📅 Schedule</button>
         <button onClick={() => handleNavigate('cancel')}     className="action-button">❌ Cancel</button>
         <button onClick={() => handleNavigate('reschedule')} className="action-button">⏰ Reschedule</button>
-        <button onClick={() => handleNavigate(-1)}       className="action-button" >⬅️ Back </button>
-        <button onClick={() => handleNavigate('dropin')}     className="action-button">⬇️ Drop‑In</button>
+        <button onClick={() => handleNavigate('/studentdashboard')}       className="action-button" >⬅️ Back </button>
+        
       </div>
 
       <div className="frame-content">
