@@ -37,9 +37,8 @@ function LoginPage() {
         if (data.token && data.user && data.user._id && data.user.role) {
           localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data.user));
-          localStorage.setItem('userId', data.user._id);
-  
-          // Navigate based on user role
+          localStorage.setItem('userId', data.user._id); 
+          localStorage.setItem('token', data.token); // Store token for future requests
           if (data.user.role === 'admin') {
             navigate('/admindashboard');
           } else if (data.user.role === 'tutor') {

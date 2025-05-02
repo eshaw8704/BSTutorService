@@ -1,104 +1,108 @@
-// components/Frames/AdminPayrollReview.jsx
+// src/components/Frames/AdminPayrollReview.jsx
+
 import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate }    from 'react-router-dom';
 import '../Styles/PayrollPages.css';
 
-export default function AdminPayrollReview({ tutorId, onBack }) {
-  const [record, setRecord] = useState(null);
-  const [status, setStatus] = useState('');
-  const RATE = 20;
+export default function AdminPayrollReview() {
+  const { tutorId }           = useParams();
+  const navigate              = useNavigate();
+  const [payroll, setPayroll] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState('');
+  const [confirming, setConfirming] = useState(false);
 
-  // Load payroll record
+  const rate = 20;
+
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
+    async function fetchPayroll() {
+      setLoading(true);
       try {
         const res  = await fetch(`/api/payroll/tutor/${tutorId}`);
-        if (!res.ok) throw new Error();
-        const data = await res.json();
-        if (cancelled) return;
-        if (data && data.confirmedHours != null) {
-          setRecord(data);
-        } else {
-          setStatus('❌ No payroll record found');
-        }
-      } catch {
-        if (!cancelled) setStatus('❌ Error fetching payroll');
+        if (!res.ok) throw new Error(await res.text());
+        setPayroll(await res.json());
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
-    })();
-    return () => { cancelled = true; };
-  }, [tutorId]);
-// inside AdminPayrollReview.jsx
-
-// inside AdminPayrollReview.jsx
-
-const handleConfirm = async () => {
-  const adminId = localStorage.getItem('userId');
-
-  try {
-    const res = await fetch('http://localhost:5000/api/payroll', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ tutor: tutorId, confirmedBy: adminId })
-    });
-
-    // parse the JSON once
-    const data = await res.json();
-
-    // log for debugging
-    console.log('POST /api/payroll →', res.status, data);
-
-    if (!res.ok) {
-      // server likely returned { message: '...' }
-      const msg = data.message || 'Could not confirm';
-      throw new Error(msg);
     }
+    fetchPayroll();
+  }, [tutorId]);
 
-    // success! update record and status
-    setRecord(data);
-    setStatus('✅ Payroll confirmed');
-  } catch (err) {
-    console.error('Confirm failed:', err);
-    // display the server message (err.message) if available
-    setStatus(`❌ ${err.message || 'Could not confirm'}`);
-  }
-};
+  const handleConfirm = async () => {
+    setConfirming(true);
+    try {
+      const adminId = localStorage.getItem('userId');
+      const res = await fetch(`/api/payroll/tutor/${tutorId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirmedBy: adminId }),
+      });
+      if (!res.ok) throw new Error(await res.text());
+      const updated = await res.json();
+      setPayroll(updated);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setConfirming(false);
+    }
+  };
 
-  const earnings = record
-    ? (record.confirmedHours * RATE).toFixed(2)
-    : '0.00';
+  if (loading)  return <p className="status-msg">Loading…</p>;
+  if (error)    return <p className="status-msg error">{error}</p>;
+  if (!payroll) return <p className="status-msg">No payroll data available.</p>;
+
+  const confirmedHours   = payroll.confirmedHours   ?? 0;
+  const unconfirmedHours = payroll.unconfirmedHours ?? 0;
+  const earnings         = (confirmedHours * rate).toFixed(2);
 
   return (
-    <div className="page-wrapper">
-      <button className="back-button" onClick={onBack}>← Back</button>
-      <h2>Payroll for {record?.tutor?.firstName ?? 'Tutor'} {record?.tutor?.lastName ?? ''}</h2>
+    <div className="review-page">
+      <button className="back-button" onClick={() => navigate(-1)}>
+        ← Back
+      </button>
 
-      {record ? (
-        <>
-          <div className="payroll-box">
-            <p><strong>Rate:</strong> ${RATE}/hr</p>
-            <p><strong>Confirmed Hours:</strong> {record.confirmedHours}</p>
-            <p><strong>Unconfirmed Hours:</strong> {record.nonConfirmedHours}</p>
-          </div>
-          <div className="earnings-box">
-            <p><strong>Earnings:</strong> ${earnings}</p>
-          </div>
-          <button
-            className="confirm-btn"
-            onClick={handleConfirm}
-            disabled={!record.nonConfirmedHours}
-          >
-            Confirm Payroll
-          </button>
-        </>
-      ) : (
-        <p className="status-msg error">{status || 'Loading…'}</p>
-      )}
+      <div className="payroll-card">
+        <h2 className="card-title">Payroll for Tutor</h2>
 
-      {record && status && (
-        <p className={`status-msg ${status.startsWith('✅') ? 'success' : 'error'}`}>
-          {status}
-        </p>
-      )}
+        <div className="field">
+          <span className="label">Rate:</span>
+          <span>${rate}/hr</span>
+        </div>
+        <div className="field">
+          <span className="label">Confirmed Hours:</span>
+          <span>{confirmedHours}</span>
+        </div>
+        <div className="field">
+          <span className="label">Unconfirmed Hours:</span>
+          <span>{unconfirmedHours}</span>
+        </div>
+        <div className="field">
+          <span className="label">Earnings:</span>
+          <span>${earnings}</span>
+        </div>
+
+        {/* Always show button */}
+        <button
+          className="confirm-btn"
+          onClick={handleConfirm}
+          disabled={confirming}
+        >
+          {confirming ? 'Confirming…' : 'Confirm Payroll'}
+        </button>
+
+        {/* Show last‐confirmed notice if we have a timestamp */}
+        {payroll.confirmedAt && (
+          <div className="confirmed" style={{ marginTop: '1rem' }}>
+            <span className="check-icon">✅</span>
+            <span>
+              Last confirmed on{' '}
+              {new Date(payroll.confirmedAt).toLocaleString()}
+            </span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -27,7 +27,6 @@ const StudentDashboard = () => {
     };
     load();
   }, []);
-
   return (
     <DashboardLayout role="student">
       <div className="dashboard-main">
@@ -39,7 +38,6 @@ const StudentDashboard = () => {
           <div className="appointments-box">
             <h3>Appointments</h3>
             <p className="subheading">Upcoming</p>
-
             {loading
               ? <p>Loading…</p>
               : error

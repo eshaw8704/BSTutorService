@@ -1,13 +1,18 @@
 import express from 'express';
+import Appointment from '../models/Appointment.js';
+
 import {
   getAppointmentByStudent,
   getAppointmentsByTutor,
   createAppointment,
   completeAppointment,
   getLoggedAppointments,
-  updateAppointment,
   deleteAppointment,
+  changeAppointment,
+  getUpcomingForStudent
+  updateAppointment,
 } from '../controllers/appointmentController.js';
+
 import { protect } from '../middleware/auth.js';
 import { changeAppointment } from '../controllers/rescheduleController.js';
 
@@ -25,8 +30,6 @@ router.patch('/:appointmentId/update', protect, updateAppointment);
 router.get('/:studentID', protect, getAppointmentByStudent);
 
 // 🔹 GET /api/appointments/tutor/:tutorID
-//     (formerly /appointments/appointments/...)
-//     now correctly mounted at /api/appointments/tutor/:tutorID
 router.get('/tutor/:tutorID', protect, getAppointmentsByTutor);
 
 // 🔹 PATCH /api/appointments/:appointmentId/complete
@@ -35,10 +38,39 @@ router.patch('/:appointmentId/complete', protect, completeAppointment);
 // 🔹 GET /api/appointments/logged
 router.get('/logged', protect, getLoggedAppointments);
 
-// ability to cancel appointments outright
+// 🔹 DELETE /api/appointments/:appointmentId
 router.delete('/:appointmentId', protect, deleteAppointment);
 
-//reschedule appointments
-router.patch('/:appointmentId/change', protect, changeAppointment);
+// 🔹 PUT /api/appointments/:appointmentId
+router.put('/:appointmentId', protect, changeAppointment);
+
+// 🔹 GET /api/appointments/all/upcoming (admin)
+router.get('/all/upcoming', async (req, res) => {
+  try {
+    const now = new Date();
+    const upcoming = await Appointment.find({ appointmentDate: { $gte: now } })
+      .sort({ appointmentDate: 1 })
+      .populate('student tutor', 'firstName lastName email');
+    res.json(upcoming);
+  } catch (err) {
+    console.error('❌ Error fetching upcoming appointments:', err);
+    res.status(500).json({ message: 'Failed to fetch upcoming appointments' });
+  }
+});
+
+// 🔹 GET /api/appointments/all/history (admin)
+router.get('/all/history', async (req, res) => {
+  try {
+    const now = new Date();
+    const history = await Appointment.find({ appointmentDate: { $lt: now } })
+      .sort({ appointmentDate: -1 })
+      .populate('student tutor', 'firstName lastName email');
+    res.json(history);
+  } catch (err) {
+    console.error('❌ Error fetching appointment history:', err);
+    res.status(500).json({ message: 'Failed to fetch appointment history' });
+  }
+});
+
 
 export default router;
