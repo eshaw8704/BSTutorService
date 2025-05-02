@@ -6,10 +6,11 @@ import {
   completeAppointment,
   getLoggedAppointments,
   deleteAppointment,
-  changeAppointment
+  changeAppointment,
+  getUpcomingForStudent
 } from '../controllers/appointmentController.js';
 
-import { protect } from '../middleware/authMiddleware.js'; // assuming you have this middleware
+import { protect } from '../middleware/auth.js'; // assuming you have this middleware
 
 const router = express.Router();
 
