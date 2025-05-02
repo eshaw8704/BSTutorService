@@ -9,8 +9,6 @@ import payrollRoutes     from "./routes/payrollRoutes.js";
 import adminRoutes       from "./routes/adminRoutes.js";
 import paymentRoutes     from "./routes/paymentRoutes.js";   // ✅ IMPORTED
 import webhookRoutes     from "./routes/webhookRoutes.js";   // ✅ IMPORTED
-import testRoutes from './routes/testRoutes.js';
-
 
 dotenv.config();
 
@@ -38,8 +36,6 @@ app.use("/api/payroll",      payrollRoutes);
 app.use("/api/admin",        adminRoutes);
 app.use("/api",              paymentRoutes);
 app.use("/api",              webhookRoutes);
-app.use('/api/test',         testRoutes);
-
 
 // Health check
 app.get("/", (_req, res) => res.send("API is running…"));

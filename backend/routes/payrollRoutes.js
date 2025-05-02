@@ -1,11 +1,11 @@
 import express from 'express';
 import Payroll from '../models/Payroll.js';
-import { confirmPayroll } from '../controllers/payrollController.js';
 
 const router = express.Router();
 
 /**
  * GET /api/payroll/tutor/:tutorId
+ *   Fetch the payroll document for a given tutor
  */
 router.get('/tutor/:tutorId', async (req, res) => {
   try {
@@ -25,14 +25,15 @@ router.get('/tutor/:tutorId', async (req, res) => {
 
 /**
  * POST /api/payroll
- * - Tutors log hours
- * - Admins confirm pay
+ *   - Tutors log hours:    { tutor, hoursWorked, date }
+ *   - Admins confirm pay:  { tutor, confirmedBy }
  */
 router.post('/', async (req, res) => {
   try {
-    const tutorId     = req.body.tutor ?? req.body.tutorId;
+    const tutorId     = req.body.tutor   ?? req.body.tutorId;
     const confirmedBy = req.body.confirmedBy;
     const hoursWorked = req.body.hoursWorked;
+    const date        = req.body.date;
 
     if (!tutorId) {
       return res.status(400).json({ message: 'Missing tutorId' });
@@ -49,12 +50,13 @@ router.post('/', async (req, res) => {
         });
       }
       payroll.nonConfirmedHours += hoursWorked;
+      // (Optionally record { date, hoursWorked } in a sub‐collection here)
       await payroll.save();
       await payroll.populate('tutor', 'firstName lastName');
       return res.json(payroll);
     }
 
-    // ─── Admin is confirming pay (legacy) ───
+    // ─── Admin is confirming payroll ───
     if (!confirmedBy) {
       return res.status(400).json({ message: 'Missing confirmedBy' });
     }
@@ -62,20 +64,18 @@ router.post('/', async (req, res) => {
     if (!payroll) {
       return res.status(404).json({ message: 'Payroll not found' });
     }
-    payroll.confirmedHours += payroll.nonConfirmedHours;
-    payroll.nonConfirmedHours = 0;
-    payroll.confirmedBy = confirmedBy;
-    payroll.confirmedAt = new Date();
+    payroll.confirmedHours    += payroll.nonConfirmedHours;
+    payroll.nonConfirmedHours  = 0;
+    payroll.confirmedBy        = confirmedBy;
+    payroll.confirmedAt        = new Date();
     await payroll.save();
     await payroll.populate('tutor', 'firstName lastName');
     return res.json(payroll);
+
   } catch (err) {
     console.error('Error handling payroll POST:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
-
-// 🔹 Confirm payroll + send tutor email
-router.post('/confirm', confirmPayroll);
 
 export default router;

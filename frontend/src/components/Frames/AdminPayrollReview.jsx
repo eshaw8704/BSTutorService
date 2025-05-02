@@ -1,3 +1,4 @@
+// components/Frames/AdminPayrollReview.jsx
 import React, { useEffect, useState } from 'react';
 import '../Styles/PayrollPages.css';
 
@@ -6,6 +7,7 @@ export default function AdminPayrollReview({ tutorId, onBack }) {
   const [status, setStatus] = useState('');
   const RATE = 20;
 
+  // Load payroll record
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -25,33 +27,41 @@ export default function AdminPayrollReview({ tutorId, onBack }) {
     })();
     return () => { cancelled = true; };
   }, [tutorId]);
+// inside AdminPayrollReview.jsx
 
-  const handleConfirm = async () => {
-    const adminId = localStorage.getItem('userId');
+// inside AdminPayrollReview.jsx
 
-    try {
-      const res = await fetch('http://localhost:5000/api/payroll/confirm', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tutor: tutorId, confirmedBy: adminId })
-      });
+const handleConfirm = async () => {
+  const adminId = localStorage.getItem('userId');
 
-      const data = await res.json();
-      console.log('POST /api/payroll/confirm →', res.status, data);
+  try {
+    const res = await fetch('http://localhost:5000/api/payroll', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ tutor: tutorId, confirmedBy: adminId })
+    });
 
-      if (!res.ok) {
-        const msg = data.message || 'Could not confirm';
-        throw new Error(msg);
-      }
+    // parse the JSON once
+    const data = await res.json();
 
-      // Update record + success message
-      setRecord(data.payroll || data); // API returns { payroll, message }
-      setStatus('✅ Payroll confirmed and email sent to tutor');
-    } catch (err) {
-      console.error('Confirm failed:', err);
-      setStatus(`❌ ${err.message || 'Could not confirm'}`);
+    // log for debugging
+    console.log('POST /api/payroll →', res.status, data);
+
+    if (!res.ok) {
+      // server likely returned { message: '...' }
+      const msg = data.message || 'Could not confirm';
+      throw new Error(msg);
     }
-  };
+
+    // success! update record and status
+    setRecord(data);
+    setStatus('✅ Payroll confirmed');
+  } catch (err) {
+    console.error('Confirm failed:', err);
+    // display the server message (err.message) if available
+    setStatus(`❌ ${err.message || 'Could not confirm'}`);
+  }
+};
 
   const earnings = record
     ? (record.confirmedHours * RATE).toFixed(2)
@@ -77,7 +87,7 @@ export default function AdminPayrollReview({ tutorId, onBack }) {
             onClick={handleConfirm}
             disabled={!record.nonConfirmedHours}
           >
-            Confirm Payroll & Email Tutor
+            Confirm Payroll
           </button>
         </>
       ) : (
