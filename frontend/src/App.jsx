@@ -1,5 +1,3 @@
-// src/App.jsx
-
 import React from 'react';
 import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
 
@@ -17,7 +15,6 @@ import AdminUsers         from './components/Frames/AdminUsers';
 import AdminPayrollList   from './components/Frames/AdminPayrollList';
 import AdminAppointments  from './components/Frames/AdminAppointments';
 import AdminPayrollReview from './components/Frames/AdminPayrollReview';
-
 // — Tutor/Student dashboards & shared
 import StudentDashboard from './components/Frames/StudentDashboard';
 import TutorDashboard   from './components/Frames/TutorDashboard';
@@ -78,7 +75,47 @@ export default function App() {
         <Route path="profile"      element={<Profile />} />
         <Route path="settings"     element={<Settings />} />
       </Route>
+/*import AppointmentFrame       from './components/Frames/AppointmentFrame.jsx';
+import BookAppointment        from './components/BookAppointment.jsx';
+import CancelAppointment      from './components/CancelAppointment.jsx';
+import RescheduleAppointment  from './components/RescheduleAppointment.jsx';
+//import DropInAppointments     from './components/Styles/DropInAppointments.jsx';
 
+import AdminPayrollList       from './components/Frames/AdminPayrollList.jsx';
+import AdminPayrollReview     from './components/Frames/AdminPayrollReview.jsx';
+import AdminTrafficDashboard from './components/Frames/AdminTrafficDashboard.jsx';
+
+export default function App() {
+  return (
+    <>
+      <Header />
+
+      <Routes>
+        {/* Public & Auth */}
+        /*<Route path="/"            element={<WelcomePage />} />
+        <Route path="/login"       element={<LoginPage />} />
+        <Route path="/student"     element={<StudentCreation />} />
+        <Route path="/tutor"       element={<TutorCreation />} />
+        <Route path="/admin"       element={<AdminCreation />} />
+        <Route path="traffic" element={<AdminTrafficDashboard />} />
+
+        {/* Dashboards */}
+       /* <Route path="/studentdashboard" element={<StudentDashboard />} />
+        <Route path="/tutordashboard"   element={<TutorDashboard />} />
+        <Route path="/admindashboard"   element={<AdminDashboard />} />
+
+        {/* Profile */}
+       /* <Route path="/student/profile"  element={<Profile />} />
+        <Route path="/tutor/profile"    element={<Profile />} />
+        <Route path="/admin/profile"    element={<Profile />} />
+
+        {/* Appointments */}
+       /* <Route path="/appointments" element={<AppointmentFrame />}>
+        <Route path="schedule" element={<BookAppointment />} />
+        <Route path="cancel" element={<CancelAppointment />} />
+        <Route path="reschedule" element={<RescheduleAppointment />} />
+        <Route index element={<div>Please select an action above.</div>} />
+      </Route>*/
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

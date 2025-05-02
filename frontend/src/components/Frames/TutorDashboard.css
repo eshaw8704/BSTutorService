@@ -1,3 +1,91 @@
+<<<<<<< HEAD
+.tutor-dashboard-wrapper {
+    background: #fef7f6;
+    padding: 20px;
+    min-height: 100vh;
+    font-family: sans-serif;
+  }
+  
+  
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 20px;
+  }
+  
+  .logo-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .dashboard-logo {
+    width: 60px;
+  }
+  
+  .search-bar {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    flex: 1;
+    max-width: 400px;
+  }
+  
+  .top-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .icon-button,
+  .logout-button,
+  .pay-btn {
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .logout-button {
+    background-color: purple;
+    color: white;
+  }
+  
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+  
+  .dashboard-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .dashboard-section {
+    flex: 1;
+    min-width: 300px;
+  }
+  
+  .full-width {
+    flex-basis: 100%;
+  }
+  
+  .card {
+    background: #eee3f5;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 10, 4, 0.1);
+  }
+  
+  .appointment {
+    margin-bottom: 10px;
+  }
+  
+=======
 /* two‑column grid, same as admin */
 .tutor-dashboard {
   display: grid;
@@ -134,3 +222,4 @@
 .session-section tr:hover {
   background: #FAFAFA;
 }
+>>>>>>> efa0e972d380f6de14480bd18fb63a034fc7b2a4
