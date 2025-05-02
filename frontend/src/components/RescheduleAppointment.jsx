@@ -1,3 +1,4 @@
+import './RescheduleAppointment.css';
 import React, { useEffect, useState } from 'react';
 import DateTimeSelector from './DateTimeSelector';
 

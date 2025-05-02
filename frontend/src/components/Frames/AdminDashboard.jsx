@@ -2,10 +2,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminDashboard.css';
+import DashboardLayout from "../DashboardLayout";
 import greenLogo from '../../assets/greenBS.png';
 import AdminPayrollList   from './AdminPayrollList';
 import AdminPayrollReview from './AdminPayrollReview';
 
+// This component represents the admin dashboard layout
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [activeView,    setActiveView]    = React.useState('dashboard');

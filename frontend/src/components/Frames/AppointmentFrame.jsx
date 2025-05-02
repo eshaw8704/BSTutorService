@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './AppointmentFrame.css';
 import { useNavigate, Outlet } from 'react-router-dom';
+import UpcomingAppointmentsFrame from '../UpcomingAppointments';
+import CancelAppointment from '../CancelAppointment';
+import RescheduleAppointment from '../RescheduleAppointment';
+import BookAppointment  from '../BookAppointment';
+
 
 const AppointmentFrame = () => {
   const navigate = useNavigate();
@@ -41,8 +46,10 @@ const AppointmentFrame = () => {
       <div className="frame-content">
         {/* Example: show a quick list of today’s bookings */}
         <h3>Your Appointments</h3>
+        <p className="subheading">Upcoming</p>
+        <UpcomingAppointmentsFrame />
         <ul>
-          {appointments.map(a => (
+        {appointments.map(a => (
             <li key={a._id}>
               {new Date(a.appointmentDate).toLocaleDateString()} @ {a.appointmentTime}
             </li>

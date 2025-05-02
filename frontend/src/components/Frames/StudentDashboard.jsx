@@ -76,7 +76,8 @@ const StudentDashboard = () => {
         <div className="info-box">
           <h2 className="dashboard-title">Student Dashboard</h2>
           <p className="dashboard-welcome">
-            This page allows you to access all features…
+            Welcome to your dashboard! <br></br>
+            <br></br>Here you will acess all you need!
           </p>
         </div>
       </div>
