@@ -13,15 +13,15 @@ import TutorDashboard         from './components/Frames/TutorDashboard.jsx';
 import AdminDashboard         from './components/Frames/AdminDashboard.jsx';
 import Profile                from './components/Frames/Profile.jsx';
 
-import AppointmentFrame       from './components/Frames/AppointmentFrame.jsx';
-import BookAppointment        from './components/BookAppointment.jsx';
-import CancelAppointment      from './components/CancelAppointment.jsx';
-import RescheduleAppointment  from './components/RescheduleAppointment.jsx';
+import TutorPayrollPage from './components/Frames/TutorPayrollPage.jsx';
+import AdminPayrollList from './components/Frames/AdminPayrollList.jsx';
+import AdminPayrollReview from './components/Frames/AdminPayrollReview.jsx';
 
-import AdminPayrollList       from './components/Frames/AdminPayrollList.jsx';
-import AdminPayrollReview     from './components/Frames/AdminPayrollReview.jsx';
+import BookAppointment from './components/BookAppointment.jsx';
+import CancelAppointment from './components/CancelAppointment.jsx';
+import RescheduleAppointment from './components/RescheduleAppointment.jsx';
 
-export default function App() {
+function App() {
   return (
     <>
       <Header />
@@ -50,6 +50,16 @@ export default function App() {
           <Route path="schedule"     element={<BookAppointment />} />
           <Route path="cancel"       element={<CancelAppointment />} />
           <Route path="reschedule"   element={<RescheduleAppointment />} />
+        <Route path="/tutordashboard" element={<TutorDashboard />} />
+        <Route path="/appointments" element={<BookAppointment />} />
+        <Route path="/appointments/cancel" element={<CancelAppointment />} />
+        <Route path="/appointments/reschedule" element={<RescheduleAppointment />} />
+
+        {/* ✅ Admin dashboard and nested views */}
+        <Route path="/admindashboard" element={<AdminDashboard />}>
+          <Route path="payroll" element={<AdminPayrollList />} />
+          <Route path="payroll/:tutorId" element={<AdminPayrollReview />} />
+          <Route path="profile" element={<Profile />} /> {/* ✅ NEW */}
         </Route>
 
         {/* Top-level payroll routes */}

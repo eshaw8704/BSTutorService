@@ -60,7 +60,7 @@ export const getAppointmentByStudent = async (req, res) => {
     const appointments = await Appointment.find({ student: req.params.studentID });
     res.json(appointments);
   } catch (err) {
-    console.error('❌ Error fetching appointments by student:', err);
+    console.error("❌ Error fetching appointments by student:", err);
     res.status(500).json({ message: 'Error fetching appointments by student' });
   }
 };
@@ -78,7 +78,7 @@ export const getAppointmentsByTutor = async (req, res) => {
     console.log('📤 All tutor appointments:', appointments);
     res.json(appointments);
   } catch (err) {
-    console.error('❌ Error fetching appointments by tutor:', err);
+    console.error("❌ Error fetching appointments by tutor:", err);
     res.status(500).json({ message: 'Error fetching appointments by tutor' });
   }
 };

@@ -22,9 +22,13 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Mount routers
-app.use("/api/users",        userRoutes);
-app.use("/api/appointments", appointmentRoutes);
+// Routes
+app.use("/api/users", userRoutes);
+
+app.use('/api', paymentRoutes); // Use payment routes
+app.use('/api', webhookRoutes);
+app.use('/api', appointmentRoutes);
+
 app.use("/api/payroll",      payrollRoutes);
 app.use("/api/admin",        adminRoutes);
 
