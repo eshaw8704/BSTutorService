@@ -1,13 +1,19 @@
 /* Center the form on the page */
 .appointment-container {
     text-align: center;
-    margin: 8rem auto;
-    max-width: 400px;
+    margin: 4rem auto;
+    max-width: 525px;
     padding: 2rem;
-    background-color: #ffffff;
+    background-color: #b995ce;
     border-radius: 10px;
+    color: #8d64bc;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
+
+.appointment-table th {
+  text-align: center;     
+}
+
 @media (prefers-color-scheme: dark) {
     /* container background/text */
     .appointment-container {
@@ -70,12 +76,19 @@
     border-radius: 5px;
     margin-top: 10px;
 }
+
+/* Table Styling */
+.appointment-table th,
+.appointment-table td {
+  white-space: nowrap;
+}
+
 }
 /* Dark Mode Overrides */
 @media (prefers-color-scheme: dark) {
     .appointment-container {
-      background-color: #1e1e2f;
-      color: #eee;
+      background-color: #f2d1e2;
+      color: #333;
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
     }
   

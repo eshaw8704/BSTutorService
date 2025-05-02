@@ -97,7 +97,9 @@ export default function BookAppointment() {
         setAppointmentDate(null);
         setAppointmentTime('');
         setTutor('');
-        window.location.href = '/StudentDashboard';
+
+        setShowConfirmation(true);
+
       } else {
         setErrorMessage(data.message || 'Error booking appointment');
       }
@@ -146,6 +148,23 @@ export default function BookAppointment() {
         {successMessage && <div className="success-message">{successMessage}</div>}
         {errorMessage &&   <div className="error-message">{errorMessage}</div>}
       </form>
+
+      {showConfirmation && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button
+              className="modal-close"
+              onClick={() => setShowConfirmation(false)}
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            <h2>Booking Confirmed</h2>
+            <p>An email was sent to you with all the details.</p>
+          </div>
+        </div>
+      )}
     </div>
+    
   );
 }

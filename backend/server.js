@@ -12,6 +12,16 @@ import trafficRoutes from "./routes/trafficRoutes.js";
 
 dotenv.config();
 
+console.log("✅ Environment variables loaded", process.env.PORT);
+
+// Debug: Make sure it's loading the URI
+if (!process.env.MONGO_URI) {
+  console.error("MONGO_URI not found in .env file");
+  process.exit(1);
+}
+
+
+
 // Connect to MongoDB
 connectDB()
   .then(() => console.log("✅ MongoDB connected"))
@@ -27,9 +37,11 @@ app.use(cors());
 // Mount routers
 app.use("/api/users",        userRoutes);
 app.use("/api/appointments", appointmentRoutes);
+
 app.use("/api/payroll",      payrollRoutes);
 app.use("/api/admin",        adminRoutes);
 app.use("/api/traffic",      trafficRoutes);
+
 
 // Health check
 app.get("/", (_req, res) => res.send("API is running…"));
@@ -37,4 +49,9 @@ app.get("/", (_req, res) => res.send("API is running…"));
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
-});
+
+  });
+};
+
+startServer();
+
