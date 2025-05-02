@@ -1,13 +1,15 @@
 import React from 'react';
 import './AppointmentFrame.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Outlet } from 'react-router-dom';
 
 const AppointmentFrame = () => {
   const navigate = useNavigate();
 
   const handleNavigate = (path) => {
-    navigate(path);
+    navigate(`/appointments/${path}`, { replace: true });
   };
+  
+  
 
   return (
     <div className="appointment-frame">
@@ -22,21 +24,25 @@ const AppointmentFrame = () => {
       </header>
 
       <div className="frame-actions">
-        <button onClick={() => handleNavigate('/appointments/schedule')} className="action-button">
+        <button onClick={() => handleNavigate('schedule')} className="action-button">
           📅 Schedule Appointment
         </button>
-        <button onClick={() => handleNavigate('/appointments/cancel')} className="action-button">
+        <button onClick={() => handleNavigate('cancel')}>
           ❌ Cancel Appointment
         </button>
-        <button onClick={() => handleNavigate('/appointments/reschedule')} className="action-button">
-          📅 Reschedule Appointment
+        <button onClick={() => handleNavigate('reschedule')}>
+          🔁 Reschedule Appointment
         </button>
-        <button onClick={() => handleNavigate('/past')} className="action-button">
+        <button onClick={() => handleNavigate('past')} className="action-button">
           ⬅️ Past Appointments
         </button>
-        <button onClick={() => handleNavigate('/dropin')} className="action-button">
+        <button onClick={() => handleNavigate('dropin')} className="action-button">
           ⬇️ Drop-In Sessions
         </button>
+      </div>
+
+      <div className="frame-content">
+        <Outlet />
       </div>
     </div>
   );

@@ -7,9 +7,10 @@ import {
   completeAppointment,
   getLoggedAppointments,
   updateAppointment,
-  deleteAppointment
+  deleteAppointment,
 } from '../controllers/appointmentController.js';
 import { protect } from '../middleware/auth.js';
+import { changeAppointment } from '../controllers/rescheduleController.js';
 
 const router = express.Router();
 
@@ -37,5 +38,8 @@ router.get('/logged', protect, getLoggedAppointments);
 
 // ability to cancel appointments outright
 router.delete('/:appointmentId', protect, deleteAppointment);
+
+//reschedule appointments
+router.patch('/:appointmentId/change', protect, changeAppointment);
 
 export default router;

@@ -45,12 +45,13 @@ export default function App() {
         <Route path="/admin/profile"    element={<Profile />} />
 
         {/* Appointments */}
-        <Route path="/appointments/*"   element={<AppointmentFrame />}>
-          <Route index                element={<div>Select an action.</div>} />
-          <Route path="schedule"     element={<BookAppointment />} />
-          <Route path="cancel"       element={<CancelAppointment />} />
-          <Route path="reschedule"   element={<RescheduleAppointment />} />
-        </Route>
+        <Route path="/appointments" element={<AppointmentFrame />}>
+        <Route path="schedule" element={<BookAppointment />} />
+        <Route path="cancel" element={<CancelAppointment />} />
+        <Route path="reschedule" element={<RescheduleAppointment />} />
+        <Route index element={<div>Please select an action above.</div>} />
+      </Route>
+
 
         {/* Top-level payroll routes */}
         <Route path="/adminpayroll"           element={<AdminPayrollList />} />
