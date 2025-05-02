@@ -4,21 +4,41 @@ import {
   getAppointmentsByTutor,
   createAppointment,
   completeAppointment,
-  getLoggedAppointments 
+  getLoggedAppointments,
+  updateAppointment,
+  deleteAppointment,
 } from '../controllers/appointmentController.js';
+import { protect } from '../middleware/auth.js';
+import { changeAppointment } from '../controllers/rescheduleController.js';
 
 const router = express.Router();
 
-// Create a new appointment
-router.post('/', createAppointment);
+// 🔹 GET /api/appointments/upcoming
+router.get('/upcoming', protect, getUpcomingForStudent);
 
-// Get all appointments for a specific student
-router.get('/:studentID', getAppointmentByStudent);
+// 🔹 POST /api/appointments
+router.post('/', protect, createAppointment);
 
-// Get all appointments for a specific tutor
-router.get('/appointments/tutor/:tutorID', getAppointmentsByTutor);
+router.patch('/:appointmentId/update', protect, updateAppointment);
 
-// Mark an appointment as completed
-router.patch('/:appointmentId/complete', completeAppointment);
+// 🔹 GET /api/appointments/:studentID
+router.get('/:studentID', protect, getAppointmentByStudent);
+
+// 🔹 GET /api/appointments/tutor/:tutorID
+//     (formerly /appointments/appointments/...)
+//     now correctly mounted at /api/appointments/tutor/:tutorID
+router.get('/tutor/:tutorID', protect, getAppointmentsByTutor);
+
+// 🔹 PATCH /api/appointments/:appointmentId/complete
+router.patch('/:appointmentId/complete', protect, completeAppointment);
+
+// 🔹 GET /api/appointments/logged
+router.get('/logged', protect, getLoggedAppointments);
+
+// ability to cancel appointments outright
+router.delete('/:appointmentId', protect, deleteAppointment);
+
+//reschedule appointments
+router.patch('/:appointmentId/change', protect, changeAppointment);
 
 export default router;

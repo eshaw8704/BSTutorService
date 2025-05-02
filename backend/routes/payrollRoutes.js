@@ -1,58 +1,80 @@
-// backend/routes/payrollRoutes.js
 import express from 'express';
 import Payroll from '../models/Payroll.js';
 
 const router = express.Router();
 
-// GET payroll info for tutor
-// GET payroll info for tutor — auto-create if not found
-router.get('/:tutorId', async (req, res) => {
-  const { tutorId } = req.params;
-
+/**
+ * GET /api/payroll/tutor/:tutorId
+ *   Fetch the payroll document for a given tutor
+ */
+router.get('/tutor/:tutorId', async (req, res) => {
   try {
-    let payroll = await Payroll.findOne({ tutor: tutorId });
-
-    // 🔧 Auto-create if not found
+    const { tutorId } = req.params;
+    const payroll = await Payroll
+      .findOne({ tutor: tutorId })
+      .populate('tutor', 'firstName lastName');
     if (!payroll) {
-      payroll = await Payroll.create({ tutor: tutorId });
+      return res.status(404).json({ message: 'Payroll not found' });
     }
-
-    res.json({
-      confirmedHours: payroll.confirmedHours,
-      nonConfirmedHours: payroll.nonConfirmedHours
-    });
+    res.json(payroll);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error loading payroll.' });
+    console.error('Error fetching payroll:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
-
-// POST confirm payroll (move nonConfirmed ➝ confirmed)
+/**
+ * POST /api/payroll
+ *   - Tutors log hours:    { tutor, hoursWorked, date }
+ *   - Admins confirm pay:  { tutor, confirmedBy }
+ */
 router.post('/', async (req, res) => {
-  const { tutor, confirmedBy } = req.body;
-
-  if (!tutor || !confirmedBy) {
-    return res.status(400).json({ message: 'Missing tutor or admin ID.' });
-  }
-
   try {
-    const payroll = await Payroll.findOne({ tutor });
-    if (!payroll) {
-      return res.status(404).json({ message: 'Payroll record not found.' });
+    const tutorId     = req.body.tutor   ?? req.body.tutorId;
+    const confirmedBy = req.body.confirmedBy;
+    const hoursWorked = req.body.hoursWorked;
+    const date        = req.body.date;
+
+    if (!tutorId) {
+      return res.status(400).json({ message: 'Missing tutorId' });
     }
 
-    payroll.confirmedHours += payroll.nonConfirmedHours;
-    payroll.nonConfirmedHours = 0;
-    payroll.confirmedBy = confirmedBy;
-    await payroll.save();
+    // ─── Tutor is logging hours ───
+    if (hoursWorked != null) {
+      let payroll = await Payroll.findOne({ tutor: tutorId });
+      if (!payroll) {
+        payroll = new Payroll({
+          tutor:             tutorId,
+          confirmedHours:    0,
+          nonConfirmedHours: 0,
+        });
+      }
+      payroll.nonConfirmedHours += hoursWorked;
+      // (Optionally record { date, hoursWorked } in a sub‐collection here)
+      await payroll.save();
+      await payroll.populate('tutor', 'firstName lastName');
+      return res.json(payroll);
+    }
 
-    res.json({
-      message: 'Payroll confirmed successfully.',
-      updatedConfirmedHours: payroll.confirmedHours,
-    });
+    // ─── Admin is confirming payroll ───
+    if (!confirmedBy) {
+      return res.status(400).json({ message: 'Missing confirmedBy' });
+    }
+    const payroll = await Payroll.findOne({ tutor: tutorId });
+    if (!payroll) {
+      return res.status(404).json({ message: 'Payroll not found' });
+    }
+    payroll.confirmedHours    += payroll.nonConfirmedHours;
+    payroll.nonConfirmedHours  = 0;
+    payroll.confirmedBy        = confirmedBy;
+    payroll.confirmedAt        = new Date();
+    await payroll.save();
+    await payroll.populate('tutor', 'firstName lastName');
+    return res.json(payroll);
+
   } catch (err) {
-    res.status(500).json({ message: 'Server error.' });
+    console.error('Error handling payroll POST:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
