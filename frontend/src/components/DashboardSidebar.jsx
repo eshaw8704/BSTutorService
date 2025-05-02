@@ -10,6 +10,28 @@ const DashboardSidebar = ({ role }) => {
     navigate('/login');
   };
 
+
+  const studentLinks = [
+    { label: 'Dashboard', path: '/studentdashboard' },
+    { label: 'Book', path: '/appointments' },
+    { label: 'Reschedule', path: '/appointments/reschedule' },
+    { label: 'Cancel', path: '/appointments/cancel' },
+    { label: 'Profile', path: '/student/profile' },
+  ];
+
+  const tutorLinks = [
+    { label: 'Dashboard', path: '/tutordashboard' },
+    { label: 'Profile', path: '/tutor/profile' },
+  ];
+
+  const adminLinks = [
+    { label: 'Dashboard', path: '/admindashboard' },
+    { label: 'Appointments', path: '/admin/appointments' },
+    { label: 'Invoices', path: '/admin/invoices' },
+    { label: 'Profile', path: '/admin/profile' },
+    { label: 'Settings', path: '/admin/settings' },
+  ];
+
   const linksByRole = {
     admin: [
       { label: 'Main',         path: '/admin/dashboard' },
