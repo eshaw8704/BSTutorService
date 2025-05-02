@@ -13,24 +13,26 @@ import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// 🔹 GET /api/appointments/upcoming - fetch future appointments for logged-in student
+// 🔹 GET /api/appointments/upcoming
 router.get('/upcoming', protect, getUpcomingForStudent);
 
-// Create a new appointment
+// 🔹 POST /api/appointments
 router.post('/', protect, createAppointment);
- 
+
 router.patch('/:appointmentId/update', protect, updateAppointment);
 
-// Get all appointments for a specific student
+// 🔹 GET /api/appointments/:studentID
 router.get('/:studentID', protect, getAppointmentByStudent);
 
-// Get all appointments for a specific tutor
-router.get('/appointments/tutor/:tutorID', protect, getAppointmentsByTutor);
+// 🔹 GET /api/appointments/tutor/:tutorID
+//     (formerly /appointments/appointments/...)
+//     now correctly mounted at /api/appointments/tutor/:tutorID
+router.get('/tutor/:tutorID', protect, getAppointmentsByTutor);
 
-// Mark an appointment as completed
+// 🔹 PATCH /api/appointments/:appointmentId/complete
 router.patch('/:appointmentId/complete', protect, completeAppointment);
 
-// Admin: get all completed appointments
+// 🔹 GET /api/appointments/logged
 router.get('/logged', protect, getLoggedAppointments);
 
 // ability to cancel appointments outright

@@ -1,12 +1,15 @@
+// components/Frames/AdminDashboard.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AdminDashboard.css';
 import greenLogo from '../../assets/greenBS.png';
-import AdminPayrollList from './AdminPayrollList';
+import AdminPayrollList   from './AdminPayrollList';
+import AdminPayrollReview from './AdminPayrollReview';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
-  const [activeView, setActiveView] = React.useState('dashboard');
+  const [activeView,    setActiveView]    = React.useState('dashboard');
+  const [selectedTutor, setSelectedTutor] = React.useState(null);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -50,53 +53,29 @@ export default function AdminDashboard() {
         {activeView === 'dashboard' && (
           <>
             <div className="cards-row">
-              <div className="info-card">
-                <h4>Number of Students</h4>
-                <p>1001</p>
-              </div>
-              <div className="info-card">
-                <h4>Number of Tutors</h4>
-                <p>21</p>
-              </div>
-              <div className="info-card">
-                <h4>Upcoming Sessions</h4>
-                <p>Today</p>
-              </div>
+              {/* … your info cards … */}
             </div>
-
             <div className="upcoming-sessions">
-              <h3>Upcoming Sessions:</h3>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Time</th>
-                    <th>Student Name</th>
-                    <th>Tutor Name</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>10:00 AM - 12:00 PM</td>
-                    <td>Farrukh Smith</td>
-                    <td>Lizette Hernandez</td>
-                  </tr>
-                  <tr>
-                    <td>11:00 AM - 2:00 PM</td>
-                    <td>Rumeet Nolan</td>
-                    <td>Mary Shoe</td>
-                  </tr>
-                  <tr>
-                    <td>1:00 PM - 3:00 PM</td>
-                    <td>Matthew Playa</td>
-                    <td>Papi Man</td>
-                  </tr>
-                </tbody>
-              </table>
+              {/* … your sessions table … */}
             </div>
           </>
         )}
 
-        {activeView === 'payroll' && <AdminPayrollList />}
+        {activeView === 'payroll' && (
+          <AdminPayrollList
+            onSelect={(tutorId) => {
+              setSelectedTutor(tutorId);
+              setActiveView('review');
+            }}
+          />
+        )}
+
+        {activeView === 'review' && selectedTutor && (
+          <AdminPayrollReview
+            tutorId={selectedTutor}
+            onBack={() => setActiveView('payroll')}
+          />
+        )}
       </main>
     </div>
   );
