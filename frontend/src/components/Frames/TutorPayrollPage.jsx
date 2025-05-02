@@ -1,151 +1,130 @@
-// components/Frames/TutorPayrollPage.jsx
 import React, { useEffect, useState } from 'react';
+import { useNavigate }                from 'react-router-dom';
+import DashboardLayout                from '../DashboardLayout';
 import '../Styles/PayrollPages.css';
 
 export default function TutorPayrollPage() {
-  const tutorId = localStorage.getItem('userId');
-  const token   = localStorage.getItem('token');
+  const navigate = useNavigate();
+  const [date, setDate]     = useState('');
+  const [hours, setHours]   = useState('');
+  const [payroll, setPayroll]   = useState(null);
+  const [loading, setLoading]   = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError]     = useState('');
 
-  const [payroll,    setPayroll]    = useState([]);
-  const [loading,    setLoading]    = useState(true);
-  const [error,      setError]      = useState('');
-  const [showForm,   setShowForm]   = useState(false);
-  const [date,       setDate]       = useState('');
-  const [hoursWorked, setHoursWorked] = useState('');
+  const user    = JSON.parse(localStorage.getItem('user') || '{}');
+  const tutorId = user._id;
+  const rate    = 20;
 
-  const loadPayroll = async () => {
-    if (!tutorId) {
-      setError('Tutor not logged in');
-      setLoading(false);
-      return;
-    }
+  const fetchPayroll = async () => {
     setLoading(true);
-    setError('');
-
     try {
-      const res = await fetch(`/api/payroll/tutor/${tutorId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const res  = await fetch(`/api/payroll/tutor/${tutorId}`);
       if (!res.ok) throw new Error(await res.text());
-
       const data = await res.json();
-      // wrap single object into array so map/table works
-      const arr = Array.isArray(data) ? data : [data];
-      setPayroll(arr);
+      setPayroll(data);
     } catch (err) {
-      console.error('Error fetching payroll:', err);
-      setError('Failed to fetch payroll');
-      setPayroll([]);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadPayroll();
+    if (tutorId) fetchPayroll();
   }, [tutorId]);
 
-  const submitHours = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const hrs = parseFloat(hoursWorked);
-    if (!hrs || hrs <= 0) {
-      return alert('Enter a valid number of hours');
-    }
-
+    setSubmitting(true);
     try {
       const res = await fetch('/api/payroll', {
-        method : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization : `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          tutor: tutorId,
-          hoursWorked: hrs,
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({
+          tutor:       tutorId,
+          hoursWorked: Number(hours),
           date
         })
       });
       if (!res.ok) throw new Error(await res.text());
-
-      // clear form and reload
-      setShowForm(false);
+      await res.json();
       setDate('');
-      setHoursWorked('');
-      await loadPayroll();
+      setHours('');
+      await fetchPayroll();
     } catch (err) {
-      console.error('Error submitting hours:', err);
-      alert(`Could not submit hours: ${err.message}`);
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  return (
-    <div className="payroll-wrapper">
-      <div className="payroll-header">
-        <h2>Your Payroll</h2>
-        <button 
-          className="add-hours-btn" 
-          onClick={() => setShowForm(!showForm)}
-        >
-          {showForm ? 'Cancel' : 'Add Hours'}
-        </button>
-      </div>
+  if (loading) return <p className="status-msg">Loading your payroll…</p>;
+  if (error)   return <p className="status-msg error">{error}</p>;
+  if (!payroll) return null;
 
-      {showForm && (
-        <form className="add-hours-form" onSubmit={submitHours}>
+  const confirmedHours   = payroll.confirmedHours   ?? 0;
+  const unconfirmedHours = payroll.unconfirmedHours ?? 0;
+  const earnings         = rate * confirmedHours;
+
+  return (
+    <DashboardLayout role="tutor">
+      <div className="tutor-payroll-page">
+        <div className="header-row">
+          <h2>Your Payroll</h2>
+          <button
+            className="cancel-btn"
+            onClick={() => navigate(-1)}
+          >
+            Cancel
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="add-hours-form">
           <label>
             Date
-            <input 
-              type="date" 
+            <input
+              type="date"
               value={date}
-              onChange={e => setDate(e.target.value)} 
-              required 
+              onChange={e => setDate(e.target.value)}
+              required
             />
           </label>
           <label>
             Hours
-            <input 
-              type="number" 
-              step="0.25" 
+            <input
+              type="number"
               min="0"
-              value={hoursWorked}
-              onChange={e => setHoursWorked(e.target.value)} 
-              required 
+              step="0.5"
+              value={hours}
+              onChange={e => setHours(e.target.value)}
+              required
             />
           </label>
-          <button type="submit" className="confirm-btn">Submit</button>
+          <button type="submit" disabled={submitting} className="submit-btn">
+            {submitting ? 'Submitting…' : 'Submit'}
+          </button>
         </form>
-      )}
 
-      {loading   && <p>Loading…</p>}
-      {error     && <p className="status-msg error">{error}</p>}
-      {!loading && !error && payroll.length === 0 && <p>No records found.</p>}
-
-      {payroll.length > 0 && (
-        <table className="payroll-table">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Confirmed Hours</th>
-              <th>Unconfirmed Hours</th>
-              <th>Confirmed By</th>
-            </tr>
-          </thead>
-          <tbody>
-            {payroll.map(rec => (
-              <tr key={rec._id}>
-                <td>{new Date(rec.createdAt).toLocaleDateString()}</td>
-                <td>{rec.confirmedHours}</td>
-                <td>{rec.nonConfirmedHours}</td>
-                <td>
-                  {rec.confirmedBy
-                    ? `${rec.confirmedBy.firstName} ${rec.confirmedBy.lastName}`
-                    : 'Pending'}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </div>
+        <div className="payroll-card">
+          <div className="field">
+            <span className="label">Rate:</span>
+            <span>${rate}/hr</span>
+          </div>
+          <div className="field">
+            <span className="label">Confirmed Hours:</span>
+            <span>{confirmedHours}</span>
+          </div>
+          <div className="field">
+            <span className="label">Unconfirmed Hours:</span>
+            <span>{unconfirmedHours}</span>
+          </div>
+          <div className="field">
+            <span className="label">Earnings:</span>
+            <span>${earnings.toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
+    </DashboardLayout>
   );
 }

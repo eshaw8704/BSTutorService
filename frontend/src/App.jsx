@@ -1,8 +1,7 @@
-// src/App.jsx
 import React from 'react';
 import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
 
-// — Public screens
+// — Public
 import WelcomePage     from './components/Frames/WelcomePage';
 import LoginPage       from './components/Frames/LoginPage';
 import StudentCreation from './components/AccountCreation/StudentCreation';
@@ -15,8 +14,9 @@ import AdminDashboardHome from './components/Frames/AdminDashboard';
 import AdminUsers         from './components/Frames/AdminUsers';
 import AdminPayrollList   from './components/Frames/AdminPayrollList';
 import AdminAppointments  from './components/Frames/AdminAppointments';
+import AdminPayrollReview from './components/Frames/AdminPayrollReview';
 
-// — Shared (Tutor/Student dashboards & misc)
+// — Tutor/Student dashboards & shared
 import StudentDashboard from './components/Frames/StudentDashboard';
 import TutorDashboard   from './components/Frames/TutorDashboard';
 import Profile          from './components/Frames/Profile';
@@ -28,15 +28,12 @@ import AppointmentFrame from './components/Frames/AppointmentFrame';
 export default function App() {
   return (
     <Routes>
-      {/* legacy redirect */}
-      <Route
-        path="/admindashboard"
-        element={<Navigate to="/admin/dashboard" replace />}
-      />
+      {/* Legacy redirect */}
+      <Route path="/admindashboard" element={<Navigate to="/admin/dashboard" replace />} />
 
       {/* Public */}
-      <Route path="/"      element={<WelcomePage />} />
-      <Route path="/login" element={<LoginPage />} />
+      <Route path="/"       element={<WelcomePage />} />
+      <Route path="/login"  element={<LoginPage />} />
       <Route path="/student" element={<StudentCreation />} />
       <Route path="/tutor"   element={<TutorCreation />} />
       <Route path="/admin"   element={<AdminCreation />} />
@@ -53,7 +50,7 @@ export default function App() {
         <Route path="cancel"     element={<AppointmentFrame.Cancel />} />
       </Route>
 
-      {/* —— ALL ADMIN ROUTES —— */}
+      {/* —— ADMIN AREA —— */}
       <Route
         path="/admin/*"
         element={
@@ -66,14 +63,17 @@ export default function App() {
         <Route index element={<Navigate to="dashboard" replace />} />
 
         <Route path="dashboard"    element={<AdminDashboardHome />} />
-        <Route path="profile"  element={<Profile />} />
         <Route path="users"        element={<AdminUsers />} />
-        <Route path="invoices"     element={<AdminPayrollList />} />
+        <Route path="invoices/*"   element={<Outlet />}>
+          <Route index      element={<AdminPayrollList />} />
+          <Route path=":tutorId" element={<AdminPayrollReview />} />
+        </Route>
         <Route path="appointments" element={<AdminAppointments />} />
+        <Route path="profile"      element={<Profile />} />
         <Route path="settings"     element={<Settings />} />
       </Route>
 
-      {/* Fallback to home */}
+      {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

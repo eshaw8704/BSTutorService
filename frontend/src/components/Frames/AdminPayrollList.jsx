@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate }                  from 'react-router-dom';
 import '../Styles/PayrollPages.css';
 
-export default function AdminPayrollList({ onSelect }) {
+export default function AdminPayrollList() {
   const [tutors, setTutors] = useState([]);
-  const [error,  setError]  = useState('');
+  const [error, setError]   = useState('');
+  const navigate            = useNavigate();
 
   useEffect(() => {
     fetch('/api/users/tutors')
@@ -29,7 +31,7 @@ export default function AdminPayrollList({ onSelect }) {
         <ul className="tutor-list">
           {tutors.map(t => (
             <li key={t._id}>
-              <button onClick={() => onSelect(t._id)}>
+              <button onClick={() => navigate(`${t._id}`)}>
                 {t.firstName} {t.lastName}
               </button>
             </li>

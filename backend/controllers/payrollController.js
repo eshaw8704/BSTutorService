@@ -1,49 +1,71 @@
+// controllers/payrollController.js
 import Payroll from '../models/Payroll.js';
-import User from '../models/User.js';
-import { sendEmailReceipt } from '../utils/mailer.js';
+import { sendEmailReceipt } from '../utils/sendEmail.js';
 
-export const confirmPayroll = async (req, res) => {
+export const getPayrollForTutor = async (req, res) => {
+  const { tutorId } = req.params;
   try {
-    const { tutor, confirmedBy } = req.body;
+    const payroll = await Payroll
+      .findOne({ tutor: tutorId })
+      .populate('tutor', 'firstName lastName email');
+    if (!payroll) {
+      return res.status(404).json({ message: 'Payroll not found' });
+    }
+    res.json(payroll);
+  } catch (err) {
+    console.error('Error fetching payroll:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
-    if (!tutor || !confirmedBy) {
-      return res.status(400).json({ message: 'Missing tutor or confirmedBy' });
+export const confirmPayrollForTutor = async (req, res) => {
+  const { tutorId }     = req.params;
+  const { confirmedBy } = req.body;          // admin ID
+
+  if (!confirmedBy) {
+    return res.status(400).json({ message: 'Missing confirmedBy' });
+  }
+
+  try {
+    let payroll = await Payroll.findOne({ tutor: tutorId });
+    if (!payroll) {
+      return res.status(404).json({ message: 'Payroll not found' });
     }
 
-    const payroll = await Payroll.findOne({ tutor });
-    if (!payroll) return res.status(404).json({ message: 'Payroll not found for this tutor' });
-
-    const hoursConfirmed = payroll.nonConfirmedHours;
-    payroll.confirmedHours += hoursConfirmed;
-    payroll.nonConfirmedHours = 0;
-    payroll.confirmedBy = confirmedBy;
+    // 1) Move unconfirmed → confirmed
+    payroll.confirmedHours   += payroll.unconfirmedHours;
+    payroll.unconfirmedHours  = 0;
+    payroll.confirmedBy       = confirmedBy;
+    payroll.confirmedAt       = new Date();
     await payroll.save();
 
-    const tutorDoc = await User.findById(tutor);
-    if (!tutorDoc) return res.status(404).json({ message: 'Tutor user not found' });
+    // 2) Reload with tutor email
+    payroll = await payroll.populate('tutor', 'firstName lastName email');
 
-    const html = `
-      <h2>Hi ${tutorDoc.firstName},</h2>
-      <p>Your payroll has been successfully processed.</p>
-      <ul>
-        <li><strong>Confirmed This Cycle:</strong> ${hoursConfirmed} hours</li>
-        <li><strong>Total Confirmed Hours:</strong> ${payroll.confirmedHours} hours</li>
-        <li><strong>Date:</strong> ${new Date().toLocaleDateString()}</li>
-      </ul>
-      <p>Thank you for your dedication!</p>
-    `;
+    // 3) Send notification email
+    try {
+      await sendEmailReceipt({
+        to:      payroll.tutor.email,
+        subject: 'Your payroll has been confirmed',
+        html: `
+          <p>Hi ${payroll.tutor.firstName},</p>
+          <p>Your payroll on ${payroll.confirmedAt.toLocaleDateString()} has been <strong>confirmed</strong>.</p>
+          <ul>
+            <li><strong>Confirmed Hours:</strong> ${payroll.confirmedHours}</li>
+            <li><strong>Unconfirmed Hours:</strong> ${payroll.unconfirmedHours}</li>
+          </ul>
+          <p>Thanks for your work!</p>
+        `
+      });
+    } catch (emailErr) {
+      console.error('❌ Email failed:', emailErr);
+      // not blocking: we still return 200
+    }
 
-    console.log('📨 Preparing to send email to', tutorDoc.email); // ✅ Added
-    await sendEmailReceipt({
-      to: tutorDoc.email,
-      subject: 'BSTutors Payroll Confirmation',
-      html,
-    });
-    console.log('✅ sendEmailReceipt() called');
-
-    res.status(200).json({ message: 'Payroll confirmed and email sent', payroll });
+    // 4) Respond with updated payroll
+    res.json(payroll);
   } catch (err) {
-    console.error('❌ Payroll confirmation failed:', err);
-    res.status(500).json({ message: 'Server error during payroll confirmation' });
+    console.error('Error confirming payroll:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
