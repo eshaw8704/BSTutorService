@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './AppointmentFrame.css';
 import { useNavigate, Outlet } from 'react-router-dom';
-import UpcomingAppointmentsFrame from '../UpcomingAppointments';
-import CancelAppointment from '../CancelAppointment';
-import RescheduleAppointment from '../RescheduleAppointment';
-import BookAppointment  from '../BookAppointment';
-//import DropInAppointment from '../DropInAppointment';
-
 
 const AppointmentFrame = () => {
   const navigate = useNavigate();
@@ -40,14 +34,21 @@ const AppointmentFrame = () => {
         <button onClick={() => handleNavigate('schedule')}   className="action-button">📅 Schedule</button>
         <button onClick={() => handleNavigate('cancel')}     className="action-button">❌ Cancel</button>
         <button onClick={() => handleNavigate('reschedule')} className="action-button">⏰ Reschedule</button>
-        <button onClick={() => handleNavigate('/studentdashboard')}       className="action-button" >⬅️ Back </button>
-        
+        <button onClick={() => handleNavigate('past')}       className="action-button">⬅️ Past</button>
+        <button onClick={() => handleNavigate('dropin')}     className="action-button">⬇️ Drop‑In</button>
       </div>
 
       <div className="frame-content">
-        <UpcomingAppointmentsFrame />
+        {/* Example: show a quick list of today’s bookings */}
+        <h3>Your Appointments</h3>
         <ul>
+          {appointments.map(a => (
+            <li key={a._id}>
+              {new Date(a.appointmentDate).toLocaleDateString()} @ {a.appointmentTime}
+            </li>
+          ))}
         </ul>
+
         {/* And now render whichever nested route the user clicked */}
         <Outlet />
       </div>

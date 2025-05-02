@@ -10,23 +10,3 @@
   padding: 2rem;
   width: calc(100% - 250px);
 }
-/* Dark Mode Overrides */
-@media (prefers-color-scheme: dark) {
-  .dashboard-layout {
-    background-color: #1e1e2f;
-    color: #eee;
-  }
-  .dashboard-main-content {
-    background-color: #2e2e3f;
-    color: #eee;
-  }
-}
-.logout-btn {
-  /* existing styles… */
-  font-weight: 700;  
-  bottom: -270px; 
-  min-height: auto;
-  padding: 70px;
-  left: 0;   
-    /* make the text bold */
-}

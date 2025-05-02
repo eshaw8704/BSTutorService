@@ -11,10 +11,7 @@ import AdminUsers          from './AdminUsers';
 import AdminPayrollList    from './AdminPayrollList';
 import AdminPayrollReview  from './AdminPayrollReview';
 import AdminAppointments   from './AdminAppointments';
-import DashboardLayout from "../DashboardLayout";
-import greenLogo from '../../assets/greenBS.png';
 
-// This component represents the admin dashboard layout
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [activeView, setActiveView]       = React.useState('dashboard');

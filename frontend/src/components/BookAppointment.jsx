@@ -1,4 +1,3 @@
-// src/components/BookAppointment.jsx
 import React, { useState, useEffect } from 'react';
 import "./BookAppointment.css";
 import DateTimeSelector from './DateTimeSelector';
@@ -30,15 +29,6 @@ export default function BookAppointment() {
       .catch(err => console.error('Error fetching tutors:', err));
   }, [token]);
 
-  const handleNewAppointment = (appt) => {
-    setAppointments(prev => {
-      const next = [...prev, appt];
-      // keep sorted by time
-      return next.sort((a, b) =>
-        new Date(a.appointmentTime) - new Date(b.appointmentTime)
-      );
-    });
-  };
   const convertTo24Hour = (timeStr) => {
     const [time, modifier] = timeStr.split(" ");
     let [hours, minutes] = time.split(":");
@@ -67,12 +57,13 @@ export default function BookAppointment() {
     const time24 = convertTo24Hour(appointmentTime);
     const dateTimeISO = new Date(`${year}-${month}-${day}T${time24}`).toISOString();
 
-    // Prevent submission of past date/times
-    if (new Date(dateTimeISO) <= new Date()) {
-      setErrorMessage("Please pick a date & time in the future.");
-      setIsLoading(false);
-      return;
-    }
+    console.log("Sending Appointment Data:", {
+      student: studentID,
+      tutor,
+      subject,
+      appointmentTime: dateTimeISO,
+      appointmentDate: appointmentDate,
+    });
 
     try {
       const response = await fetch('/api/appointments', {
@@ -89,7 +80,7 @@ export default function BookAppointment() {
           appointmentDate: appointmentDate
         }),
       });
-      //need to save 
+
       const data = await response.json();
       if (response.ok) {
         setSuccessMessage('Appointment successfully booked!');
@@ -97,7 +88,6 @@ export default function BookAppointment() {
         setAppointmentDate(null);
         setAppointmentTime('');
         setTutor('');
-        window.location.href = '/StudentDashboard';
       } else {
         setErrorMessage(data.message || 'Error booking appointment');
       }
@@ -131,7 +121,6 @@ export default function BookAppointment() {
           ))}
         </select>
 
-        {/* Date & Time picker that locks out past slots */}
         <DateTimeSelector
           onDateTimeSelect={({ date, time }) => {
             setAppointmentDate(date);
@@ -144,7 +133,7 @@ export default function BookAppointment() {
         </button>
 
         {successMessage && <div className="success-message">{successMessage}</div>}
-        {errorMessage &&   <div className="error-message">{errorMessage}</div>}
+        {errorMessage && <div className="error-message">{errorMessage}</div>}
       </form>
     </div>
   );

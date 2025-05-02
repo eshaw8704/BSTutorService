@@ -2,18 +2,15 @@ import React, { useEffect, useState } from 'react';
 
 export default function CancelAppointment() {
   const [appointments, setAppointments] = useState([]);
-  const token = localStorage.getItem('token');
+  const studentId = localStorage.getItem('userId');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/appointments/upcoming', {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
+    if (!studentId) return;
+    fetch(`http://localhost:5000/api/appointments/student/${studentId}`)
       .then(res => res.json())
       .then(data => setAppointments(data))
       .catch(err => console.error('Error fetching appointments:', err));
-  }, [token]);
+  }, [studentId]);
 
   const handleCancel = async (id) => {
     const confirmed = window.confirm('Are you sure you want to cancel this appointment?');
@@ -22,9 +19,6 @@ export default function CancelAppointment() {
     try {
       const res = await fetch(`http://localhost:5000/api/appointments/${id}`, {
         method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
       });
       if (res.ok) {
         alert('Appointment canceled successfully');
@@ -47,7 +41,7 @@ export default function CancelAppointment() {
         <ul>
           {appointments.map(apt => (
             <li key={apt._id} style={{ marginBottom: '1rem' }}>
-              <strong>{apt.subject}</strong> on {new Date(apt.appointmentDate).toLocaleDateString()} at {apt.appointmentTime}
+              <strong>{apt.subject}</strong> on {new Date(apt.appointmentTime).toLocaleString()}
               <button style={{ marginLeft: '1rem' }} onClick={() => handleCancel(apt._id)}>
                 Cancel
               </button>
