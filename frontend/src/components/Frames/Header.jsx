@@ -19,7 +19,11 @@ export default function Header({ adminMode, tutorMode }) {
   return (
     // Header layout with BSTutors logo and admin buttons
     <header className="admin-header">
-      <div className="header-left">
+    <div
+       className="header-left"
+       onClick={() => navigate('/')}   // ← navigate to home page
+       style={{ cursor: 'pointer' }}  // ← make it clickable
+     >
         <img src={greenLogo} alt="BSTutors Logo" className="header-logo" />
         <h1>BSTutors</h1>
       </div>

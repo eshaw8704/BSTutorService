@@ -12,6 +12,11 @@ import StudentDashboard from './components/Frames/StudentDashboard.jsx';
 import TutorDashboard from './components/Frames/TutorDashboard.jsx';
 import AdminDashboard from './components/Frames/AdminDashboard.jsx';
 import Profile from './components/Frames/Profile.jsx';
+import StudentDashboard       from './components/Frames/StudentDashboard.jsx';
+import TutorDashboard         from './components/Frames/TutorDashboard.jsx';
+import AdminDashboard         from './components/Frames/AdminDashboard.jsx';
+import Profile                from './components/Frames/Profile.jsx';
+import DashboardLayout        from './components/DashboardLayout.jsx';  // layout
 
 import AppointmentFrame from './components/Frames/AppointmentFrame.jsx';
 import AdminPayrollList from './components/Frames/AdminPayrollList.jsx';
@@ -20,6 +25,9 @@ import AdminPayrollReview from './components/Frames/AdminPayrollReview.jsx';
 import BookAppointment from './components/BookAppointment.jsx';
 import CancelAppointment from './components/CancelAppointment.jsx';
 import RescheduleAppointment from './components/RescheduleAppointment.jsx';
+import AdminPayrollList       from './components/Frames/AdminPayrollList.jsx';
+import AdminPayrollReview     from './components/Frames/AdminPayrollReview.jsx';
+import Settings               from './components/Frames/Settings.jsx';
 
 export default function App() {
   return (
@@ -43,6 +51,32 @@ export default function App() {
         <Route path="/student/profile" element={<Profile />} />
         <Route path="/tutor/profile" element={<Profile />} />
         <Route path="/admin/profile" element={<Profile />} />
+        {/* Profile (wrapped in DashboardLayout for header/sidebar) */}
+         <Route
+          path="/student/profile"
+          element={
+            <DashboardLayout role="student">
+              <Profile />
+            </DashboardLayout>
+          }
+        />
+       <Route
+          path="/tutor/profile"
+          element={
+           <DashboardLayout role="tutor">
+              <Profile />
+            </DashboardLayout>
+          }
+        />
+        <Route
+          path="/admin/profile"
+          element={
+            <DashboardLayout role="admin">
+              <Profile />
+            </DashboardLayout>
+          }
+        />
+        <Route path="/admin/settings"   element={<Settings />} />
 
         {/* Appointments (Nested inside AppointmentFrame) */}
         <Route path="/appointments/*" element={<AppointmentFrame />}>

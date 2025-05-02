@@ -1,12 +1,22 @@
-.login-container {
-  max-width: 600px;
-  margin: 250px auto 2rem;
+/* full-screen page wrapper */
+.login-page {
+  background: url('../../assets/water.gif') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 2rem;
-  background-color: #f9f4f2;
+}
+
+.login-container {
+  width: 90%;         /* make it span 90% of the viewport */
+  max-width: 600px;   /* but never exceed 600px */
+  padding: 2rem;
+  background-color: rgba(249, 244, 242, 0.9);
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   text-align: center;
-  box-sizing: border-box;
 }
 
 .login-container h2 {

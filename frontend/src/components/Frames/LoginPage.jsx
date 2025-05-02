@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'; // ✅ ADD THIS LINE
 import './LoginPage.css';
 import confetti from 'canvas-confetti';
 
-
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -38,6 +37,7 @@ function LoginPage() {
         if (data.user && data.user._id && data.user.role) {
           localStorage.setItem('user', JSON.stringify(data.user));
           localStorage.setItem('userId', data.user._id); 
+          localStorage.setItem('token', data.token); // Store token for future requests
 
         
           if (data.user.role === 'admin') {
@@ -56,7 +56,8 @@ function LoginPage() {
           return;
         }
 
-      } else {
+      } 
+      else {
         // ❗ Specific backend error handling
         if (data.message === 'User not found.') {
           console.error("❌ User not found for email:", email);
@@ -77,6 +78,7 @@ function LoginPage() {
   };
 
   return (
+    <div className="login-page">
     <div className="login-container">
       <h2>Login</h2>
       <form onSubmit={handleSubmit} className="login-form">
@@ -108,6 +110,7 @@ function LoginPage() {
         <button type="submit">Login</button>
       </form>
     </div>
+    </div> 
   );
 }
 
