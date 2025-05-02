@@ -1,0 +1,86 @@
+
+.appointment-frame {
+    min-height: 100vh;
+    background-color: #fdf1f4;
+    font-family: 'Arial', sans-serif;
+  }
+  
+  .frame-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid #e4d4f7;
+  }
+  
+  .frame-logo {
+    height: 60px;
+  }
+  
+  .frame-title {
+    font-size: 1rem;
+    color: #333;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  
+  .frame-controls {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .frame-btn {
+    background-color: #6a0dadbb;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  
+  .frame-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 3rem;
+    gap: 1.5rem;
+  }
+  
+  .action-button {
+    background-color: #6a0dadbb;
+    color: white;
+    border: none;
+    width: 60%;
+    max-width: 600px;
+    padding: 1.2rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .action-button:hover {
+    background-color: #069a78;
+  }
+  
+  .back-button {
+    background-color: #6a0dadbb;  /* Matching purple */
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 30px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+  }
+  
+  .back-button:hover {
+    background-color: #069a78; /* Same hover color as login */
+  }
+  

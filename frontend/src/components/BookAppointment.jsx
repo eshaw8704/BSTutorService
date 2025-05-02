@@ -97,6 +97,7 @@ export default function BookAppointment() {
         setAppointmentDate(null);
         setAppointmentTime('');
         setTutor('');
+        window.location.href = '/StudentDashboard';
       } else {
         setErrorMessage(data.message || 'Error booking appointment');
       }

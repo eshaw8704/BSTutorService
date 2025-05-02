@@ -1,96 +1,104 @@
+// components/Frames/AdminPayrollReview.jsx
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import '../Styles/PayrollPages.css';
 
-const AdminPayrollReview = () => {
-  const { tutorId } = useParams();
-  const [confirmedHours, setConfirmedHours] = useState(0);
-  const [nonConfirmedHours, setNonConfirmedHours] = useState(0);
+export default function AdminPayrollReview({ tutorId, onBack }) {
+  const [record, setRecord] = useState(null);
   const [status, setStatus] = useState('');
+  const RATE = 20;
 
+  // Load payroll record
   useEffect(() => {
-    console.log("📦 Tutor ID from URL:", tutorId); // Debug log
-
-    const fetchPayroll = async () => {
+    let cancelled = false;
+    (async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/payroll/${tutorId}`);
+        const res  = await fetch(`/api/payroll/tutor/${tutorId}`);
+        if (!res.ok) throw new Error();
         const data = await res.json();
-
-        if (res.ok) {
-          setConfirmedHours(data.confirmedHours || 0);
-          setNonConfirmedHours(data.nonConfirmedHours || 0);
-          setStatus('');
+        if (cancelled) return;
+        if (data && data.confirmedHours != null) {
+          setRecord(data);
         } else {
-          setStatus(`❌ Failed to load data: ${data.message}`);
+          setStatus('❌ No payroll record found');
         }
-      } catch (err) {
-        console.error("❌ Fetch error:", err);
-        setStatus('❌ Error fetching tutor data.');
+      } catch {
+        if (!cancelled) setStatus('❌ Error fetching payroll');
       }
-    };
-
-    if (tutorId && tutorId.length === 24) fetchPayroll();
-    else setStatus('❌ Invalid tutor ID');
+    })();
+    return () => { cancelled = true; };
   }, [tutorId]);
+// inside AdminPayrollReview.jsx
 
-  const handleConfirm = async () => {
-    const adminId = localStorage.getItem('userId');
-    console.log("🟢 Confirm clicked — Admin ID:", adminId, "| Tutor ID:", tutorId);
+// inside AdminPayrollReview.jsx
 
-    if (!adminId || !tutorId) {
-      setStatus('❌ Missing admin or tutor ID.');
-      return;
+const handleConfirm = async () => {
+  const adminId = localStorage.getItem('userId');
+
+  try {
+    const res = await fetch('http://localhost:5000/api/payroll', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ tutor: tutorId, confirmedBy: adminId })
+    });
+
+    // parse the JSON once
+    const data = await res.json();
+
+    // log for debugging
+    console.log('POST /api/payroll →', res.status, data);
+
+    if (!res.ok) {
+      // server likely returned { message: '...' }
+      const msg = data.message || 'Could not confirm';
+      throw new Error(msg);
     }
 
-    try {
-      const res = await fetch('http://localhost:5000/api/payroll', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tutor: tutorId,
-          confirmedBy: adminId
-        }),
-      });
+    // success! update record and status
+    setRecord(data);
+    setStatus('✅ Payroll confirmed');
+  } catch (err) {
+    console.error('Confirm failed:', err);
+    // display the server message (err.message) if available
+    setStatus(`❌ ${err.message || 'Could not confirm'}`);
+  }
+};
 
-      const data = await res.json();
-      if (res.ok) {
-        setConfirmedHours(data.updatedConfirmedHours);
-        setNonConfirmedHours(0);
-        setStatus('✅ Payroll confirmed.');
-      } else {
-        console.error("❌ Backend error:", data.message);
-        setStatus(`❌ Server error: ${data.message}`);
-      }
-    } catch (err) {
-      console.error("❌ Failed to send POST:", err);
-      setStatus('❌ Failed to confirm payroll.');
-    }
-  };
+  const earnings = record
+    ? (record.confirmedHours * RATE).toFixed(2)
+    : '0.00';
 
   return (
     <div className="page-wrapper">
-      <h2>Payroll Review for Tutor: {tutorId}</h2>
+      <button className="back-button" onClick={onBack}>← Back</button>
+      <h2>Payroll for {record?.tutor?.firstName ?? 'Tutor'} {record?.tutor?.lastName ?? ''}</h2>
 
-      <div className="payroll-box">
-        <p><strong>Confirmed Hours:</strong> {confirmedHours}</p>
-        <p><strong>Unconfirmed Hours:</strong> {nonConfirmedHours}</p>
-      </div>
+      {record ? (
+        <>
+          <div className="payroll-box">
+            <p><strong>Rate:</strong> ${RATE}/hr</p>
+            <p><strong>Confirmed Hours:</strong> {record.confirmedHours}</p>
+            <p><strong>Unconfirmed Hours:</strong> {record.nonConfirmedHours}</p>
+          </div>
+          <div className="earnings-box">
+            <p><strong>Earnings:</strong> ${earnings}</p>
+          </div>
+          <button
+            className="confirm-btn"
+            onClick={handleConfirm}
+            disabled={!record.nonConfirmedHours}
+          >
+            Confirm Payroll
+          </button>
+        </>
+      ) : (
+        <p className="status-msg error">{status || 'Loading…'}</p>
+      )}
 
-      <button
-        className="confirm-btn"
-        onClick={handleConfirm}
-        disabled={nonConfirmedHours === 0}
-      >
-        Confirm Payroll
-      </button>
-
-      {status && (
-        <p className={`status-msg ${status.includes('✅') ? 'success' : 'error'}`}>
+      {record && status && (
+        <p className={`status-msg ${status.startsWith('✅') ? 'success' : 'error'}`}>
           {status}
         </p>
       )}
     </div>
   );
-};
-
-export default AdminPayrollReview;
+}

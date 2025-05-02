@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate }               from 'react-router-dom';
-import Header                        from './Header';
-import TutorPayrollPage              from './TutorPayrollPage';
+import { useNavigate } from 'react-router-dom';
+import Header from './Header';
+import TutorPayrollPage from './TutorPayrollPage';
 import './TutorDashboard.css';
 import UpcomingAppointmentsFrame from '../UpcomingAppointments';
 
@@ -9,45 +9,48 @@ import UpcomingAppointmentsFrame from '../UpcomingAppointments';
 export default function TutorDashboard() {
   const navigate = useNavigate();
 
-  // ───────── state ─────────
-  const [activeView,   setActiveView]   = useState('overview');   // <── NEW
-  const [profile,      setProfile]      = useState({});
-  const [hoursLogged,  setHoursLogged]  = useState(0);
+  const [activeView, setActiveView] = useState('overview');
+  const [profile, setProfile] = useState({});
+  const [hoursLogged, setHoursLogged] = useState(0);
   const [sessionsDone, setSessionsDone] = useState(0);
-  const [upcoming,     setUpcoming]     = useState([]);
-  const [history,      setHistory]      = useState([]);
+  const [upcoming, setUpcoming] = useState([]);
+  const [history, setHistory] = useState([]);
 
   const tutorId = localStorage.getItem('userId');
-  const token   = localStorage.getItem('token');
+  const token = localStorage.getItem('token');
 
-  // ───────── helpers ─────────
   const formatTimeRange = (dateString, duration = 60) => {
     const start = new Date(dateString);
-    const end   = new Date(start.getTime() + duration * 60000);
-    const opts  = { hour: 'numeric', minute: '2-digit' };
+    const end = new Date(start.getTime() + duration * 60000);
+    const opts = { hour: 'numeric', minute: '2-digit' };
     return `${start.toLocaleTimeString([], opts)} – ${end.toLocaleTimeString([], opts)}`;
   };
 
   const fetchUpcoming = async () => {
     try {
       const res = await fetch(`/api/appointments/tutor/${tutorId}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` }
       });
       if (!res.ok) throw new Error(await res.text());
       const data = await res.json();
       setUpcoming(
         data.map(a => ({
           id: a._id,
-          time:    formatTimeRange(a.startTime),
-          student: `${a.student.firstName} ${a.student.lastName}`
+          time: `${new Date(a.appointmentDate).toLocaleDateString()} @ ${a.appointmentTime}`,
+          student: a.student ? `${a.student.firstName} ${a.student.lastName}` : 'Unknown Student',
+          subject: a.subject || 'Unknown Subject'
         }))
       );
-    } catch (err) { console.error('Error fetching sessions:', err); }
+      
+    } catch (err) {
+      console.error('Error fetching sessions:', err);
+    }
   };
 
-  useEffect(() => { if (tutorId) fetchUpcoming(); }, [tutorId]);
+  useEffect(() => {
+    if (tutorId) fetchUpcoming();
+  }, [tutorId]);
 
-  // ───────── render helpers ─────────
   const Overview = () => (
     <>
       <section className="cards-row">
@@ -58,41 +61,42 @@ export default function TutorDashboard() {
 
       <section className="session-section">
         <h3>Upcoming Sessions</h3>
-        {upcoming.length
-          ? <Table data={upcoming}/>
-          : <p>No upcoming sessions found.</p>}
+        {upcoming.length ? <Table data={upcoming} /> : <p>No upcoming sessions found.</p>}
       </section>
 
       <section className="session-section">
         <h3>Session History</h3>
-        {history.length
-          ? <Table data={history}/>
-          : <p>No session history available.</p>}
+        {history.length ? <Table data={history} /> : <p>No session history available.</p>}
       </section>
     </>
   );
 
   const Table = ({ data }) => (
     <table>
-      <thead><tr><th>Time</th><th>Student</th></tr></thead>
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Student</th>
+          <th>Subject</th> {/* Optional: Show subject */}
+        </tr>
+      </thead>
       <tbody>
         {data.map(row => (
           <tr key={row.id || row.time}>
             <td>{row.time}</td>
             <td>{row.student}</td>
+            <td>{row.subject}</td>
           </tr>
         ))}
       </tbody>
     </table>
   );
 
-  // ───────── main JSX ─────────
   return (
     <>
       <Header tutorMode />
 
       <div className="tutor-dashboard">
-        {/* ───── sidebar ───── */}
         <aside className="sidebar">
           <button
             className="appointments-ellipse"
@@ -117,10 +121,9 @@ export default function TutorDashboard() {
           </nav>
         </aside>
 
-        {/* ───── central panel ───── */}
         <main className="tutor-main">
           {activeView === 'overview' && <Overview />}
-          {activeView === 'payroll'  && <TutorPayrollPage />}
+          {activeView === 'payroll' && <TutorPayrollPage />}
         </main>
       </div>
     </>

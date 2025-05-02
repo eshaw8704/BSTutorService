@@ -4,8 +4,8 @@ import './StudentDashboard.css';
 
 const StudentDashboard = () => {
   const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading]       = useState(true);
-  const [error, setError]           = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const load = async () => {
@@ -13,7 +13,8 @@ const StudentDashboard = () => {
         const res = await fetch('/api/appointments/upcoming', {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            'x-stub-user-id': localStorage.getItem('userId')
           }
         });
         if (!res.ok) throw new Error('Could not load');
@@ -53,12 +54,13 @@ const StudentDashboard = () => {
                       {appointments.map(appt => {
                         const dt = new Date(appt.appointmentDate);
                         const dateStr = dt.toLocaleDateString(undefined, {
-                          month: '2-digit', day: '2-digit', year: 'numeric'
+                          month: '2-digit',
+                          day: '2-digit',
+                          year: 'numeric'
                         });
                         const weekday = dt.toLocaleDateString(undefined, { weekday: 'long' });
-                        const timeStr = dt.toLocaleTimeString(undefined, {
-                          hour: 'numeric', minute: '2-digit'
-                        });
+                        const timeStr = appt.appointmentTime || 'Time N/A';
+
                         return (
                           <li key={appt._id}>
                             📅 {dateStr} — {weekday} {timeStr}
