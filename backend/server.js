@@ -28,6 +28,7 @@ app.use("/api/appointments", appointmentRoutes);
 app.use("/api/payroll",      payrollRoutes);
 app.use("/api/admin",        adminRoutes);
 
+
 // Health check
 app.get("/", (_req, res) => res.send("API is running…"));
 
