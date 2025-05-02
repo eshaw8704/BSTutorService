@@ -6,11 +6,12 @@ const payrollSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref:  'User',
       required: true,
-      unique:  true          // each tutor has ONE payroll record
+      unique:  true
     },
     confirmedHours:    { type: Number, default: 0 },
     nonConfirmedHours: { type: Number, default: 0 },
-    confirmedBy:       { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }
+    confirmedBy:       { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    confirmedAt:       { type: Date }
   },
   { timestamps: true }
 );

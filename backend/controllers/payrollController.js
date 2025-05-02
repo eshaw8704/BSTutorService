@@ -1,6 +1,6 @@
 import Payroll from '../models/Payroll.js';
 import User from '../models/User.js';
-import { sendEmailReceipt } from '../utils/mailer.js';
+import { sendEmailReceipt } from '../utils/sendEmail.js';
 
 export const confirmPayroll = async (req, res) => {
   try {
@@ -33,13 +33,11 @@ export const confirmPayroll = async (req, res) => {
       <p>Thank you for your dedication!</p>
     `;
 
-    console.log('📨 Preparing to send email to', tutorDoc.email); // ✅ Added
     await sendEmailReceipt({
       to: tutorDoc.email,
       subject: 'BSTutors Payroll Confirmation',
       html,
     });
-    console.log('✅ sendEmailReceipt() called');
 
     res.status(200).json({ message: 'Payroll confirmed and email sent', payroll });
   } catch (err) {
