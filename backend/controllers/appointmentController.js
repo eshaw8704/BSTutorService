@@ -1,16 +1,16 @@
 import Appointment from '../models/Appointment.js';
 import { updateUnconfirmedHours } from '../utils/payrollUtils.js';
+import { sendEmailReceipt } from '../utils/sendEmail.js';
 
-// Function to convert an ISO timestamp into one of your enum strings
 const convertToValidTime = (isoString) => {
   const date = new Date(isoString);
-  const hours = date.getHours();           // 0–23
-  const minutes = date.getMinutes();       // 0–59
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
   const key = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
 
   const timeMap = {
-    '8:00':  '08:00 AM',
-    '9:30':  '09:30 AM',
+    '8:00': '08:00 AM',
+    '9:30': '09:30 AM',
     '10:00': '10:00 AM',
     '11:30': '11:30 AM',
     '13:00': '01:00 PM',
@@ -25,26 +25,15 @@ const convertToValidTime = (isoString) => {
 
 export const getUpcomingForStudent = async (req, res) => {
   try {
-    const studentId = req.user.id;            // set by your `protect` middleware
-
-    // Include all of today by starting at midnight
+    const studentId = req.user.id;
     const now = new Date();
-    now.setHours(0, 0, 0, 0);
+    const nextMonth = new Date();
+    nextMonth.setDate(now.getDate() + 30);
 
     const upcoming = await Appointment.find({
       student: studentId,
-      appointmentDate: { $gte: now }
+      appointmentDate: { $gte: now, $lte: nextMonth }
     }).sort('appointmentDate');
-
-    // Debug log to inspect exactly what's returned
-    console.log(
-      `getUpcomingForStudent for ${studentId} since ${now.toISOString()}:`,
-      upcoming.map(a => ({
-        id: a._id.toString(),
-        date: a.appointmentDate.toISOString(),
-        time: a.appointmentTime
-      }))
-    );
 
     res.json(upcoming);
   } catch (err) {
@@ -52,21 +41,17 @@ export const getUpcomingForStudent = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-/*console.log('getUpcomingForStudent for', req.user.id, 'now:', now, 'results:', upcoming);
-*/ 
-// GET appointments by student ID
+
 export const getAppointmentByStudent = async (req, res) => {
   try {
     const appointments = await Appointment.find({ student: req.params.studentID });
     res.json(appointments);
   } catch (err) {
-    console.error('❌ Error fetching appointments by student:', err);
+    console.error("❌ Error fetching appointments by student:", err);
     res.status(500).json({ message: 'Error fetching appointments by student' });
   }
 };
 
-// GET appointments by tutor ID
-// GET appointments by tutor ID
 export const getAppointmentsByTutor = async (req, res) => {
   try {
     const appointments = await Appointment.find({
@@ -78,12 +63,10 @@ export const getAppointmentsByTutor = async (req, res) => {
     console.log('📤 All tutor appointments:', appointments);
     res.json(appointments);
   } catch (err) {
-    console.error('❌ Error fetching appointments by tutor:', err);
+    console.error("❌ Error fetching appointments by tutor:", err);
     res.status(500).json({ message: 'Error fetching appointments by tutor' });
   }
 };
-
-
 
 // POST create new appointment
 export const createAppointment = async (req, res) => {
@@ -94,13 +77,11 @@ export const createAppointment = async (req, res) => {
     return res.status(400).json({ message: "Missing required fields" });
   }
 
-  // Parse the date
   const parsedDate = new Date(appointmentDate);
   if (isNaN(parsedDate)) {
     return res.status(400).json({ message: "Invalid appointment date" });
   }
 
-  // Convert ISO time into your enum
   const validTime = convertToValidTime(appointmentTime);
   if (!validTime) {
     return res.status(400).json({ message: "Invalid appointment time" });
@@ -115,22 +96,59 @@ export const createAppointment = async (req, res) => {
       appointmentDate: parsedDate,
       status: 'scheduled'
     });
+
+    // ✅ Populate email + name fields for both student and tutor
+    await newAppt.populate('student tutor', 'email firstName lastName');
     await newAppt.save();
-    console.log("✅ Appointment created:", newAppt);
+
+    // ✅ Send confirmation email to student
+    if (newAppt.student?.email) {
+      await sendEmailReceipt({
+        to: newAppt.student.email,
+        subject: 'Appointment Confirmation',
+        html: `
+          <h2>Hi ${newAppt.student.firstName}!</h2>
+          <p>Your appointment has been booked.</p>
+          <ul>
+            <li><strong>Subject:</strong> ${newAppt.subject}</li>
+            <li><strong>Date:</strong> ${newAppt.appointmentDate.toLocaleDateString()}</li>
+            <li><strong>Time:</strong> ${newAppt.appointmentTime}</li>
+          </ul>
+          <p>Thank you for choosing BSTutor.</p>
+        `
+      });
+    }
+
+    // ✅ Send confirmation email to tutor
+    if (newAppt.tutor?.email) {
+      await sendEmailReceipt({
+        to: newAppt.tutor.email,
+        subject: 'New Appointment Scheduled',
+        html: `
+          <h2>Hi ${newAppt.tutor.firstName}!</h2>
+          <p>A student has scheduled an appointment with you.</p>
+          <ul>
+            <li><strong>Subject:</strong> ${newAppt.subject}</li>
+            <li><strong>Date:</strong> ${newAppt.appointmentDate.toLocaleDateString()}</li>
+            <li><strong>Time:</strong> ${newAppt.appointmentTime}</li>
+          </ul>
+          <p>Check your tutor dashboard for more info.</p>
+        `
+      });
+    }
+
     res.status(201).json(newAppt);
+
   } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({ message: "That tutor is already booked at this date & time." });
+    }
     console.error("❌ Failed to create appointment:", err);
-    //res.status(400).json({ message: 'Failed to create appointment' });
-    // 1) Duplicate‐key from your unique index on (tutor, appointmentDate, appointmentTime)
-  if (err.code === 11000) {
-    return res
-      .status(409)    // 409 Conflict
-      .json({ message: "That tutor is already booked at this date & time." });
-  }
+    res.status(500).json({ message: 'Server error creating appointment' });
   }
 };
 
-// PATCH mark appointment as completed and update tutor payroll
+
 export const completeAppointment = async (req, res) => {
   try {
     const appt = await Appointment.findById(req.params.appointmentId);
@@ -148,7 +166,6 @@ export const completeAppointment = async (req, res) => {
   }
 };
 
-// GET all completed appointments (admin)
 export const getLoggedAppointments = async (req, res) => {
   try {
     const appts = await Appointment.find({ status: 'completed' });
@@ -156,5 +173,140 @@ export const getLoggedAppointments = async (req, res) => {
   } catch (err) {
     console.error("❌ Failed to get logged appointments:", err);
     res.status(500).json({ message: 'Failed to get logged appointments' });
+  }
+};
+export const changeAppointment = async (req, res) => {
+    try {
+        const { appointmentTime } = req.body;
+        const appointmentId = req.params.appointmentId;
+
+
+        // Check if the appointment time is within the tutor's working hours (9 AM to 5 PM)
+        const appointmentHour = new Date(appointmentTime).getHours();
+        if (appointmentHour < 9 || appointmentHour >= 17) {
+            return res.status(400).json({ message: "The tutor is only available from 9 AM to 5 PM." });
+        }
+
+        // Find the appointment by ID
+        const appointment = await Appointment.findById(appointmentId);
+        if (!appointment) {
+            return res.status(404).json({ message: "Appointment not found." });
+        }
+
+        // Check if the tutor is available at the new appointment time
+        const tutorAppointments = await Appointment.find({ tutor: appointment.tutor });
+        const isTimeAvailable = !tutorAppointments.some(app => app.appointmentTime === appointmentTime);
+
+        if (!isTimeAvailable) {
+            return res.status(400).json({ message: "The tutor is already booked at this time." });
+        }
+
+        // Update the appointment with the new time
+        appointment.appointmentTime = appointmentTime;
+        await appointment.save();
+
+        res.status(200).json({ message: "Appointment successfully rescheduled.", appointment });
+    } catch (error) {
+        res.status(500).json({ message: "Error rescheduling appointment.", error: error.message });
+    }
+};
+export const updateAppointment = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const { appointmentDate, appointmentTime, subject } = req.body;
+
+    const appointment = await Appointment.findById(appointmentId).populate('student tutor', 'email firstName lastName');
+    if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
+
+    if (appointmentDate) appointment.appointmentDate = new Date(appointmentDate);
+    if (appointmentTime) appointment.appointmentTime = appointmentTime;
+    if (subject) appointment.subject = subject;
+    await appointment.save();
+
+    // Send update emails
+    if (appointment.student?.email) {
+      await sendEmailReceipt({
+        to: appointment.student.email,
+        subject: 'Appointment Update Notification',
+        html: `
+          <h2>Hi ${appointment.student.firstName}!</h2>
+          <p>Your appointment has been updated.</p>
+          <ul>
+            <li><strong>New Date:</strong> ${appointment.appointmentDate.toLocaleDateString()}</li>
+            <li><strong>New Time:</strong> ${appointment.appointmentTime}</li>
+            <li><strong>Subject:</strong> ${appointment.subject}</li>
+          </ul>
+          <p>Please check your dashboard for details.</p>
+        `
+      });
+    }
+
+    if (appointment.tutor?.email) {
+      await sendEmailReceipt({
+        to: appointment.tutor.email,
+        subject: 'Appointment Update Notification',
+        html: `
+          <h2>Hi ${appointment.tutor.firstName}!</h2>
+          <p>Your appointment with a student has been updated.</p>
+          <ul>
+            <li><strong>New Date:</strong> ${appointment.appointmentDate.toLocaleDateString()}</li>
+            <li><strong>New Time:</strong> ${appointment.appointmentTime}</li>
+            <li><strong>Subject:</strong> ${appointment.subject}</li>
+          </ul>
+          <p>Please check your dashboard for details.</p>
+        `
+      });
+    }
+
+    console.log('✅ Emails sent after appointment update.');
+    res.json({ message: 'Appointment updated and notifications sent.' });
+  } catch (err) {
+    console.error('❌ Failed to update appointment:', err);
+    res.status(500).json({ message: 'Server error updating appointment' });
+  }
+};
+
+// DELETE appointment
+export const deleteAppointment = async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.params.appointmentId).populate('student tutor', 'email firstName lastName');
+
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+
+    await appointment.deleteOne();
+
+    const emailContent = `
+      <p>The following appointment has been canceled:</p>
+      <ul>
+        <li><strong>Date:</strong> ${appointment.appointmentDate.toLocaleDateString()}</li>
+        <li><strong>Time:</strong> ${appointment.appointmentTime}</li>
+        <li><strong>Subject:</strong> ${appointment.subject}</li>
+      </ul>
+    `;
+
+    if (appointment.student?.email) {
+      await sendEmailReceipt({
+        to: appointment.student.email,
+        subject: 'Appointment Cancellation Notification',
+        html: `<h2>Hi ${appointment.student.firstName}!</h2>${emailContent}`
+      });
+    }
+
+    if (appointment.tutor?.email) {
+      await sendEmailReceipt({
+        to: appointment.tutor.email,
+        subject: 'Appointment Cancellation Notification',
+        html: `<h2>Hi ${appointment.tutor.firstName}!</h2>${emailContent}`
+      });
+    }
+
+    console.log('✅ Cancellation emails sent to student and tutor.');
+    res.json({ message: 'Appointment canceled and notifications sent.' });
+
+  } catch (err) {
+    console.error('❌ Failed to cancel appointment:', err);
+    res.status(500).json({ message: 'Server error canceling appointment' });
   }
 };

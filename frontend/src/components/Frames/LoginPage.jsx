@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'; // ✅ ADD THIS LINE
 import './LoginPage.css';
 import confetti from 'canvas-confetti';
 
-
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,28 +17,28 @@ function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-
+  
       const data = await response.json();
       console.log('Login response:', data);
       console.log(">>> data.user:", data.user);
-
+  
       if (response.ok) {
         alert('Login successful!');
         setEmail('');
         setPassword('');
-
+  
         try {
           confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
         } catch (confettiError) {
           console.warn('Confetti error:', confettiError);
         }
-
-        // ✅ Guard clause to prevent errors
-        if (data.user && data.user._id && data.user.role) {
+  
+        // ✅ Store token and user information in localStorage
+        if (data.token && data.user && data.user._id && data.user.role) {
+          localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data.user));
           localStorage.setItem('userId', data.user._id); 
-
-        
+          localStorage.setItem('token', data.token); // Store token for future requests
           if (data.user.role === 'admin') {
             navigate('/admindashboard');
           } else if (data.user.role === 'tutor') {
@@ -51,11 +50,11 @@ function LoginPage() {
             navigate('/');
           }
         } else {
-          console.error("Missing user info in response:", data);
+          console.error("Missing user info or token in response:", data);
           alert("Login failed: Incomplete user data.");
           return;
         }
-
+  
       } else {
         // ❗ Specific backend error handling
         if (data.message === 'User not found.') {
@@ -69,14 +68,16 @@ function LoginPage() {
           alert(`Login failed: ${data.message}`);
         }
       }
-
+  
     } catch (error) {
       console.error('Error during login:', error);
       alert('Error during login');
     }
   };
-
+  
+  
   return (
+    <div className="login-page">
     <div className="login-container">
       <h2>Login</h2>
       <form onSubmit={handleSubmit} className="login-form">
@@ -108,6 +109,7 @@ function LoginPage() {
         <button type="submit">Login</button>
       </form>
     </div>
+    </div> 
   );
 }
 

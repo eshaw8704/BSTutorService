@@ -1,0 +1,9 @@
+.traffic-dashboard {
+    padding: 2rem;
+    background-color: #f9f4f2;
+    border-radius: 10px;
+    max-width: 700px;
+    margin: 2rem auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  

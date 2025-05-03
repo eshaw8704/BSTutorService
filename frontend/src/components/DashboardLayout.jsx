@@ -1,4 +1,4 @@
-// DashboardLayout.jsx
+// src/components/DashboardLayout.jsx
 import React from 'react';
 import Header from "./Frames/Header";
 import DashboardSidebar from './DashboardSidebar';
@@ -7,9 +7,17 @@ import './DashboardLayout.css';
 const DashboardLayout = ({ role, children }) => {
   return (
     <>
-      <Header />
+      <Header
+        adminMode={role === 'admin'}
+        tutorMode={role === 'tutor'}
+      />
       <div className="dashboard-layout">
-        <DashboardSidebar role={role} />
+        {/* Sidebar with logout button at the bottom */}
+        <DashboardSidebar role={role}>
+          <button className="logout-btn">Logout</button>
+        </DashboardSidebar>
+
+        {/* Main content area */}
         <main className="dashboard-main-content">
           {children}
         </main>
