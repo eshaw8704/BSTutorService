@@ -1,6 +1,6 @@
 import express from 'express';
 import Appointment from '../models/Appointment.js';
-
+import { protect } from '../middleware/auth.js';
 import {
   getAppointmentByStudent,
   getAppointmentsByTutor,
@@ -9,12 +9,12 @@ import {
   getLoggedAppointments,
   deleteAppointment,
   changeAppointment,
-  getUpcomingForStudent
+  getUpcomingForStudent,
   updateAppointment,
 } from '../controllers/appointmentController.js';
 
-import { protect } from '../middleware/auth.js';
-import { changeAppointment } from '../controllers/rescheduleController.js';
+
+
 
 const router = express.Router();
 

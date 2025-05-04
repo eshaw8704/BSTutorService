@@ -4,21 +4,16 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../DashboardLayout';
 import './AdminDashboard.css';
+import TrafficStats from '.././TrafficStats';           // ← FIXED import path
+import AdminUsers from './AdminUsers';
+import AdminPayrollList from './AdminPayrollList';
+import AdminPayrollReview from './AdminPayrollReview';
+import AdminAppointments from './AdminAppointments';
 
-// ← Import your new traffic component
-import TrafficStats        from '../TrafficStats';
-import AdminUsers          from './AdminUsers';
-import AdminPayrollList    from './AdminPayrollList';
-import AdminPayrollReview  from './AdminPayrollReview';
-import AdminAppointments   from './AdminAppointments';
-import DashboardLayout from "../DashboardLayout";
-import greenLogo from '../../assets/greenBS.png';
-
-// This component represents the admin dashboard layout
 export default function AdminDashboard() {
-  const navigate = useNavigate();
   const [activeView, setActiveView]       = React.useState('dashboard');
   const [selectedTutor, setSelectedTutor] = React.useState(null);
+  const navigate = useNavigate();
 
   return (
     <DashboardLayout role="admin">
@@ -27,11 +22,9 @@ export default function AdminDashboard() {
           <>
             {/* ─── Top “cards” row ─── */}
             <div className="cards-row">
-              <TrafficStats />
-              {/* Add more cards here if you like */}
+              <TrafficStats />            {/* now shows your line chart */}
             </div>
-
-            {/* ─── Upcoming sessions / whatever else ─── */}
+            {/* ─── Other dashboard content ─── */}
             <div className="upcoming-sessions">
               {/* …your existing upcoming sessions table… */}
             </div>
@@ -39,7 +32,6 @@ export default function AdminDashboard() {
         )}
 
         {activeView === 'users' && <AdminUsers />}
-
         {activeView === 'payroll' && (
           <AdminPayrollList
             onSelect={(tutorId) => {
@@ -48,14 +40,12 @@ export default function AdminDashboard() {
             }}
           />
         )}
-
         {activeView === 'review' && selectedTutor && (
           <AdminPayrollReview
             tutorId={selectedTutor}
             onBack={() => setActiveView('payroll')}
           />
         )}
-
         {activeView === 'appointments' && <AdminAppointments />}
       </main>
     </DashboardLayout>
