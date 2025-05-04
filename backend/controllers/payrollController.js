@@ -3,6 +3,8 @@ import Payroll from '../models/Payroll.js';
 import { sendEmailReceipt } from '../utils/sendEmail.js';
 
 export const getPayrollForTutor = async (req, res) => {
+  // GET /api/payroll/tutor/:tutorId
+  // Returns the payroll for a specific tutor
   const { tutorId } = req.params;
   try {
     const payroll = await Payroll
@@ -66,6 +68,29 @@ export const confirmPayrollForTutor = async (req, res) => {
     res.json(payroll);
   } catch (err) {
     console.error('Error confirming payroll:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// POST /api/payroll/tutor/:tutorId
+// Logs hours for a specific tutor
+export const logHoursForTutor = async (req, res) => {
+  const { tutorId } = req.params;
+  const { date, hours, notes } = req.body;
+  if (!date || hours == null) {
+    return res.status(400).json({ message: 'Date and hours are required.' });
+  }
+  try {
+    let payroll = await Payroll.findOne({ tutor: tutorId });
+    if (!payroll) {
+      payroll = new Payroll({ tutor: tutorId });
+    }
+    payroll.unconfirmedHours += Number(hours);
+    // optionally store notes/date in another field if you want details
+    await payroll.save();
+    res.status(201).json(payroll);
+  } catch (err) {
+    console.error('Error logging hours:', err);
     res.status(500).json({ message: 'Server error' });
   }
 };

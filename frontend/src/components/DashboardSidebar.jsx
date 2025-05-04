@@ -11,23 +11,24 @@ const DashboardSidebar = ({ role }) => {
     navigate('/login');
   };
 
+  // paths on sidebar buttons
   const linksByRole = {
     admin: [
-      { label: 'Main',         path: '/admin/dashboard' },
-      { label: 'Users',        path: '/admin/users' },
-      { label: 'Payroll',     path: '/admin/invoices' },
-      { label: 'Appointments', path: '/admin/appointments' },
+      { label: 'Dashboard',     path: '/admin/dashboard' },
+      { label: 'Users',         path: '/admin/users' },
+      { label: 'Payroll',       path: '/admin/invoices' },
+      { label: 'Appointments',  path: '/admin/appointments' },
     ],
     tutor: [
-      { label: 'Dashboard', path: '/tutordashboard' },
-      { label: 'Profile',   path: '/tutor/profile' },
+      { label: 'Dashboard',     path: '/tutordashboard' },
+      { label: 'Appointments',  path: '/tutordashboard/appointments' },
+      { label: 'Session History',       path: '/tutordashboard/history' },
     ],
     student: [
-      { label: 'Dashboard',   path: '/studentdashboard' },
-      { label: 'Book',        path: '/appointments/schedule' },
-      { label: 'Reschedule',  path: '/appointments/reschedule' },
-      { label: 'Cancel',      path: '/appointments/cancel' },
-      { label: 'Profile',     path: '/student/profile' },
+      { label: 'Dashboard',     path: '/studentdashboard' },
+      { label: 'Book',          path: '/appointments/schedule' },
+      { label: 'Reschedule',    path: '/appointments/reschedule' },
+      { label: 'Cancel',        path: '/appointments/cancel' },
     ],
   };
 

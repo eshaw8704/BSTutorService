@@ -41,7 +41,7 @@ function LoginPage() {
 
         
           if (data.user.role === 'admin') {
-            navigate('/admindashboard');
+            navigate('/admin/admindashboard');
           } else if (data.user.role === 'tutor') {
             navigate('/tutordashboard');
           } else if (data.user.role === 'student') {

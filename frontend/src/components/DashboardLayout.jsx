@@ -4,6 +4,7 @@ import Header from "./Frames/Header";
 import DashboardSidebar from './DashboardSidebar';
 import './DashboardLayout.css';
 
+// purple dashboard sidebar
 const DashboardLayout = ({ role, children }) => {
   return (
     <>

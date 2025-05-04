@@ -1,26 +1,25 @@
-// backend/routes/payrollRoutes.js
-
 import express from 'express';
-import Payroll from '../models/Payroll.js';
-
-
+import { protect } from '../middleware/auth.js';
 import {
   getPayrollForTutor,
-  confirmPayrollForTutor
+  confirmPayrollForTutor,
+  logHoursForTutor
 } from '../controllers/payrollController.js';
 
 const router = express.Router();
 
-// Prefix all routes with /api/payroll
-// GET  /api/payroll/tutor/:tutorId
-router.get('/tutor/:tutorId', getPayrollForTutor);
+// get a tutor’s payroll
+// GET /api/payroll/tutor/:tutorId
+router.get('/tutor/:tutorId', protect, getPayrollForTutor);
 
-// PUT  /api/payroll/tutor/:tutorId
-router.put('/tutor/:tutorId', confirmPayrollForTutor);
+// POST off-platform hours
+router.post('/tutor/:tutorId/log-hours', protect, logHoursForTutor);
 
+// confirm (move unconfirmed → confirmed)
+// PUT /api/payroll/tutor/:tutorId
+router.put('/tutor/:tutorId', protect, confirmPayrollForTutor);
 
-
-
+/*
 router.get('/tutor/:tutorId', async (req, res) => {
   try {
     const { tutorId } = req.params;
@@ -109,6 +108,6 @@ router.put('/tutor/:tutorId', async (req, res) => {
     console.error('Error confirming payroll:', err);
     res.status(500).json({ message: 'Server error' });
   }
-});
+}); */
 
 export default router;

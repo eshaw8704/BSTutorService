@@ -11,6 +11,7 @@ export default function AdminPayrollReview() {
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState('');
   const [confirming, setConfirming] = useState(false);
+  const token = localStorage.getItem('token');
 
   // fixed rate
   const rate = 20;
@@ -19,7 +20,9 @@ export default function AdminPayrollReview() {
   useEffect(() => {
     async function fetchPayroll() {
       try {
-        const res  = await fetch(`/api/payroll/tutor/${tutorId}`);
+        const res = await fetch(`http://localhost:5000/api/payroll/tutor/${tutorId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         if (!res.ok) throw new Error(await res.text());
         const data = await res.json();
         setPayroll(data);
@@ -50,11 +53,15 @@ export default function AdminPayrollReview() {
 
     try {
       const adminId = localStorage.getItem('userId');
-      const res = await fetch(`/api/payroll/tutor/${tutorId}`, {
-        method:  'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ confirmedBy: adminId })
+      const res = await fetch(`http://localhost:5000/api/payroll/tutor/${tutorId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization:   `Bearer ${token}`
+        },
+        body: JSON.stringify({ confirmedBy: adminId })
       });
+      
       if (!res.ok) throw new Error(await res.text());
       const updated = await res.json();
       setPayroll(updated);

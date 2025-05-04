@@ -21,13 +21,12 @@ connectDB()
   });
 
 const app = express();
-
-// Webhook raw body parser (required by Stripe)
-app.use('/api/webhook', express.raw({ type: 'application/json' })); // ⬅️ Required *before* express.json()
-
 // Standard middleware
 app.use(express.json()); // ⬅️ Safe to use after webhook route
 app.use(cors());
+
+// Webhook raw body parser (required by Stripe)
+app.use('/api/webhook', express.raw({ type: 'application/json' })); // ⬅️ Required *before* express.json()
 
 // Routes
 app.use("/api/users",        userRoutes);

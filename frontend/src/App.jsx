@@ -8,65 +8,78 @@ import StudentCreation from './components/AccountCreation/StudentCreation';
 import TutorCreation   from './components/AccountCreation/TutorCreation';
 import AdminCreation   from './components/AccountCreation/AdminCreation';
 
-// — DashboardLayout + Admin pages
+// — Layouts
 import DashboardLayout    from './components/DashboardLayout';
+
+// — Admin Pages
 import AdminDashboardHome from './components/Frames/AdminDashboard';
 import AdminUsers         from './components/Frames/AdminUsers';
 import AdminPayrollList   from './components/Frames/AdminPayrollList';
 import AdminAppointments  from './components/Frames/AdminAppointments';
 import AdminPayrollReview from './components/Frames/AdminPayrollReview';
 
-// — Tutor/Student dashboards & shared
+// — Tutor/Student Pages
 import StudentDashboard from './components/Frames/StudentDashboard';
 import TutorDashboard   from './components/Frames/TutorDashboard';
 import Profile          from './components/Frames/Profile';
 import Settings         from './components/Frames/Settings';
 
-// — AppointmentFrame (nested under /appointments)
-import AppointmentFrame from './components/Frames/AppointmentFrame';
+// — Appointments
+import AppointmentFrame      from './components/Frames/AppointmentFrame';
+import BookAppointment       from './components/BookAppointment';
+import RescheduleAppointment from './components/RescheduleAppointment';
+import CancelAppointment     from './components/CancelAppointment';
+
+// — Admin Traffic Dashboard
+import AdminTrafficDashboard from './components/Frames/AdminTrafficDashboard.jsx';
 
 export default function App() {
   return (
     <Routes>
-     {/* Public routes without Header */}
+      {/* Public */}
       <Route path="/" element={<WelcomePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/student" element={<StudentCreation />} />
       <Route path="/tutor" element={<TutorCreation />} />
       <Route path="/admin" element={<AdminCreation />} />
-     
-      {/* Legacy redirect */}
-      {/* Dashboard-related routes with Header */}
-      <Route path="/studentdashboard" element={<DashboardLayout role="student"><StudentDashboard /></DashboardLayout>} />
-      <Route path="/tutordashboard" element={<DashboardLayout role="tutor"><TutorDashboard /></DashboardLayout>} />
-      <Route path="/admindashboard" element={<DashboardLayout role="admin"><AdminDashboardHome /></DashboardLayout>} />
 
-      {/* Public */}
-      <Route path="/"       element={<WelcomePage />} />
-      <Route path="/login"  element={<LoginPage />} />
-      <Route path="/student" element={<StudentCreation />} />
-      <Route path="/tutor"   element={<TutorCreation />} />
-      <Route path="/admin"   element={<AdminCreation />} />
-
-      {/* Student/Tutor Dashboards */}
-      <Route path="/studentdashboard" element={<StudentDashboard />}>
-        <Route path="profile" element={<Profile />} />       {/* Add Profile route */}
-        <Route path="settings" element={<Settings />} />     {/* Add Settings route */}
+      {/* Student Dashboard and nested routes */}
+      <Route
+        path="/studentdashboard/*"
+        element={
+          <DashboardLayout role="student">
+            <Outlet />
+          </DashboardLayout>
+        }
+      >
+        <Route index element={<StudentDashboard />} />
+        <Route path="profile"  element={<Profile />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
-      <Route path="/tutordashboard" element={<TutorDashboard />}>
-        <Route path="profile" element={<Profile />} />       {/* Add Profile route */}
-        <Route path="settings" element={<Settings />} />     {/* Add Settings route */}
+
+      {/* Tutor Dashboard and nested routes */}
+      <Route
+        path="/tutordashboard/*"
+        element={
+          <DashboardLayout role="tutor">
+            <Outlet />
+          </DashboardLayout>
+        }
+      >
+        <Route index   element={<TutorDashboard />} />
+        <Route path="profile"  element={<Profile />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
 
       {/* Stand-alone Appointments */}
       <Route path="/appointments/*" element={<AppointmentFrame />}>
         <Route index             element={<Navigate to="schedule" replace />} />
-        <Route path="schedule"   element={<AppointmentFrame.Schedule />} />
-        <Route path="reschedule" element={<AppointmentFrame.Reschedule />} />
-        <Route path="cancel"     element={<AppointmentFrame.Cancel />} />
+        <Route path="schedule"   element={<BookAppointment />} />
+        <Route path="reschedule" element={<RescheduleAppointment />} />
+        <Route path="cancel"     element={<CancelAppointment />} />
       </Route>
 
-      {/* —— ADMIN AREA —— */}
+      {/* Admin Area and nested routes */}
       <Route
         path="/admin/*"
         element={
@@ -75,13 +88,13 @@ export default function App() {
           </DashboardLayout>
         }
       >
-        {/* /admin → /admin/dashboard */}
         <Route index element={<Navigate to="dashboard" replace />} />
-
-        <Route path="dashboard"    element={<AdminDashboardHome />} />
-        <Route path="users"        element={<AdminUsers />} />
-        <Route path="invoices/*"   element={<Outlet />}>
-          <Route index      element={<AdminPayrollList />} />
+        <Route path="dashboard" element={<AdminDashboardHome />} />
+        <Route path="users"     element={<AdminUsers />} />
+        <Route path="traffic"   element={<AdminTrafficDashboard />} />
+        <Route path="invoices/*" element={<Outlet />}
+        >
+          <Route index           element={<AdminPayrollList />} />
           <Route path=":tutorId" element={<AdminPayrollReview />} />
         </Route>
         <Route path="appointments" element={<AdminAppointments />} />
