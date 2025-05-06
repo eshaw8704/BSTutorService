@@ -11,8 +11,6 @@ import {
   changeAppointment,
   getUpcomingForStudent,
   updateAppointment,
-  getUpcomingForStudent,
-  deleteAppointment,
 } from '../controllers/appointmentController.js';
 
 

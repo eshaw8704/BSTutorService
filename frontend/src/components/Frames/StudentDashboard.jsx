@@ -17,8 +17,9 @@ const StudentDashboard = () => {
             'x-stub-user-id': localStorage.getItem('userId')
           }
         });
-        if (!res.ok) throw new Error('Could not load');
-        setAppointments(await res.json());
+        if (!res.ok) throw new Error('Could not load appointments');
+        const data = await res.json();
+        setAppointments(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -27,6 +28,23 @@ const StudentDashboard = () => {
     };
     load();
   }, []);
+
+  function formatDateTime(dateStr, timeStr) {
+    const date = new Date(dateStr);
+  
+    const dateFormatted = date.toLocaleDateString('en-US', {
+      month: 'numeric',
+      day: 'numeric',
+      year: 'numeric',
+    });
+  
+    return `${dateFormatted} @ ${timeStr || 'Time N/A'}`;
+  }
+  
+
+  const now = new Date();
+  const upcomingAppointments = appointments.filter(a => new Date(a.appointmentDate) >= now);
+  const pastAppointments = appointments.filter(a => new Date(a.appointmentDate) < now);
 
   return (
     <DashboardLayout role="student">
@@ -38,37 +56,6 @@ const StudentDashboard = () => {
           >
             Edit Appointments
           </button>
-
-          <div className="appointments-box">
-            <h3>Appointments</h3>
-            <p className="subheading">Upcoming</p>
-            {loading ? (
-              <p>Loading…</p>
-            ) : error ? (
-              <p className="error">Error: {error}</p>
-            ) : appointments.length === 0 ? (
-              <p>No upcoming appointments.</p>
-            ) : (
-              <ul className="appointment-list">
-                {appointments.map((appt) => {
-                  const dt = new Date(appt.appointmentDate);
-                  const dateStr = dt.toLocaleDateString(undefined, {
-                    month: '2-digit',
-                    day: '2-digit',
-                    year: 'numeric'
-                  });
-                  const weekday = dt.toLocaleDateString(undefined, { weekday: 'long' });
-                  const timeStr = appt.appointmentTime || 'Time N/A';
-
-                  return (
-                    <li key={appt._id}>
-                      📅 {dateStr} — {weekday} {timeStr}
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
         </div>
 
         <div className="info-box">
@@ -76,9 +63,67 @@ const StudentDashboard = () => {
           <p className="dashboard-welcome">
             Welcome to your dashboard! <br />
             <br />
-            Here you will access all you need!
+            Here you can schedule, reschedule, cancel and view upcoming and past appointments! If you need any additional information, please contact us at bstutorservice@gmail.com
           </p>
         </div>
+      </div>
+
+      <div className="appointments-section">
+        <h3>Upcoming Appointments</h3>
+        {loading ? (
+          <p>Loading…</p>
+        ) : error ? (
+          <p className="error">Error: {error}</p>
+        ) : upcomingAppointments.length === 0 ? (
+          <p>No upcoming appointments</p>
+        ) : (
+          <table className="appointment-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Tutor</th>
+                <th>Subject</th>
+              </tr>
+            </thead>
+            <tbody>
+              {upcomingAppointments.map((appt, i) => (
+                <tr key={i}>
+                  <td>{formatDateTime(appt.appointmentDate, appt.appointmentTime)}</td>
+                  <td>{appt.tutor ? `${appt.tutor.firstName} ${appt.tutor.lastName}` : 'Unknown'}</td>
+                  <td>{appt.subject || 'N/A'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      <div className="appointments-section">
+        <h3>Appointment History</h3>
+        {loading ? (
+          <p>Loading…</p>
+        ) : pastAppointments.length === 0 ? (
+          <p>No past appointments</p>
+        ) : (
+          <table className="appointment-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Tutor</th>
+                <th>Subject</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pastAppointments.map((appt, i) => (
+                <tr key={i}>
+                  <td>{formatDateTime(appt.appointmentDate, appt.appointmentTime)}</td>
+                  <td>{appt.tutorName || 'Unknown'}</td>
+                  <td>{appt.subject || 'N/A'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </DashboardLayout>
   );

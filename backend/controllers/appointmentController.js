@@ -33,7 +33,10 @@ export const getUpcomingForStudent = async (req, res) => {
     const upcoming = await Appointment.find({
       student: studentId,
       appointmentDate: { $gte: now, $lte: nextMonth }
-    }).sort('appointmentDate');
+    })
+    .populate('tutor', 'firstName lastName')
+    .sort('appointmentDate');
+    
 
     res.json(upcoming);
   } catch (err) {
