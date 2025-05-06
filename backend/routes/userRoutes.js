@@ -3,6 +3,15 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import { protect } from '../middleware/auth.js';
+import {
+    getProfile,
+    updateProfile,
+    updateEmail,
+    updatePassword,
+    deleteUser
+  } from '../controllers/userController.js';
+
 
 const router = express.Router();
 
@@ -96,5 +105,20 @@ router.get('/tutors', async (req, res) => {
     res.status(500).json({ message: "Failed to fetch tutors." });
   }
 });
+
+router.get(
+  '/profile',       // path
+  protect,          // middleware that validates JWT & sets req.user.id
+  getProfile        // controller that returns the user (minus password)
+);
+
+router.put('/profile', protect, updateProfile);
+
+
+// … your existing /register, /login, /tutors, /profile (GET)
+router.put('/email',    protect, updateEmail);
+router.put('/password', protect, updatePassword);
+router.delete('/profile', protect, deleteUser);
+
 
 export default router;

@@ -3,9 +3,9 @@
     justify-content: center;
     padding: 2rem;
     background-color: #f5f5f5;
-    min-height: calc(100vh - 70px); /* account for header height */
+    min-height: calc(100vh - 70px); /* account for header height /
   }
-  
+
   .appointment-page .appointment-frame {
     width: 100%;
     max-width: 900px;
@@ -14,19 +14,19 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 1.5rem;
   }
-  
+
   @media (max-width: 768px) {
     .appointment-page {
       padding: 1rem;
     }
-  
+
     .appointment-page .appointment-frame {
       padding: 1rem;
       box-shadow: none;
       border-radius: 0;
     }
   }
-  /* Dark Mode Overrides */
+  / Dark Mode Overrides */
 @media (prefers-color-scheme: dark) {
   .appointment-page {
     background-color: #1e1e2f;

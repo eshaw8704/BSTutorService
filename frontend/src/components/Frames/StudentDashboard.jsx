@@ -32,49 +32,51 @@ const StudentDashboard = () => {
     <DashboardLayout role="student">
       <div className="dashboard-main">
         <div className="left-panel">
-          <button className="schedule-btn" onClick={() => window.location.href = '/appointments'}>
+          <button
+            className="schedule-btn"
+            onClick={() => (window.location.href = '/appointments')}
+          >
             Edit Appointments
           </button>
 
           <div className="appointments-box">
             <h3>Appointments</h3>
             <p className="subheading">Upcoming</p>
+            {loading ? (
+              <p>Loading…</p>
+            ) : error ? (
+              <p className="error">Error: {error}</p>
+            ) : appointments.length === 0 ? (
+              <p>No upcoming appointments.</p>
+            ) : (
+              <ul className="appointment-list">
+                {appointments.map((appt) => {
+                  const dt = new Date(appt.appointmentDate);
+                  const dateStr = dt.toLocaleDateString(undefined, {
+                    month: '2-digit',
+                    day: '2-digit',
+                    year: 'numeric'
+                  });
+                  const weekday = dt.toLocaleDateString(undefined, { weekday: 'long' });
+                  const timeStr = appt.appointmentTime || 'Time N/A';
 
-            {loading
-              ? <p>Loading…</p>
-              : error
-                ? <p className="error">Error: {error}</p>
-                : appointments.length === 0
-                  ? <p>No upcoming appointments.</p>
-                  : (
-                    <ul className="appointment-list">
-                      {appointments.map(appt => {
-                        const dt = new Date(appt.appointmentDate);
-                        const dateStr = dt.toLocaleDateString(undefined, {
-                          month: '2-digit',
-                          day: '2-digit',
-                          year: 'numeric'
-                        });
-                        const weekday = dt.toLocaleDateString(undefined, { weekday: 'long' });
-                        const timeStr = appt.appointmentTime || 'Time N/A';
-
-                        return (
-                          <li key={appt._id}>
-                            📅 {dateStr} — {weekday} {timeStr}
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  )
-            }
+                  return (
+                    <li key={appt._id}>
+                      📅 {dateStr} — {weekday} {timeStr}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
         </div>
 
         <div className="info-box">
           <h2 className="dashboard-title">Student Dashboard</h2>
           <p className="dashboard-welcome">
-            Welcome to your dashboard! <br></br>
-            <br></br>Here you will acess all you need!
+            Welcome to your dashboard! <br />
+            <br />
+            Here you will access all you need!
           </p>
         </div>
       </div>
