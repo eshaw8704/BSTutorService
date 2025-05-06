@@ -57,9 +57,13 @@ body {
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 20px;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 2rem;
+  font-size: 1rem;
+  margin: 1rem auto;
+  display: block;
+  text-align: center;
+  width: fit-content;
 }
 
 
