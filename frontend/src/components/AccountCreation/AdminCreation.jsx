@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Header from '../Frames/Header';
 import './AdminCreation.css';
 
 function AdminCreation() {
@@ -7,7 +8,7 @@ function AdminCreation() {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [secretKey, setSecretKey] = useState(''); // ✅ new field
+  const [secretKey, setSecretKey] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,7 +29,7 @@ function AdminCreation() {
           email,
           password,
           role: 'admin',
-          secretKey // ✅ send to backend
+          secretKey
         }),
       });
 
@@ -37,7 +38,6 @@ function AdminCreation() {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
         localStorage.setItem('userId', data.user._id);
-
         alert('Admin account created and logged in!');
         navigate('/admin/dashboard');
       } else {
@@ -50,47 +50,21 @@ function AdminCreation() {
   };
 
   return (
-    <div className="admin-creation-container">
-      <h2>Create Admin Account</h2>
-      <form onSubmit={handleSubmit} className="admin-form">
-        <input
-          type="text"
-          placeholder="First Name"
-          value={firstName}
-          onChange={(e) => setFirstName(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Last Name"
-          value={lastName}
-          onChange={(e) => setLastName(e.target.value)}
-          required
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Admin Secret Key"
-          value={secretKey}
-          onChange={(e) => setSecretKey(e.target.value)}
-          required
-        />
-        <button type="submit">Register</button>
-      </form>
-    </div>
+    <>
+      <Header />
+      <div className="admin-creation-container">
+        <h2>Create Admin Account</h2>
+        <form onSubmit={handleSubmit} className="admin-form">
+          <input type="text" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+          <input type="text" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <input type="text" placeholder="Admin Secret Key" value={secretKey} onChange={(e) => setSecretKey(e.target.value)} required />
+          <button type="submit">Register</button>
+        </form>
+        <p className="back-link" onClick={() => navigate('/')}>← Return to Welcome Page</p>
+      </div>
+    </>
   );
 }
 

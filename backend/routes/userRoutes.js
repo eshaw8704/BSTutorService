@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import User from '../models/User.js';
+import Payroll from '../models/Payroll.js'; // ✅ Added import
 import { protect } from '../middleware/auth.js';
 import {
   getProfile,
@@ -13,11 +14,10 @@ import {
   deleteUser
 } from '../controllers/userController.js';
 
-dotenv.config(); // ⬅️ ensure .env variables load
+dotenv.config();
 
 const router = express.Router();
 
-// 🔐 Generate a token
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
@@ -27,7 +27,6 @@ router.post('/register', async (req, res) => {
   try {
     const { firstName, lastName, email, password, role, secretKey } = req.body;
 
-    // 🔐 Admin secret key check
     if (role === 'admin') {
       if (!secretKey || secretKey !== process.env.ADMIN_SECRET_KEY) {
         return res.status(403).json({ message: 'Invalid admin secret key.' });
@@ -53,6 +52,17 @@ router.post('/register', async (req, res) => {
 
     await newUser.save();
 
+    // ✅ Create payroll record for tutors
+    if (role === 'tutor') {
+      await Payroll.create({
+        tutor: newUser._id,
+        confirmedHours: 0,
+        unconfirmedHours: 0,
+        earnings: 0,
+        confirmed: false,
+      });
+    }
+
     const token = generateToken(newUser._id);
 
     res.status(201).json({
@@ -74,7 +84,6 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// ✅ Login route: /api/users/login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -110,7 +119,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// ✅ Get all tutors (optional)
 router.get('/tutors', async (req, res) => {
   try {
     const tutors = await User.find({ role: 'tutor' }).select('-password');

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 import confetti from 'canvas-confetti';
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; // 👈 import icons
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Header from './Header'; // ✅ include Header
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -20,19 +21,12 @@ function LoginPage() {
       });
 
       const data = await response.json();
-      console.log('Login response:', data);
-      console.log(">>> data.user:", data.user);
 
       if (response.ok) {
         alert('Login successful!');
         setEmail('');
         setPassword('');
-
-        try {
-          confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-        } catch (confettiError) {
-          console.warn('Confetti error:', confettiError);
-        }
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
 
         if (data.token && data.user && data.user._id && data.user.role) {
           localStorage.setItem('token', data.token);
@@ -46,27 +40,14 @@ function LoginPage() {
           } else if (data.user.role === 'student') {
             navigate('/studentdashboard');
           } else {
-            alert('Unknown role. Redirecting to home.');
             navigate('/');
           }
         } else {
-          console.error("Missing user info or token in response:", data);
           alert("Login failed: Incomplete user data.");
         }
-
       } else {
-        if (data.message === 'User not found.') {
-          console.error("❌ User not found for email:", email);
-          alert("User not found. Please check your email.");
-        } else if (data.message === 'Invalid password.') {
-          console.error("❌ Invalid password for email:", email);
-          alert("Incorrect password. Try again.");
-        } else {
-          console.error("❌ Login failed:", data.message);
-          alert(`Login failed: ${data.message}`);
-        }
+        alert(`Login failed: ${data.message}`);
       }
-
     } catch (error) {
       console.error('Error during login:', error);
       alert('Error during login');
@@ -74,45 +55,42 @@ function LoginPage() {
   };
 
   return (
-    <div className="login-page">
-      <div className="login-container">
-        <h2>Login</h2>
-        <form onSubmit={handleSubmit} className="login-form">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-
-          <div className="password-wrapper">
+    <>
+      <Header />
+      <div className="login-page">
+        <div className="login-container">
+          <h2>Login</h2>
+          <form onSubmit={handleSubmit} className="login-form">
             <input
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <span
-              className="toggle-password-icon"
-              onClick={() => setShowPassword(prev => !prev)}
-            >
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
-          </div>
-
-          <button type="submit">Login</button>
-          <button
-            type="button"
-            className="return-button"
-            onClick={() => navigate('/admin')}
-          >
-            Return to Account Creation
-          </button>
-        </form>
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <span
+                className="toggle-password-icon"
+                onClick={() => setShowPassword(prev => !prev)}
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+            <button type="submit">Login</button>
+          </form>
+          <p className="back-link" onClick={() => navigate('/')}>
+            ← Return to Welcome Page
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

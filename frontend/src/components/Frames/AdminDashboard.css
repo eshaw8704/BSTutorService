@@ -179,3 +179,23 @@
 .upcoming-sessions tr:hover {
   background-color: #f9f9f9;
 }
+.tab-button {
+  background-color: #f2d1e2;
+  color: #4a0072;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+.tab-button.active {
+  background-color: #c47ac0;
+  color: #fff;
+}
+
+.tab-button:hover {
+  background-color: #b568b0;
+  color: white;
+}
