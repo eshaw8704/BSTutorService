@@ -25,14 +25,23 @@ export default function Header({ adminMode, tutorMode, studentMode }) {
       </div>
 
       {showButtons && (
-      <div className="header-admin-buttons">
-          {adminMode ? (
+        <div className="header-admin-buttons">
+          {adminMode && (
             <>
               <button onClick={() => navigate('/admin/profile')}>Profile</button>
               <button onClick={() => navigate('/admin/settings')}>Settings</button>
-              <button onClick={() => navigate('/admin/invoices')}>Invoices</button>
             </>
-          ) : (
+          )}
+
+          {tutorMode && (
+            <>
+              <button onClick={() => navigate('/tutordashboard/profile')}>Profile</button>
+              <button onClick={() => navigate('/tutordashboard/settings')}>Settings</button>
+              <button onClick={() => navigate('/tutordashboard/payroll')}>Payroll</button>
+            </>
+          )}
+
+          {studentMode && (
             <>
               <button onClick={() => navigate('/studentdashboard/profile')}>Profile</button>
               <button onClick={() => navigate('/studentdashboard/settings')}>Settings</button>
