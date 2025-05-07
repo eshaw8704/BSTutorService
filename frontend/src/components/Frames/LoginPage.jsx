@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // ✅ ADD THIS LINE
+import { useNavigate } from 'react-router-dom';
 import './LoginPage.css';
 import confetti from 'canvas-confetti';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // 👈 import icons
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -17,28 +18,27 @@ function LoginPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       });
-  
+
       const data = await response.json();
       console.log('Login response:', data);
       console.log(">>> data.user:", data.user);
-  
+
       if (response.ok) {
         alert('Login successful!');
         setEmail('');
         setPassword('');
-  
+
         try {
           confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
         } catch (confettiError) {
           console.warn('Confetti error:', confettiError);
         }
-  
-        // ✅ Store token and user information in localStorage
+
         if (data.token && data.user && data.user._id && data.user.role) {
           localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data.user));
-          localStorage.setItem('userId', data.user._id); 
-          localStorage.setItem('token', data.token); // Store token for future requests
+          localStorage.setItem('userId', data.user._id);
+
           if (data.user.role === 'admin') {
             navigate('/admindashboard');
           } else if (data.user.role === 'tutor') {
@@ -52,11 +52,9 @@ function LoginPage() {
         } else {
           console.error("Missing user info or token in response:", data);
           alert("Login failed: Incomplete user data.");
-          return;
         }
-  
+
       } else {
-        // ❗ Specific backend error handling
         if (data.message === 'User not found.') {
           console.error("❌ User not found for email:", email);
           alert("User not found. Please check your email.");
@@ -68,48 +66,53 @@ function LoginPage() {
           alert(`Login failed: ${data.message}`);
         }
       }
-  
+
     } catch (error) {
       console.error('Error during login:', error);
       alert('Error during login');
     }
   };
-  
-  
+
   return (
     <div className="login-page">
-    <div className="login-container">
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit} className="login-form">
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-
-        <div className="password-wrapper">
+      <div className="login-container">
+        <h2>Login</h2>
+        <form onSubmit={handleSubmit} className="login-form">
           <input
-            type={showPassword ? 'text' : 'password'}
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
+
+          <div className="password-wrapper">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <span
+              className="toggle-password-icon"
+              onClick={() => setShowPassword(prev => !prev)}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
+            </span>
+          </div>
+
+          <button type="submit">Login</button>
           <button
             type="button"
-            className="toggle-password"
-            onClick={() => setShowPassword(prev => !prev)}
+            className="return-button"
+            onClick={() => navigate('/admin')}
           >
-            {showPassword ? 'Hide' : 'Show'}
+            Return to Account Creation
           </button>
-        </div>
-
-        <button type="submit">Login</button>
-      </form>
+        </form>
+      </div>
     </div>
-    </div> 
   );
 }
 

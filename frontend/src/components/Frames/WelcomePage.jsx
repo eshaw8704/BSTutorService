@@ -10,7 +10,7 @@ function WelcomePage() {
   // handlers for nagivation
   const goToStudentCreation = () => navigate('/student');
   const goToTutorCreation = () => navigate('/tutor');
-  const goToAdminCreation = () => navigate('/admin');
+  const goToAdminCreation = () => navigate('/admin-create');
   const goToLogin = () => navigate('/login');
 
   return (

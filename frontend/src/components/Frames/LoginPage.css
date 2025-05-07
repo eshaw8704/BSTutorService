@@ -64,26 +64,24 @@
 /* Password toggle layout */
 .password-wrapper {
   position: relative;
+  width: 100%;
 }
 
 .password-wrapper input {
-  padding-right: 4rem;
+  padding-right: 40px;
+  box-sizing: border-box;
 }
 
-.toggle-password {
+.toggle-password-icon {
   position: absolute;
-  right: 1rem;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #6a0dadbb;
-  font-weight: bold;
   cursor: pointer;
-  font-size: 0.9rem;
-  padding: 0;
-}
-
-.toggle-password:hover {
-  color: #069a78;
+  color: #6a0dad;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }

@@ -2,16 +2,18 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import User from '../models/User.js';
 import { protect } from '../middleware/auth.js';
 import {
-    getProfile,
-    updateProfile,
-    updateEmail,
-    updatePassword,
-    deleteUser
-  } from '../controllers/userController.js';
+  getProfile,
+  updateProfile,
+  updateEmail,
+  updatePassword,
+  deleteUser
+} from '../controllers/userController.js';
 
+dotenv.config(); // ⬅️ ensure .env variables load
 
 const router = express.Router();
 
@@ -23,7 +25,14 @@ const generateToken = (userId) => {
 // ✅ Register route: /api/users/register
 router.post('/register', async (req, res) => {
   try {
-    const { firstName, lastName, email, password, role } = req.body;
+    const { firstName, lastName, email, password, role, secretKey } = req.body;
+
+    // 🔐 Admin secret key check
+    if (role === 'admin') {
+      if (!secretKey || secretKey !== process.env.ADMIN_SECRET_KEY) {
+        return res.status(403).json({ message: 'Invalid admin secret key.' });
+      }
+    }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -44,13 +53,19 @@ router.post('/register', async (req, res) => {
 
     await newUser.save();
 
-    const { password: _, ...userData } = newUser.toObject(); // remove hashed password
     const token = generateToken(newUser._id);
 
     res.status(201).json({
       message: 'User created successfully!',
-      user: userData,
-      token
+      user: {
+        _id: newUser._id,
+        email: newUser.email,
+        role: newUser.role,
+        UID: newUser.UID,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+      },
+      token,
     });
 
   } catch (error) {
@@ -106,19 +121,10 @@ router.get('/tutors', async (req, res) => {
   }
 });
 
-router.get(
-  '/profile',       // path
-  protect,          // middleware that validates JWT & sets req.user.id
-  getProfile        // controller that returns the user (minus password)
-);
-
+router.get('/profile', protect, getProfile);
 router.put('/profile', protect, updateProfile);
-
-
-// … your existing /register, /login, /tutors, /profile (GET)
-router.put('/email',    protect, updateEmail);
+router.put('/email', protect, updateEmail);
 router.put('/password', protect, updatePassword);
 router.delete('/profile', protect, deleteUser);
-
 
 export default router;

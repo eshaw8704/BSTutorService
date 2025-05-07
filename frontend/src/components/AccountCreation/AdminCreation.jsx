@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './AdminCreation.css';
-//import confetti from 'canvas-confetti';
 
-// This component allows the admin to create a new admin account
-// It includes a form with fields for first name, last name, email, and password
 function AdminCreation() {
   const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName]   = useState('');
-  const [email, setEmail]         = useState('');
-  const [password, setPassword]   = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [secretKey, setSecretKey] = useState(''); // ✅ new field
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('userId');
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,21 +22,26 @@ function AdminCreation() {
       const response = await fetch('http://localhost:5000/api/users/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, lastName, email, password, role: 'admin' }),
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          password,
+          role: 'admin',
+          secretKey // ✅ send to backend
+        }),
       });
-      // Handle the response from the server
-      // Check if the response is ok (status code 200-299)
+
       const data = await response.json();
-      if (response.ok) {
-        alert('Admin account created successfully!');
-        //Populate Clone DB for data validation
-        setFirstName('');
-        setLastName('');
-        setEmail('');
-        setPassword('');
-        //confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      if (response.ok && data.token && data.user) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        localStorage.setItem('userId', data.user._id);
+
+        alert('Admin account created and logged in!');
+        navigate('/admin/dashboard');
       } else {
-        alert(`Error: ${data.message}`);
+        alert(`Error: ${data.message || 'Invalid secret key or response'}`);
       }
     } catch (error) {
       console.error('Error creating admin:', error);
@@ -38,7 +49,6 @@ function AdminCreation() {
     }
   };
 
-  // Render the form for creating a new admin account
   return (
     <div className="admin-creation-container">
       <h2>Create Admin Account</h2>
@@ -69,6 +79,13 @@ function AdminCreation() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <input
+          type="text"
+          placeholder="Admin Secret Key"
+          value={secretKey}
+          onChange={(e) => setSecretKey(e.target.value)}
           required
         />
         <button type="submit">Register</button>

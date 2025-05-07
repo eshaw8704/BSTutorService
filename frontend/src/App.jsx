@@ -42,7 +42,7 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/student" element={<StudentCreation />} />
       <Route path="/tutor" element={<TutorCreation />} />
-      <Route path="/admin" element={<AdminCreation />} />
+      <Route path="/admin-create" element={<AdminCreation />} />
       <Route path="/traffic" element={<AdminTrafficDashboard />} />
 
       {/* Student & Tutor Dashboards */}
