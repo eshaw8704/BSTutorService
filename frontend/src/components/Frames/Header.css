@@ -45,3 +45,22 @@
 .header-admin-buttons button:hover {
   background-color: #732b8c;
 }
+/* Dark Mode Overrides */
+@media (prefers-color-scheme: dark) {
+  .admin-header {
+    background-color: #2e2e3f;
+    border-bottom-color: #444;
+  }
+  .admin-header,
+  .header-left,
+  .header-admin-buttons {
+    color: #eee;
+  }
+  .header-admin-buttons button {
+    background-color: #8e24aa;
+    color: #fff;
+  }
+  .header-admin-buttons button:hover {
+    background-color: #b08de4;
+  }
+}

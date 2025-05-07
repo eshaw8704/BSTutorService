@@ -1,6 +1,6 @@
 import express from 'express';
 import Appointment from '../models/Appointment.js';
-
+import { protect } from '../middleware/auth.js';
 import {
   getAppointmentByStudent,
   getAppointmentsByTutor,
@@ -9,10 +9,12 @@ import {
   getLoggedAppointments,
   deleteAppointment,
   changeAppointment,
-  getUpcomingForStudent
+  getUpcomingForStudent,
+  updateAppointment,
 } from '../controllers/appointmentController.js';
 
-import { protect } from '../middleware/auth.js';
+
+
 
 const router = express.Router();
 
@@ -21,6 +23,8 @@ router.get('/upcoming', protect, getUpcomingForStudent);
 
 // 🔹 POST /api/appointments
 router.post('/', protect, createAppointment);
+
+router.patch('/:appointmentId/update', protect, updateAppointment);
 
 // 🔹 GET /api/appointments/:studentID
 router.get('/:studentID', protect, getAppointmentByStudent);
@@ -67,5 +71,6 @@ router.get('/all/history', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch appointment history' });
   }
 });
+
 
 export default router;

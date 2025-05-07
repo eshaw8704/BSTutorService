@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import './AppointmentFrame.css';
 import { useNavigate, Outlet } from 'react-router-dom';
+import UpcomingAppointmentsFrame from '../UpcomingAppointments';
+import CancelAppointment from '../CancelAppointment';
+import RescheduleAppointment from '../RescheduleAppointment';
+import BookAppointment  from '../BookAppointment';
+
+//import DropInAppointment from '../DropInAppointment';
+
 
 const AppointmentFrame = () => {
   const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
   const studentID = localStorage.getItem('userId');
   const token     = localStorage.getItem('token');
-  const user      = localStorage.getItem('user');
-  const role      = user ? JSON.parse(user).role : null;
 
   // Load existing appointments for this student
   useEffect(() => {
@@ -27,35 +32,26 @@ const AppointmentFrame = () => {
   }, [studentID, token]);
 
   const handleNavigate = (subpath) => {
-    navigate(subpath);
-  };
+    navigate(`/appointments/${subpath}`);
+  };  
 
   return (
     <div className="appointment-frame">
-      {/* only show this pink sidebar for students */}
-      {role === 'student' && (
-        <div className="frame-actions">
+      <div className="frame-actions">
         <button onClick={() => handleNavigate('schedule')}   className="action-button">📅 Schedule</button>
         <button onClick={() => handleNavigate('cancel')}     className="action-button">❌ Cancel</button>
         <button onClick={() => handleNavigate('reschedule')} className="action-button">⏰ Reschedule</button>
-        <button onClick={() => navigate('past')}   className="action-button">⬅️ Past</button>
-        <button onClick={() => navigate('dropin')} className="action-button">⬇️ Drop-In</button>
-        {/* nested content (schedule, cancel, etc) */}
-        <Outlet />
-        </div>
-      )}
+    </div>
+    
+    <div className="back-button-container">
+        <button onClick={() => navigate('/studentdashboard')} className="back-button">⬅️ Back to Dashboard</button>
+    </div>
+
 
       <div className="frame-content">
-        {/* Example: show a quick list of today’s bookings */}
-        <h3>Your Appointments</h3>
+        <UpcomingAppointmentsFrame />
         <ul>
-          {appointments.map(a => (
-            <li key={a._id}>
-              {new Date(a.appointmentDate).toLocaleDateString()} @ {a.appointmentTime}
-            </li>
-          ))}
         </ul>
-
         {/* And now render whichever nested route the user clicked */}
         <Outlet />
       </div>

@@ -1,4 +1,3 @@
-// src/components/DashboardSidebar.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './DashboardSidebar.css';
@@ -12,17 +11,37 @@ const DashboardSidebar = ({ role }) => {
   };
 
   // paths on sidebar buttons
+
+  const studentLinks = [
+    { label: 'Dashboard', path: '/studentdashboard' },
+    { label: 'Book', path: '/appointments' },
+    { label: 'Reschedule', path: '/appointments/reschedule' },
+    { label: 'Cancel', path: '/appointments/cancel' },
+    { label: 'Profile', path: '/student/profile' },
+  ];
+
+  const tutorLinks = [
+    { label: 'Dashboard', path: '/tutordashboard' },
+    { label: 'Profile', path: '/tutor/profile' },
+  ];
+
+  const adminLinks = [
+    { label: 'Dashboard', path: '/admindashboard' },
+    { label: 'Appointments', path: '/admin/appointments' },
+    { label: 'Invoices', path: '/admin/invoices' },
+    { label: 'Profile', path: '/admin/profile' },
+    { label: 'Settings', path: '/admin/settings' },
+  ];
+
   const linksByRole = {
     admin: [
       { label: 'Dashboard',     path: '/admin/dashboard' },
-      { label: 'Users',         path: '/admin/users' },
-      { label: 'Payroll',       path: '/admin/invoices' },
-      { label: 'Appointments',  path: '/admin/appointments' },
+      { label: 'Users',        path: '/admin/users' },
+      { label: 'Payroll',      path: '/admin/invoices' },
+      { label: 'Appointments', path: '/admin/appointments' },
     ],
     tutor: [
       { label: 'Dashboard',     path: '/tutordashboard' },
-      { label: 'Appointments',  path: '/tutordashboard/appointments' },
-      { label: 'Session History',       path: '/tutordashboard/history' },
     ],
     student: [
       { label: 'Dashboard',     path: '/studentdashboard' },

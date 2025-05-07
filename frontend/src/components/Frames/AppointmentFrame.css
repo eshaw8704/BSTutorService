@@ -1,118 +1,138 @@
 /* AppointmentFrame.css */
 
 .appointment-frame {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    color: #333;
-  }
-  
-  /* Header */
+  display: flex;
+  flex-direction: column;
+  padding-top: 80px; 
+  font-family: Arial, sans-serif;
+  background-color: #fdf2f8;  /* soft pink background */
+  color: #333;
+}
+
+/* Header */
+.frame-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;      /* white header */
+  color: #6a0dad;              /* site purple */
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.frame-logo {
+  height: 40px;
+  width: auto;
+}
+
+.frame-title {
+  flex: 1;
+  text-align: center;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.frame-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.frame-btn {
+  background: transparent;
+  border: 1px solid #6a0dad;
+  border-radius: 4px;
+  color: #6a0dad;
+  padding: 0.4rem 0.8rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.frame-btn:hover {
+  background-color: #6a0dad;
+  color: #fff;
+}
+
+/* Actions Section */
+.frame-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 2rem;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;      /* white bar behind buttons */
+  flex: 1;
+}
+
+.action-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #8c2dcf;    /* vibrant purple */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.action-button:hover {
+  background-color: #6a0dad;    /* darker purple */
+  transform: translateY(-2px);
+}
+
+/* Back-To-Dashboard Button */
+.back-button-container {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.back-button {
+  background-color: #8c2dcf;
+  color: #fff;
+  padding: 0.5rem 1.5rem;
+  border-radius: 20px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: #6a0dad;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
   .frame-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #6a0dad;
-    color: #ffffff;
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .frame-logo {
-    height: 40px;
-    width: auto;
-  }
-  
-  .frame-title {
-    flex: 1;
+    flex-direction: column;
+    gap: 0.5rem;
     text-align: center;
-    font-size: 1.5rem;
-    letter-spacing: 1px;
-    margin: 0;
   }
-  
+
+  .frame-title {
+    order: 3;
+  }
+
   .frame-controls {
-    display: flex;
-    gap: 0.5rem;
+    order: 2;
   }
-  
-  .frame-btn {
-    background: transparent;
-    border: 1px solid #ffffff;
-    border-radius: 4px;
-    color: #ffffff;
-    padding: 0.4rem 0.8rem;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
+
+  .frame-logo {
+    order: 1;
   }
-  
-  .frame-btn:hover {
-    background-color: #ffffff;
-    color: #6a0dad;
-  }
-  
-  /* Actions Section */
+
   .frame-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    padding: 2rem;
-    justify-content: center;
-    align-items: center;
-    background-color: #ffffff;
-    flex: 1;
+    flex-direction: column;
+    padding: 1rem;
   }
-  
+
   .action-button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    background-color: #6a0dad;
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    padding: 0.8rem 1.2rem;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.1s ease;
+    width: 100%;
+    justify-content: center;
   }
-  
-  .action-button:hover {
-    background-color: #580a9c;
-    transform: translateY(-2px);
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 600px) {
-    .frame-header {
-      flex-direction: column;
-      gap: 0.5rem;
-      text-align: center;
-    }
-  
-    .frame-title {
-      order: 3;
-    }
-  
-    .frame-controls {
-      order: 2;
-    }
-  
-    .frame-logo {
-      order: 1;
-    }
-  
-    .frame-actions {
-      flex-direction: column;
-      padding: 1rem;
-    }
-  
-    .action-button {
-      width: 100%;
-      justify-content: center;
-    }
-  }
-  
+}

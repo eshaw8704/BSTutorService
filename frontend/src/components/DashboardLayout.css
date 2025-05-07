@@ -10,3 +10,13 @@
   padding: 2rem;
   width: calc(100% - 250px);
 }
+
+.logout-btn {
+  /* existing styles… */
+  font-weight: 700;  
+  bottom: -270px; 
+  min-height: auto;
+  padding: 70px;
+  left: 0;   
+    /* make the text bold */
+}

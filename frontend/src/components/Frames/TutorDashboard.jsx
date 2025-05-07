@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './TutorDashboard.css';
 import LogHoursForm from './LogHoursForm';
+import UpcomingAppointmentsFrame from '../UpcomingAppointments';
+
 
 export default function TutorDashboard() {
   const [profile, setProfile]         = useState(null);

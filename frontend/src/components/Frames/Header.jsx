@@ -5,7 +5,7 @@ import "./Header.css";
 
 // This component represents the header for the admin dashboard
 // It includes the BSTutors logo and admin navigation buttons
-export default function Header({ adminMode, tutorMode }) {
+export default function Header({ adminMode, tutorMode, studentMode }) {
   const navigate = useNavigate();
   
   // Handle logout function
@@ -14,7 +14,7 @@ export default function Header({ adminMode, tutorMode }) {
   };
 
   // Only render this button‐group if either flag is true
-  const showButtons = adminMode || tutorMode;
+  const showButtons = adminMode || tutorMode || studentMode;
 
   return (
     // Header layout with BSTutors logo and admin buttons
@@ -37,17 +37,23 @@ export default function Header({ adminMode, tutorMode }) {
               <button onClick={() => navigate('/admin/settings')}>Settings</button>
               <button onClick={() => navigate('/admin/invoices')}>Invoices</button>
             </>
-          ) : (
+          ) : tutorMode ? (
             // Tutor links
             <>
               <button onClick={() => navigate('/tutordashboard/profile')}>Profile</button>
               <button onClick={() => navigate('/tutordashboard/settings')}>Settings</button>
               <button onClick={() => navigate('/tutordashboard/payroll')}>Payroll</button>
             </>
-          )}
+          ) : studentMode ? (
+            /* Student links */
+             <>
+                <button onClick={() => navigate('/studentdashboard/profile')}>Profile</button>
+                <button onClick={() => navigate('/studentdashboard/settings')}>Settings</button>
+                <button onClick={() => navigate('/studentdashboard/appointments')}>Appointments</button>
+                </>
+              ) : null }
           <button onClick={handleLogout}>Logout</button>
           </div>
-
           )}
     </header>
   );

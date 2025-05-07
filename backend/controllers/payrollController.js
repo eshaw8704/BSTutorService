@@ -1,10 +1,8 @@
-// controllers/payrollController.js
+import User from '../models/User.js';
 import Payroll from '../models/Payroll.js';
 import { sendEmailReceipt } from '../utils/sendEmail.js';
 
 export const getPayrollForTutor = async (req, res) => {
-  // GET /api/payroll/tutor/:tutorId
-  // Returns the payroll for a specific tutor
   const { tutorId } = req.params;
   try {
     const payroll = await Payroll
@@ -21,54 +19,57 @@ export const getPayrollForTutor = async (req, res) => {
 };
 
 export const confirmPayrollForTutor = async (req, res) => {
-  const { tutorId }     = req.params;
-  const { confirmedBy } = req.body;          // admin ID
+  const { tutorId } = req.params;
+  const { confirmedBy } = req.body;
 
   if (!confirmedBy) {
     return res.status(400).json({ message: 'Missing confirmedBy' });
   }
 
   try {
+    // Check if tutor exists
+    const tutor = await User.findById(tutorId);
+    if (!tutor) {
+      return res.status(404).json({ message: 'Tutor not found' });
+    }
+
+    // Fetch payroll
     let payroll = await Payroll.findOne({ tutor: tutorId });
     if (!payroll) {
       return res.status(404).json({ message: 'Payroll not found' });
     }
 
-    // 1) Move unconfirmed → confirmed
-    payroll.confirmedHours   += payroll.unconfirmedHours;
-    payroll.unconfirmedHours  = 0;
-    payroll.confirmedBy       = confirmedBy;
-    payroll.confirmedAt       = new Date();
+    // Merge unconfirmed hours into confirmed
+    payroll.confirmedHours += payroll.unconfirmedHours;
+    payroll.unconfirmedHours = 0;
+    payroll.confirmedBy = confirmedBy;
+    payroll.confirmedAt = new Date();
+    payroll.confirmed = true;
+
     await payroll.save();
+    await payroll.populate('tutor', 'firstName lastName email');
 
-    // 2) Reload with tutor email
-    payroll = await payroll.populate('tutor', 'firstName lastName email');
+    // Send confirmation email
+    await sendEmailReceipt({
+      to: tutor.email,
+      subject: 'Your payroll has been confirmed',
+      html: `
+        <p>Hi ${tutor.firstName},</p>
+        <p>Your hours on ${payroll.confirmedAt.toLocaleDateString()} have been confirmed.</p>
+        <ul>
+          <li><strong>Confirmed Hours:</strong> ${payroll.confirmedHours}</li>
+          <li><strong>Unconfirmed Hours:</strong> ${payroll.unconfirmedHours}</li>
+        </ul>
+        <p>Thank you for tutoring with BSTutors!</p>
+        <br>
+        <small>— BSTutors Admin Team</small>
+      `
+    });
 
-    // 3) Send notification email
-    try {
-      await sendEmailReceipt({
-        to:      payroll.tutor.email,
-        subject: 'Your payroll has been confirmed',
-        html: `
-          <p>Hi ${payroll.tutor.firstName},</p>
-          <p>Your payroll on ${payroll.confirmedAt.toLocaleDateString()} has been <strong>confirmed</strong>.</p>
-          <ul>
-            <li><strong>Confirmed Hours:</strong> ${payroll.confirmedHours}</li>
-            <li><strong>Unconfirmed Hours:</strong> ${payroll.unconfirmedHours}</li>
-          </ul>
-          <p>Thanks for your work!</p>
-        `
-      });
-    } catch (emailErr) {
-      console.error('❌ Email failed:', emailErr);
-      // not blocking: we still return 200
-    }
-
-    // 4) Respond with updated payroll
-    res.json(payroll);
+    return res.json(payroll);
   } catch (err) {
     console.error('Error confirming payroll:', err);
-    res.status(500).json({ message: 'Server error' });
+    return res.status(500).json({ message: 'Server error' });
   }
 };
 

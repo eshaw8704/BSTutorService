@@ -108,8 +108,7 @@
 .tutor-list li {
   margin-bottom: 0.5rem;
 }
-.tutor-list button,
-.tutor-list a {
+.tutor-list button {
   padding: 0.5rem 1rem;
   border: none;
   background-color: var(--bst-purple);
@@ -117,10 +116,8 @@
   border-radius: 5px;
   cursor: pointer;
   transition: opacity 0.2s ease;
-  text-decoration: none;
 }
-.tutor-list button:hover,
-.tutor-list a:hover {
+.tutor-list button:hover {
   opacity: 0.9;
 }
 
@@ -144,14 +141,12 @@
 
 /* ─── Confirm Button ─── */
 .confirm-btn {
-  display: block;
-  width: 100%;
-  margin-top: 1.5rem;
+  margin-top: 1rem;
   padding: 0.75rem 2rem;
-  background-color: var(--bst-purple);  /* fixed to purple */
-  color: white;                         /* ensure white text */
+  background-color: var(--bst-purple);
+  color: white;
   font-weight: bold;
-  border: none;                         /* remove default border */
+  border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease, opacity 0.2s ease;
@@ -164,7 +159,7 @@
   cursor: not-allowed;
 }
 
-/* ─── Inputs Elsewhere ─── */
+/* ─── Inputs & Buttons Elsewhere ─── */
 input[type="number"],
 input[type="date"] {
   padding: 0.5rem;
@@ -182,52 +177,4 @@ input[type="date"] {
 }
 .status-msg.success {
   color: #10B981; /* green */
-}
-
-/* ─── Review Page Card ─── */
-.review-page {
-  padding: 2rem;
-}
-
-.payroll-card {
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
-  background: #fff;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-.card-title {
-  margin: 0 0 1rem;
-  font-size: 1.5rem;
-  text-align: center;
-  color: var(--text-dark);
-}
-
-.field {
-  display: flex;
-  justify-content: space-between;
-  margin: 0.75rem 0;
-  font-size: 1.1rem;
-}
-
-.field .label {
-  font-weight: bold;
-}
-
-.confirmed {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 1.5rem;
-  color: #10B981; /* green */
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-
-.check-icon {
-  font-size: 1.5rem;
-  margin-right: 0.5rem;
 }
