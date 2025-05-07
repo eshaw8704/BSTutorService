@@ -4,10 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import greenLogo from '../../assets/greenBS.png';
 import "./Header.css";
 
-export default function Header({ adminMode, tutorMode }) {
+export default function Header({ adminMode, tutorMode, studentMode }) {
   const navigate = useNavigate();
-  const handleLogout = () => navigate('/login');
-  const showButtons = adminMode || tutorMode;
+
+  const handleLogout = () => {
+    navigate('/login');
+  };
+
+  const showButtons = adminMode || tutorMode || studentMode;
 
   return (
     <header className="admin-header">
@@ -21,30 +25,21 @@ export default function Header({ adminMode, tutorMode }) {
       </div>
 
       {showButtons && (
-        <div className="header-admin-buttons">
+      <div className="header-admin-buttons">
           {adminMode ? (
             <>
-              <button onClick={() => navigate('/admin/profile')}>
-                Profile
-              </button>
-              <button onClick={() => navigate('/admin/settings')}>
-                Settings
-              </button>
-              {/* Invoices button removed */}
+              <button onClick={() => navigate('/admin/profile')}>Profile</button>
+              <button onClick={() => navigate('/admin/settings')}>Settings</button>
+              <button onClick={() => navigate('/admin/invoices')}>Invoices</button>
             </>
           ) : (
             <>
-              <button onClick={() => navigate('/tutor/profile')}>
-                Profile
-              </button>
-              <button onClick={() => navigate('/tutor/settings')}>
-                Settings
-              </button>
-              <button onClick={() => navigate('/tutor/payroll')}>
-                Payroll
-              </button>
+              <button onClick={() => navigate('/studentdashboard/profile')}>Profile</button>
+              <button onClick={() => navigate('/studentdashboard/settings')}>Settings</button>
+              <button onClick={() => navigate('/studentdashboard/appointments')}>Appointments</button>
             </>
           )}
+
           <button onClick={handleLogout}>Logout</button>
         </div>
       )}

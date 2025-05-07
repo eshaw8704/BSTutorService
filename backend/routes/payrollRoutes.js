@@ -1,13 +1,41 @@
-// backend/routes/payrollRoutes.js
-
 import express from 'express';
+import { protect } from '../middleware/auth.js';
 import {
   getPayrollForTutor,
-  confirmPayrollForTutor
+  confirmPayrollForTutor,
+  logHoursForTutor
 } from '../controllers/payrollController.js';
 import Payroll from '../models/Payroll.js';
 
 const router = express.Router();
+
+// get a tutor’s payroll
+// GET /api/payroll/tutor/:tutorId
+router.get('/tutor/:tutorId', protect, getPayrollForTutor);
+
+// POST off-platform hours
+router.post('/tutor/:tutorId/log-hours', protect, logHoursForTutor);
+
+// confirm (move unconfirmed → confirmed)
+// PUT /api/payroll/tutor/:tutorId
+router.put('/tutor/:tutorId', protect, confirmPayrollForTutor);
+
+/*
+router.get('/tutor/:tutorId', async (req, res) => {
+  try {
+    const { tutorId } = req.params;
+    const payroll = await Payroll
+      .findOne({ tutor: tutorId })
+      .populate('tutor', 'firstName lastName');
+    if (!payroll) {
+      return res.status(404).json({ message: 'Payroll not found' });
+    }
+    res.json(payroll);
+  } catch (err) {
+    console.error('Error fetching payroll:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 // GET  /api/payroll/tutor/:tutorId — fetch payroll
 router.get('/tutor/:tutorId', getPayrollForTutor);
@@ -65,5 +93,30 @@ router.post('/', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+
+router.put('/tutor/:tutorId', async (req, res) => {
+  try {
+    const { tutorId } = req.params;
+    const { confirmedBy } = req.body;
+    if (!confirmedBy) {
+      return res.status(400).json({ message: 'Missing confirmedBy' });
+    }
+    const payroll = await Payroll.findOne({ tutor: tutorId });
+    if (!payroll) {
+      return res.status(404).json({ message: 'Payroll not found' });
+    }
+    payroll.confirmedHours    += payroll.unconfirmedHours;
+    payroll.unconfirmedHours   = 0;
+    payroll.confirmedBy        = confirmedBy;
+    payroll.confirmedAt        = new Date();
+    await payroll.save();
+    await payroll.populate('tutor', 'firstName lastName');
+    res.json(payroll);
+  } catch (err) {
+    console.error('Error confirming payroll:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+}); */
 
 export default router;

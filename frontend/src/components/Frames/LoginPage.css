@@ -1,6 +1,6 @@
 /* full-screen page wrapper */
 .login-page {
-  background: url('../../assets/water.gif') no-repeat center center fixed;
+  background: url('../../assets/pencil.png') no-repeat center center fixed;
   background-size: cover;
   min-height: 100vh;
   display: flex;

@@ -19,10 +19,18 @@ await connectDB();
 
 const app = express();
 
-// — Raw webhook parser
-app.use("/api/webhook", express.raw({ type: "application/json" }));
-app.use(express.json());
+// Webhook raw body parser (required by Stripe)
+app.use('/api/webhook', express.raw({ type: 'application/json' })); // ⬅️ Required *before* express.json()
+
+// Standard middleware
+app.use(express.json()); // ⬅️ Safe to use after webhook route
 app.use(cors());
+
+// Webhook raw body parser (required by Stripe)
+app.use('/api/webhook', express.raw({ type: 'application/json' })); // ⬅️ Required *before* express.json()
+
+// Webhook raw body parser (required by Stripe)
+app.use('/api/webhook', express.raw({ type: 'application/json' })); // ⬅️ Required *before* express.json()
 
 // — Visit-logging middleware (before your routes)
 app.use(async (req, res, next) => {

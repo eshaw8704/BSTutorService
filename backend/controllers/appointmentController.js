@@ -33,7 +33,10 @@ export const getUpcomingForStudent = async (req, res) => {
     const upcoming = await Appointment.find({
       student: studentId,
       appointmentDate: { $gte: now, $lte: nextMonth }
-    }).sort('appointmentDate');
+    })
+    .populate('tutor', 'firstName lastName')
+    .sort('appointmentDate');
+    
 
     res.json(upcoming);
   } catch (err) {
@@ -148,23 +151,43 @@ export const createAppointment = async (req, res) => {
   }
 };
 
-
 export const completeAppointment = async (req, res) => {
   try {
     const appt = await Appointment.findById(req.params.appointmentId);
-    if (!appt) return res.status(404).json({ message: 'Appointment not found' });
-    if (appt.status === 'completed') {
-      return res.status(400).json({ message: 'Appointment already marked complete' });
+    if (!appt) {
+      return res.status(404).json({ message: 'Appointment not found' });
     }
+
+    // 1) Too early?
+    const now = new Date();
+    if (now < new Date(appt.appointmentDate)) {
+      return res.status(400).json({
+        message: 'Too early to complete this session'
+      });
+    }
+
+    // 2) Already done?
+    if (appt.status === 'completed') {
+      return res.status(400).json({
+        message: 'Appointment already marked complete'
+      });
+    }
+
+    // 3) Mark complete & update payroll
     appt.status = 'completed';
     await appt.save();
     await updateUnconfirmedHours(appt.tutor);
-    res.json({ message: 'Appointment completed successfully' });
+
+    // 4) Return the updated appointment so front-end can confirm success
+    res.json(appt);
+
   } catch (err) {
-    console.error("❌ Failed to complete appointment:", err);
+    console.error('❌ Failed to complete appointment:', err);
     res.status(500).json({ message: 'Failed to complete appointment' });
   }
 };
+
+
 
 export const getLoggedAppointments = async (req, res) => {
   try {

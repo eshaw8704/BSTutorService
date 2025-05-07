@@ -2,6 +2,22 @@ import User from '../models/User.js';
 import Payroll from '../models/Payroll.js';
 import { sendEmailReceipt } from '../utils/sendEmail.js';
 
+export const getPayrollForTutor = async (req, res) => {
+  const { tutorId } = req.params;
+  try {
+    const payroll = await Payroll
+      .findOne({ tutor: tutorId })
+      .populate('tutor', 'firstName lastName email');
+    if (!payroll) {
+      return res.status(404).json({ message: 'Payroll not found' });
+    }
+    res.json(payroll);
+  } catch (err) {
+    console.error('Error fetching payroll:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 export const confirmPayrollForTutor = async (req, res) => {
   const { tutorId } = req.params;
   const { confirmedBy } = req.body;
@@ -56,21 +72,26 @@ export const confirmPayrollForTutor = async (req, res) => {
     return res.status(500).json({ message: 'Server error' });
   }
 };
-export const getPayrollForTutor = async (req, res) => {
+
+// POST /api/payroll/tutor/:tutorId
+// Logs hours for a specific tutor
+export const logHoursForTutor = async (req, res) => {
+  const { tutorId } = req.params;
+  const { date, hours, notes } = req.body;
+  if (!date || hours == null) {
+    return res.status(400).json({ message: 'Date and hours are required.' });
+  }
   try {
-    const { tutorId } = req.params;
-
-    const payroll = await Payroll
-      .findOne({ tutor: tutorId })
-      .populate('tutor', 'firstName lastName email');
-
+    let payroll = await Payroll.findOne({ tutor: tutorId });
     if (!payroll) {
-      return res.status(404).json({ message: 'Payroll not found' });
+      payroll = new Payroll({ tutor: tutorId });
     }
-
-    return res.json(payroll);
+    payroll.unconfirmedHours += Number(hours);
+    // optionally store notes/date in another field if you want details
+    await payroll.save();
+    res.status(201).json(payroll);
   } catch (err) {
-    console.error('Error fetching payroll:', err);
-    return res.status(500).json({ message: 'Server error' });
+    console.error('Error logging hours:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 };

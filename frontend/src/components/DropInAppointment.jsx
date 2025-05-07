@@ -72,5 +72,3 @@ import DropInAppointments from '../components/DropInAppointment';
       </div>
     );
   }
-  
-}
