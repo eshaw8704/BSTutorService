@@ -83,54 +83,5 @@
   .back-button:hover {
     background-color: #069a78; /* Same hover color as login */
   }
-  @media (prefers-color-scheme: dark) {
-    .appointment-frame {
-      background-color: #121212;
-      color: #e0e0e0;
-    }
   
-    .frame-header {
-      border-bottom: 1px solid #333;
-      background-color: #1e1e1e;
-    }
-  
-    .frame-title {
-      color: #fafafa;
-    }
-  
-    .frame-controls .frame-btn {
-      background-color: #4b0082bb;
-      color: #fff;
-    }
-  
-    .frame-controls .frame-btn:hover {
-      background-color: #2a0050;
-    }
-  
-    .frame-actions {
-      display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 3rem;
-    gap: 1.5rem;
-    }
-  
-    .action-button {
-      background-color: #4b0082bb;
-      color: #fff;
-    }
-  
-    .action-button:hover {
-      background-color: #046956;
-    }
-  
-    .back-button {
-      background-color: #4b0082bb;
-      color: #fff;
-    }
-  
-    .back-button:hover {
-      background-color: #046956;
-    }
-  }
   

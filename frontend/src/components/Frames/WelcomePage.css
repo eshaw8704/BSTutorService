@@ -1,4 +1,5 @@
 .welcome-page {
+ 
     width: 100%;
     min-height: 100vh;
     background-color: #823799be;
@@ -32,6 +33,23 @@
     margin-bottom: 2rem;
     color: #ffffff;
   }
+  .welcome-button {
+    background-color: #a455f5;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 25px;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: all 0.2s ease;
+    margin: 0.5rem 0;
+  }
+  
+  .welcome-button:hover {
+    background-color: #8938e6;
+    transform: scale(1.05);
+  }
+  
   
   .button-group {
     display: flex;
@@ -68,4 +86,22 @@
   width: 350px;
   height: auto;
 }
+.welcome-button {
+  background-color: #a55cda;
+  color: white; /* ✅ make text white */
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  width: 300px; /* consistent button width */
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.welcome-button:hover {
+  background-color: #9b0db7;
+  transform: scale(1.05);
+}
+
   
