@@ -86,4 +86,22 @@
   width: 350px;
   height: auto;
 }
+.welcome-button {
+  background-color: #a55cda;
+  color: white; /* ✅ make text white */
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 25px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  width: 300px; /* consistent button width */
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.welcome-button:hover {
+  background-color: #9b0db7;
+  transform: scale(1.05);
+}
+
   

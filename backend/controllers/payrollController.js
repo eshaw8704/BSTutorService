@@ -75,8 +75,7 @@ export const confirmPayrollForTutor = async (req, res) => {
   }
 };
 
-// POST /api/payroll/tutor/:tutorId
-// Logs hours for a specific tutor
+
 export const logHoursForTutor = async (req, res) => {
   const { tutorId } = req.params;
   const { date, hours, notes } = req.body;

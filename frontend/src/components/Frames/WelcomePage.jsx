@@ -4,12 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import './WelcomePage.css';
 import yellowLogo from "../../assets/yellowBS.png";
+import Header from '../Frames/Header';
 
 function WelcomePage() {
   const navigate = useNavigate();
 
   return (
     <div className="welcome-page">
+       <Header />
       <motion.div
         className="left-content"
         initial={{ opacity: 0, x: -40 }}
