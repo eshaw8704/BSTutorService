@@ -1,4 +1,3 @@
-// src/components/Frames/TrafficStats.jsx
 import React, { useEffect, useState } from 'react';
 import {
   LineChart, Line, XAxis, YAxis,
@@ -6,23 +5,33 @@ import {
 } from 'recharts';
 import './TrafficStats.css';
 
+// ✅ Function to get a date string in PST (America/Los_Angeles) timezone
+function getPSTDateString(offsetDays = 0) {
+  const pst = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Los_Angeles',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date(Date.now() - offsetDays * 24 * 60 * 60 * 1000));
+
+  // Convert MM/DD/YYYY → YYYY-MM-DD
+  const [month, day, year] = pst.split('/');
+  return `${year}-${month}-${day}`;
+}
+
 export default function TrafficStats() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    // demo: 30 days of random small numbers
-    const start = new Date('2025-04-05');
     const arr = Array.from({ length: 30 }, (_, i) => {
-      const d = new Date(start);
-      d.setDate(d.getDate() + i);
+      const date = getPSTDateString(29 - i); // start 29 days ago, end today
       return {
-        date: d.toISOString().slice(0,10),
-        visits: Math.floor(Math.random()*60)
+        date,
+        visits: Math.floor(Math.random() * 60)
       };
     });
     setData(arr);
   }, []);
-  
 
   return (
     <div className="traffic-card">
@@ -42,8 +51,6 @@ export default function TrafficStats() {
             tick={{ fill: '#333', fontSize: 12 }}
             axisLine={{ stroke: '#999' }}
           />
-
-          {/* ← This gives you the hover‐tooltip following the cursor */}
           <Tooltip
             cursor={{ stroke: '#8884d8', strokeWidth: 2 }}
             contentStyle={{
@@ -54,7 +61,6 @@ export default function TrafficStats() {
             labelStyle={{ color: '#555' }}
             itemStyle={{ color: '#8884d8' }}
           />
-
           <Line
             type="monotone"
             dataKey="visits"
