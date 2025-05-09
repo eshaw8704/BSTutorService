@@ -9,12 +9,18 @@ const convertToValidTime = (isoString) => {
   const key = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
 
   const timeMap = {
-    '8:00': '08:00 AM', '9:00': '09:00 AM', '9:30': '09:30 AM',
-    '10:00': '10:00 AM', '11:00': '11:00 AM', '11:30': '11:30 AM',
-    '12:00': '12:00 PM', '13:00': '01:00 PM', '13:30': '01:30 PM',
-    '14:00': '02:00 PM', '14:30': '02:30 PM', '15:00': '03:00 PM',
-    '16:00': '04:00 PM', '17:00': '05:00 PM'
+    "8:00": "08:00 AM", "8:30": "08:30 AM",
+    "9:00": "09:00 AM", "9:30": "09:30 AM",
+    "10:00": "10:00 AM", "10:30": "10:30 AM",
+    "11:00": "11:00 AM", "11:30": "11:30 AM",
+    "12:00": "12:00 PM", "12:30": "12:30 PM",
+    "13:00": "01:00 PM", "13:30": "01:30 PM",
+    "14:00": "02:00 PM", "14:30": "02:30 PM",
+    "15:00": "03:00 PM", "15:30": "03:30 PM",
+    "16:00": "04:00 PM", "16:30": "04:30 PM",
+    "17:00": "05:00 PM"
   };
+  
 
   return timeMap[key] || null;
 };
@@ -22,14 +28,21 @@ const convertToValidTime = (isoString) => {
 export const getUpcomingForStudent = async (req, res) => {
   try {
     const studentId = req.user.id;
+
+    // 🔹 Start from the beginning of today
     const now = new Date();
+    now.setHours(0, 0, 0, 0);  // ✅ Include all of today
+
+    // 🔹 End 30 days from now
     const nextMonth = new Date();
     nextMonth.setDate(now.getDate() + 30);
 
     const upcoming = await Appointment.find({
       student: studentId,
       appointmentDate: { $gte: now, $lte: nextMonth }
-    }).populate('tutor', 'firstName lastName').sort('appointmentDate');
+    })
+      .populate('tutor', 'firstName lastName')
+      .sort('appointmentDate');
 
     res.json(upcoming);
   } catch (err) {
@@ -37,6 +50,7 @@ export const getUpcomingForStudent = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 export const createAppointment = async (req, res) => {
   try {
@@ -55,11 +69,14 @@ export const createAppointment = async (req, res) => {
         message: `Missing required field${missing.length > 1 ? 's' : ''}: ${missing.join(', ')}`
       });
     }
-
-    const parsedDate = new Date(appointmentDate);
-    if (isNaN(parsedDate)) {
+    const [year, month, day] = appointmentDate.split('-');
+    const parsedDate = new Date(year, month - 1, day); // Local time at midnight
+    
+    if (isNaN(parsedDate.getTime())) {
       return res.status(400).json({ message: "Invalid appointment date format" });
     }
+    
+
 
     const newAppt = new Appointment({
       student,
