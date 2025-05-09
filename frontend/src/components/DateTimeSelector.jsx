@@ -1,3 +1,4 @@
+// src/components/DateTimeSelector.jsx
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -31,7 +32,8 @@ export default function DateTimeSelector({ onDateTimeSelect, tutorId, excludeApp
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
 
   useEffect(() => {
-    if (!selectedDate || !tutorId) return;
+    if (!selectedDate || isNaN(selectedDate.getTime()) || !tutorId) return;
+
     const dateStr = selectedDate.toISOString().split("T")[0];
 
     fetch(`/api/appointments/tutor/${tutorId}/booked-times?date=${dateStr}&exclude=${excludeApptId}`, {

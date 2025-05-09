@@ -248,8 +248,16 @@ const getBookedTimesByTutor = async (req, res) => {
     const { tutorID } = req.params;
     const { date, exclude } = req.query;
 
+    if (!tutorID || !date) {
+      return res.status(400).json({ message: "Missing tutor ID or date" });
+    }
+
     const targetDate = new Date(date);
-    targetDate.setHours(0, 0, 0, 0);
+    if (isNaN(targetDate.getTime())) {
+      return res.status(400).json({ message: "Invalid date format" });
+    }
+
+    targetDate.setHours(0, 0, 0, 0); // normalize start of day
     const nextDay = new Date(targetDate);
     nextDay.setDate(nextDay.getDate() + 1);
 
@@ -259,17 +267,19 @@ const getBookedTimesByTutor = async (req, res) => {
       status: { $in: ['scheduled', 'confirmed'] }
     };
 
-    if (exclude) query._id = { $ne: exclude };
+    if (exclude) {
+      query._id = { $ne: exclude };
+    }
 
     const appointments = await Appointment.find(query).select('appointmentTime');
     const bookedTimes = appointments.map(appt => appt.appointmentTime);
-
     res.json(bookedTimes);
   } catch (err) {
     console.error('❌ Failed to fetch booked times:', err);
     res.status(500).json({ message: 'Failed to fetch booked times' });
   }
 };
+
 
 // ✅ Unified export at bottom
 export {

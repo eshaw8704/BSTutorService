@@ -1,3 +1,4 @@
+// src/components/BookAppointment.jsx
 import React, { useState, useEffect } from 'react';
 import { FaCheck } from 'react-icons/fa';
 import './BookAppointment.css';
@@ -43,7 +44,9 @@ export default function BookAppointment() {
       return;
     }
 
-    fetch(`/api/appointments/tutor/${tutor}/booked-times`, {
+    const dateParam = encodeURIComponent(date); // Ensure formatting safety
+
+    fetch(`/api/appointments/tutor/${tutor}/booked-times?date=${dateParam}`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -53,10 +56,7 @@ export default function BookAppointment() {
         return res.json();
       })
       .then(booked => {
-        const bookedTimes = booked
-          .filter(b => b.date === date)
-          .map(b => b.time);
-
+        const bookedTimes = Array.isArray(booked) ? booked : [];
         const free = ALL_TIME_SLOTS.filter(t => !bookedTimes.includes(t));
         setAvailableTimes(free);
       })
@@ -137,7 +137,7 @@ export default function BookAppointment() {
           <select value={subject} onChange={e => setSubject(e.target.value)}>
             <option value="">Select Subject</option>
             <option>Math</option>
-            <option>Physics</option>
+            <option>Science</option>
             <option>English</option>
             <option>History</option>
             <option>Programming</option>
