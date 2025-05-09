@@ -199,39 +199,83 @@ export const getLoggedAppointments = async (req, res) => {
   }
 };
 export const changeAppointment = async (req, res) => {
-    try {
-        const { appointmentTime } = req.body;
-        const appointmentId = req.params.appointmentId;
+  try {
+    const { appointmentDate, appointmentTime } = req.body;
+    const appointmentId = req.params.appointmentId;
 
-
-        // Check if the appointment time is within the tutor's working hours (9 AM to 5 PM)
-        const appointmentHour = new Date(appointmentTime).getHours();
-        if (appointmentHour < 9 || appointmentHour >= 17) {
-            return res.status(400).json({ message: "The tutor is only available from 9 AM to 5 PM." });
-        }
-
-        // Find the appointment by ID
-        const appointment = await Appointment.findById(appointmentId);
-        if (!appointment) {
-            return res.status(404).json({ message: "Appointment not found." });
-        }
-
-        // Check if the tutor is available at the new appointment time
-        const tutorAppointments = await Appointment.find({ tutor: appointment.tutor });
-        const isTimeAvailable = !tutorAppointments.some(app => app.appointmentTime === appointmentTime);
-
-        if (!isTimeAvailable) {
-            return res.status(400).json({ message: "The tutor is already booked at this time." });
-        }
-
-        // Update the appointment with the new time
-        appointment.appointmentTime = appointmentTime;
-        await appointment.save();
-
-        res.status(200).json({ message: "Appointment successfully rescheduled.", appointment });
-    } catch (error) {
-        res.status(500).json({ message: "Error rescheduling appointment.", error: error.message });
+    const parsedDate = new Date(appointmentDate);
+    if (isNaN(parsedDate)) {
+      return res.status(400).json({ message: "Invalid appointment date." });
     }
+
+    const enumTime = convertToValidTime(appointmentTime);
+    if (!enumTime) {
+      return res.status(400).json({ message: "Invalid appointment time." });
+    }
+
+    const hour = new Date(appointmentTime).getHours();
+    if (hour < 9 || hour >= 17) {
+      return res.status(400).json({ message: "The tutor is only available from 9 AM to 5 PM." });
+    }
+
+    const appointment = await Appointment.findById(appointmentId).populate('student tutor', 'email firstName lastName');
+    if (!appointment) {
+      return res.status(404).json({ message: "Appointment not found." });
+    }
+
+    const conflict = await Appointment.findOne({
+      tutor: appointment.tutor._id,
+      appointmentDate: parsedDate,
+      appointmentTime: enumTime,
+      _id: { $ne: appointment._id }
+    });
+
+    if (conflict) {
+      return res.status(400).json({ message: "The tutor is already booked at this date and time." });
+    }
+
+    appointment.appointmentDate = parsedDate;
+    appointment.appointmentTime = enumTime;
+    await appointment.save();
+
+    if (appointment.student?.email) {
+      await sendEmailReceipt({
+        to: appointment.student.email,
+        subject: 'Appointment Rescheduled',
+        html: `
+          <h2>Hello ${appointment.student.firstName}!</h2>
+          <p>Your appointment has been rescheduled:</p>
+          <ul>
+            <li><strong>Subject:</strong> ${appointment.subject}</li>
+            <li><strong>New Date:</strong> ${parsedDate.toLocaleDateString()}</li>
+            <li><strong>New Time:</strong> ${enumTime}</li>
+          </ul>
+        `
+      });
+    }
+
+    if (appointment.tutor?.email) {
+      await sendEmailReceipt({
+        to: appointment.tutor.email,
+        subject: 'Appointment Rescheduled by Student',
+        html: `
+          <h2>Hello ${appointment.tutor.firstName}!</h2>
+          <p>An appointment has been rescheduled by a student:</p>
+          <ul>
+            <li><strong>Student:</strong> ${appointment.student.firstName} ${appointment.student.lastName}</li>
+            <li><strong>Subject:</strong> ${appointment.subject}</li>
+            <li><strong>New Date:</strong> ${parsedDate.toLocaleDateString()}</li>
+            <li><strong>New Time:</strong> ${enumTime}</li>
+          </ul>
+        `
+      });
+    }
+
+    res.status(200).json({ message: "Appointment successfully rescheduled.", appointment });
+  } catch (error) {
+    console.error("❌ Reschedule failed:", error);
+    res.status(500).json({ message: "Error rescheduling appointment.", error: error.message });
+  }
 };
 export const updateAppointment = async (req, res) => {
   try {

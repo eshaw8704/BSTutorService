@@ -34,6 +34,9 @@ router.get('/tutor/:tutorID', protect, getAppointmentsByTutor);
 
 // 🔹 PATCH /api/appointments/:appointmentId/complete
 router.patch('/:appointmentId/complete', protect, completeAppointment);
+// In routes/appointmentRoutes.js
+router.patch('/:appointmentId/change', protect, changeAppointment);
+
 
 // 🔹 GET /api/appointments/logged
 router.get('/logged', protect, getLoggedAppointments);

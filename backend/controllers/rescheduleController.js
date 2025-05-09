@@ -23,7 +23,7 @@ const convertToValidTime = (isoString) => {
   return timeMap[key] || null;
 };
 
-export const changeAppointment = async (req, res) => {
+//export const changeAppointment = async (req, res) => {
   console.log("🔄 Reschedule request:", req.params.appointmentId);
   console.log("📬 Incoming:", req.body);
 
@@ -94,4 +94,4 @@ export const changeAppointment = async (req, res) => {
     console.error("❌ Reschedule failed:", err.message, err.stack);
     res.status(500).json({ message: "Error updating appointment" });
   }
-};
+//};
