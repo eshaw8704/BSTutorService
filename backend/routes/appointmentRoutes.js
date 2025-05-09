@@ -13,9 +13,6 @@ import {
   updateAppointment,
 } from '../controllers/appointmentController.js';
 
-
-
-
 const router = express.Router();
 
 // 🔹 GET /api/appointments/upcoming
@@ -24,6 +21,7 @@ router.get('/upcoming', protect, getUpcomingForStudent);
 // 🔹 POST /api/appointments
 router.post('/', protect, createAppointment);
 
+// 🔹 PATCH /api/appointments/:appointmentId/update
 router.patch('/:appointmentId/update', protect, updateAppointment);
 
 // 🔹 GET /api/appointments/:studentID
@@ -72,5 +70,27 @@ router.get('/all/history', async (req, res) => {
   }
 });
 
+// 🔹 GET /api/appointments/tutor/:tutorId/booked?date=YYYY-MM-DD
+router.get('/tutor/:tutorId/booked', protect, async (req, res) => {
+  try {
+    const { tutorId } = req.params;
+    const { date } = req.query;
+
+    if (!date) {
+      return res.status(400).json({ message: 'Missing date query parameter' });
+    }
+
+    const appointments = await Appointment.find({
+      tutor: tutorId,
+      appointmentDate: date
+    });
+
+    const bookedTimes = appointments.map(a => a.appointmentTime);
+    res.json(bookedTimes);
+  } catch (err) {
+    console.error('❌ Error fetching booked time slots:', err);
+    res.status(500).json({ message: 'Server error while checking availability' });
+  }
+});
 
 export default router;
