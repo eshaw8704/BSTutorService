@@ -38,6 +38,11 @@ export default function CancelAppointment() {
     }
   };
 
+  const formatDate = (isoDate) => {
+    const [year, month, day] = isoDate.slice(0, 10).split('-');
+    return `${month}/${day}/${year}`;
+  };
+
   return (
     <div className="appointment-container">
       <h2>Cancel Appointment</h2>
@@ -47,7 +52,7 @@ export default function CancelAppointment() {
         <ul>
           {appointments.map(apt => (
             <li key={apt._id} style={{ marginBottom: '1rem' }}>
-              <strong>{apt.subject}</strong> on {new Date(apt.appointmentDate).toLocaleDateString()} at {apt.appointmentTime}
+              <strong>{apt.subject}</strong> on {formatDate(apt.appointmentDate)} at {apt.appointmentTime}
               <button style={{ marginLeft: '1rem' }} onClick={() => handleCancel(apt._id)}>
                 Cancel
               </button>

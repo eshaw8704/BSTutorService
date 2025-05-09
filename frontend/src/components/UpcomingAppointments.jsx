@@ -7,10 +7,11 @@ export default function UpcomingAppointmentsFrame() {
 
   useEffect(() => {
     if (!token) return;
+
     fetch('/api/appointments/upcoming', {
       headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type':  'application/json'
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
       }
     })
       .then(res => {
@@ -21,6 +22,11 @@ export default function UpcomingAppointmentsFrame() {
       .catch(err => console.error('Error loading upcoming appointments:', err));
   }, [token]);
 
+  const formatDate = (isoDate) => {
+    const [year, month, day] = isoDate.slice(0, 10).split('-');
+    return `${month}/${day}/${year}`; // e.g., 05/10/2025
+  };
+
   return (
     <div className="upcoming-appointments-frame">
       <h2>Upcoming Appointments</h2>
@@ -28,9 +34,9 @@ export default function UpcomingAppointmentsFrame() {
         <p>No upcoming appointments found.</p>
       ) : (
         <ul>
-          {appointments.map(a => (
+          {appointments.map((a) => (
             <li key={a._id}>
-              {new Date(a.appointmentDate).toLocaleDateString()} @ {a.appointmentTime}
+              {formatDate(a.appointmentDate)} @ {a.appointmentTime}
             </li>
           ))}
         </ul>

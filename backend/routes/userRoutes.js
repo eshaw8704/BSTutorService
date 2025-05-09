@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import User from '../models/User.js';
-import Payroll from '../models/Payroll.js'; // ✅ Added import
+import Payroll from '../models/payroll.js';
 import { protect } from '../middleware/auth.js';
 import {
   getProfile,
@@ -22,15 +22,13 @@ const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-// ✅ Register route: /api/users/register
+// 🔹 Register
 router.post('/register', async (req, res) => {
   try {
     const { firstName, lastName, email, password, role, secretKey } = req.body;
 
-    if (role === 'admin') {
-      if (!secretKey || secretKey !== process.env.ADMIN_SECRET_KEY) {
-        return res.status(403).json({ message: 'Invalid admin secret key.' });
-      }
+    if (role === 'admin' && secretKey !== process.env.ADMIN_SECRET_KEY) {
+      return res.status(403).json({ message: 'Invalid admin secret key.' });
     }
 
     const existingUser = await User.findOne({ email });
@@ -47,19 +45,18 @@ router.post('/register', async (req, res) => {
       email,
       password: hashedPassword,
       role,
-      UID,
+      UID
     });
 
     await newUser.save();
 
-    // ✅ Create payroll record for tutors
     if (role === 'tutor') {
       await Payroll.create({
         tutor: newUser._id,
         confirmedHours: 0,
         unconfirmedHours: 0,
         earnings: 0,
-        confirmed: false,
+        confirmed: false
       });
     }
 
@@ -73,30 +70,26 @@ router.post('/register', async (req, res) => {
         role: newUser.role,
         UID: newUser.UID,
         firstName: newUser.firstName,
-        lastName: newUser.lastName,
+        lastName: newUser.lastName
       },
-      token,
+      token
     });
-
   } catch (error) {
     console.error('Error in registration:', error.message);
     res.status(500).json({ message: 'Server error during registration.' });
   }
 });
 
+// 🔹 Login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
-    }
+    if (!user) return res.status(404).json({ message: 'User not found.' });
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid password.' });
-    }
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) return res.status(401).json({ message: 'Invalid password.' });
 
     const token = generateToken(user._id);
 
@@ -112,16 +105,17 @@ router.post('/login', async (req, res) => {
       },
       token
     });
-
   } catch (error) {
     console.error('Login error:', error.message);
     res.status(500).json({ message: 'Server error during login.' });
   }
 });
 
+// 🔹 Get all tutors
 router.get('/tutors', async (req, res) => {
   try {
     const tutors = await User.find({ role: 'tutor' }).select('-password');
+    console.log("👨‍🏫 Tutors found:", tutors.length);
     res.json(tutors);
   } catch (err) {
     console.error("Error fetching tutors:", err);
@@ -129,6 +123,7 @@ router.get('/tutors', async (req, res) => {
   }
 });
 
+// 🔹 User profile
 router.get('/profile', protect, getProfile);
 router.put('/profile', protect, updateProfile);
 router.put('/email', protect, updateEmail);
