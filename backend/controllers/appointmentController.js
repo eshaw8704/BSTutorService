@@ -1,3 +1,5 @@
+// backend/controllers/appointmentController.js
+
 import Appointment from '../models/Appointment.js';
 import { updateUnconfirmedHours } from '../utils/payrollUtils.js';
 import { sendEmailReceipt } from '../utils/sendEmail.js';
@@ -9,21 +11,22 @@ const convertToValidTime = (isoString) => {
   const key = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
 
   const timeMap = {
-    '8:00': '08:00 AM',
-    '9:30': '09:30 AM',
-    '10:00': '10:00 AM',
-    '11:30': '11:30 AM',
-    '13:00': '01:00 PM',
-    '13:30': '01:30 PM',
-    '14:00': '02:00 PM',
-    '14:30': '02:30 PM',
-    '15:00': '03:00 PM'
+    '8:00':  '08:00 AM', '8:30':  '08:30 AM',
+    '9:00':  '09:00 AM', '9:30':  '09:30 AM',
+    '10:00': '10:00 AM', '10:30': '10:30 AM',
+    '11:00': '11:00 AM', '11:30': '11:30 AM',
+    '12:00': '12:00 PM', '12:30': '12:30 PM',
+    '13:00': '01:00 PM', '13:30': '01:30 PM',
+    '14:00': '02:00 PM', '14:30': '02:30 PM',
+    '15:00': '03:00 PM', '15:30': '03:30 PM',
+    '16:00': '04:00 PM', '16:30': '04:30 PM',
+    '17:00': '05:00 PM'
   };
 
   return timeMap[key] || null;
 };
 
-export const getUpcomingForStudent = async (req, res) => {
+const getUpcomingForStudent = async (req, res) => {
   try {
     const studentId = req.user.id;
     const now = new Date();
@@ -36,7 +39,6 @@ export const getUpcomingForStudent = async (req, res) => {
     })
     .populate('tutor', 'firstName lastName')
     .sort('appointmentDate');
-    
 
     res.json(upcoming);
   } catch (err) {
@@ -45,7 +47,7 @@ export const getUpcomingForStudent = async (req, res) => {
   }
 };
 
-export const getAppointmentByStudent = async (req, res) => {
+const getAppointmentByStudent = async (req, res) => {
   try {
     const appointments = await Appointment.find({ student: req.params.studentID });
     res.json(appointments);
@@ -55,15 +57,12 @@ export const getAppointmentByStudent = async (req, res) => {
   }
 };
 
-export const getAppointmentsByTutor = async (req, res) => {
+const getAppointmentsByTutor = async (req, res) => {
   try {
     const appointments = await Appointment.find({
       tutor: req.params.tutorID
-      // Remove status filter for testing
     }).populate('student', 'firstName lastName');
-    console.log('📥 Fetching appts for tutor:', req.params.tutorID);
 
-    console.log('📤 All tutor appointments:', appointments);
     res.json(appointments);
   } catch (err) {
     console.error("❌ Error fetching appointments by tutor:", err);
@@ -71,10 +70,8 @@ export const getAppointmentsByTutor = async (req, res) => {
   }
 };
 
-// POST create new appointment
-export const createAppointment = async (req, res) => {
+const createAppointment = async (req, res) => {
   const { student, tutor, subject, appointmentTime, appointmentDate } = req.body;
-  console.log("📥 Incoming appointment data:", req.body);
 
   if (!student || !tutor || !subject || !appointmentTime || !appointmentDate) {
     return res.status(400).json({ message: "Missing required fields" });
@@ -85,15 +82,12 @@ export const createAppointment = async (req, res) => {
     return res.status(400).json({ message: "Invalid appointment date" });
   }
 
-  // ✅ Skip convertToValidTime — directly trust dropdown string
-  const validTime = appointmentTime;
-
   try {
     const newAppt = new Appointment({
       student,
       tutor,
       subject,
-      appointmentTime: validTime, // using direct time string like "02:30 PM"
+      appointmentTime,
       appointmentDate: parsedDate,
       status: 'scheduled'
     });
@@ -101,7 +95,6 @@ export const createAppointment = async (req, res) => {
     await newAppt.populate('student tutor', 'email firstName lastName');
     await newAppt.save();
 
-    // ✅ Email to student
     if (newAppt.student?.email) {
       await sendEmailReceipt({
         to: newAppt.student.email,
@@ -114,12 +107,10 @@ export const createAppointment = async (req, res) => {
             <li><strong>Date:</strong> ${newAppt.appointmentDate.toLocaleDateString()}</li>
             <li><strong>Time:</strong> ${newAppt.appointmentTime}</li>
           </ul>
-          <p>Thank you for choosing BSTutor.</p>
         `
       });
     }
 
-    // ✅ Email to tutor
     if (newAppt.tutor?.email) {
       await sendEmailReceipt({
         to: newAppt.tutor.email,
@@ -132,7 +123,6 @@ export const createAppointment = async (req, res) => {
             <li><strong>Date:</strong> ${newAppt.appointmentDate.toLocaleDateString()}</li>
             <li><strong>Time:</strong> ${newAppt.appointmentTime}</li>
           </ul>
-          <p>Check your tutor dashboard for more info.</p>
         `
       });
     }
@@ -141,53 +131,36 @@ export const createAppointment = async (req, res) => {
 
   } catch (err) {
     console.error("❌ Failed to create appointment:", err);
-    return res.status(500).json({
-      message: 'Server error creating appointment',
-      error: err.message
-    });
+    res.status(500).json({ message: 'Server error creating appointment', error: err.message });
   }
 };
 
-
-export const completeAppointment = async (req, res) => {
+const completeAppointment = async (req, res) => {
   try {
     const appt = await Appointment.findById(req.params.appointmentId);
-    if (!appt) {
-      return res.status(404).json({ message: 'Appointment not found' });
-    }
+    if (!appt) return res.status(404).json({ message: 'Appointment not found' });
 
-    // 1) Too early?
     const now = new Date();
     if (now < new Date(appt.appointmentDate)) {
-      return res.status(400).json({
-        message: 'Too early to complete this session'
-      });
+      return res.status(400).json({ message: 'Too early to complete this session' });
     }
 
-    // 2) Already done?
     if (appt.status === 'completed') {
-      return res.status(400).json({
-        message: 'Appointment already marked complete'
-      });
+      return res.status(400).json({ message: 'Appointment already marked complete' });
     }
 
-    // 3) Mark complete & update payroll
     appt.status = 'completed';
     await appt.save();
     await updateUnconfirmedHours(appt.tutor);
 
-    // 4) Return the updated appointment so front-end can confirm success
     res.json(appt);
-
   } catch (err) {
     console.error('❌ Failed to complete appointment:', err);
     res.status(500).json({ message: 'Failed to complete appointment' });
   }
 };
 
-
-
-export const getLoggedAppointments = async (req, res) => {
+const getLoggedAppointments = async (req, res) => {
   try {
     const appts = await Appointment.find({ status: 'completed' });
     res.json(appts);
@@ -196,7 +169,8 @@ export const getLoggedAppointments = async (req, res) => {
     res.status(500).json({ message: 'Failed to get logged appointments' });
   }
 };
-export const changeAppointment = async (req, res) => {
+
+const changeAppointment = async (req, res) => {
   try {
     const { appointmentDate, appointmentTime } = req.body;
     const appointmentId = req.params.appointmentId;
@@ -206,15 +180,7 @@ export const changeAppointment = async (req, res) => {
       return res.status(400).json({ message: "Invalid appointment date." });
     }
 
-    const enumTime = convertToValidTime(appointmentTime);
-    if (!enumTime) {
-      return res.status(400).json({ message: "Invalid appointment time." });
-    }
-
-    const hour = new Date(appointmentTime).getHours();
-    if (hour < 9 || hour >= 17) {
-      return res.status(400).json({ message: "The tutor is only available from 9 AM to 5 PM." });
-    }
+    const enumTime = appointmentTime.trim(); // ✅ use directly from dropdown
 
     const appointment = await Appointment.findById(appointmentId).populate('student tutor', 'email firstName lastName');
     if (!appointment) {
@@ -236,46 +202,15 @@ export const changeAppointment = async (req, res) => {
     appointment.appointmentTime = enumTime;
     await appointment.save();
 
-    if (appointment.student?.email) {
-      await sendEmailReceipt({
-        to: appointment.student.email,
-        subject: 'Appointment Rescheduled',
-        html: `
-          <h2>Hello ${appointment.student.firstName}!</h2>
-          <p>Your appointment has been rescheduled:</p>
-          <ul>
-            <li><strong>Subject:</strong> ${appointment.subject}</li>
-            <li><strong>New Date:</strong> ${parsedDate.toLocaleDateString()}</li>
-            <li><strong>New Time:</strong> ${enumTime}</li>
-          </ul>
-        `
-      });
-    }
-
-    if (appointment.tutor?.email) {
-      await sendEmailReceipt({
-        to: appointment.tutor.email,
-        subject: 'Appointment Rescheduled by Student',
-        html: `
-          <h2>Hello ${appointment.tutor.firstName}!</h2>
-          <p>An appointment has been rescheduled by a student:</p>
-          <ul>
-            <li><strong>Student:</strong> ${appointment.student.firstName} ${appointment.student.lastName}</li>
-            <li><strong>Subject:</strong> ${appointment.subject}</li>
-            <li><strong>New Date:</strong> ${parsedDate.toLocaleDateString()}</li>
-            <li><strong>New Time:</strong> ${enumTime}</li>
-          </ul>
-        `
-      });
-    }
-
     res.status(200).json({ message: "Appointment successfully rescheduled.", appointment });
   } catch (error) {
     console.error("❌ Reschedule failed:", error);
     res.status(500).json({ message: "Error rescheduling appointment.", error: error.message });
   }
 };
-export const updateAppointment = async (req, res) => {
+
+
+const updateAppointment = async (req, res) => {
   try {
     const { appointmentId } = req.params;
     const { appointmentDate, appointmentTime, subject } = req.body;
@@ -286,44 +221,8 @@ export const updateAppointment = async (req, res) => {
     if (appointmentDate) appointment.appointmentDate = new Date(appointmentDate);
     if (appointmentTime) appointment.appointmentTime = appointmentTime;
     if (subject) appointment.subject = subject;
+
     await appointment.save();
-
-    // Send update emails
-    if (appointment.student?.email) {
-      await sendEmailReceipt({
-        to: appointment.student.email,
-        subject: 'Appointment Update Notification',
-        html: `
-          <h2>Hi ${appointment.student.firstName}!</h2>
-          <p>Your appointment has been updated.</p>
-          <ul>
-            <li><strong>New Date:</strong> ${appointment.appointmentDate.toLocaleDateString()}</li>
-            <li><strong>New Time:</strong> ${appointment.appointmentTime}</li>
-            <li><strong>Subject:</strong> ${appointment.subject}</li>
-          </ul>
-          <p>Please check your dashboard for details.</p>
-        `
-      });
-    }
-
-    if (appointment.tutor?.email) {
-      await sendEmailReceipt({
-        to: appointment.tutor.email,
-        subject: 'Appointment Update Notification',
-        html: `
-          <h2>Hi ${appointment.tutor.firstName}!</h2>
-          <p>Your appointment with a student has been updated.</p>
-          <ul>
-            <li><strong>New Date:</strong> ${appointment.appointmentDate.toLocaleDateString()}</li>
-            <li><strong>New Time:</strong> ${appointment.appointmentTime}</li>
-            <li><strong>Subject:</strong> ${appointment.subject}</li>
-          </ul>
-          <p>Please check your dashboard for details.</p>
-        `
-      });
-    }
-
-    console.log('✅ Emails sent after appointment update.');
     res.json({ message: 'Appointment updated and notifications sent.' });
   } catch (err) {
     console.error('❌ Failed to update appointment:', err);
@@ -331,68 +230,58 @@ export const updateAppointment = async (req, res) => {
   }
 };
 
-// DELETE appointment
-export const deleteAppointment = async (req, res) => {
+const deleteAppointment = async (req, res) => {
   try {
     const appointment = await Appointment.findById(req.params.appointmentId).populate('student tutor', 'email firstName lastName');
-
-    if (!appointment) {
-      return res.status(404).json({ message: 'Appointment not found' });
-    }
+    if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
 
     await appointment.deleteOne();
-
-    const emailContent = `
-      <p>The following appointment has been canceled:</p>
-      <ul>
-        <li><strong>Date:</strong> ${appointment.appointmentDate.toLocaleDateString()}</li>
-        <li><strong>Time:</strong> ${appointment.appointmentTime}</li>
-        <li><strong>Subject:</strong> ${appointment.subject}</li>
-      </ul>
-    `;
-
-    if (appointment.student?.email) {
-      await sendEmailReceipt({
-        to: appointment.student.email,
-        subject: 'Appointment Cancellation Notification',
-        html: `<h2>Hi ${appointment.student.firstName}!</h2>${emailContent}`
-      });
-    }
-
-    if (appointment.tutor?.email) {
-      await sendEmailReceipt({
-        to: appointment.tutor.email,
-        subject: 'Appointment Cancellation Notification',
-        html: `<h2>Hi ${appointment.tutor.firstName}!</h2>${emailContent}`
-      });
-    }
-
-    console.log('✅ Cancellation emails sent to student and tutor.');
     res.json({ message: 'Appointment canceled and notifications sent.' });
-
   } catch (err) {
     console.error('❌ Failed to cancel appointment:', err);
     res.status(500).json({ message: 'Server error canceling appointment' });
   }
-};export const getBookedTimesByTutor = async (req, res) => {
+};
+
+const getBookedTimesByTutor = async (req, res) => {
   try {
     const { tutorID } = req.params;
-    const today = new Date();
+    const { date, exclude } = req.query;
 
-    const appointments = await Appointment.find({
+    const targetDate = new Date(date);
+    targetDate.setHours(0, 0, 0, 0);
+    const nextDay = new Date(targetDate);
+    nextDay.setDate(nextDay.getDate() + 1);
+
+    const query = {
       tutor: tutorID,
-      appointmentDate: { $gte: today },
+      appointmentDate: { $gte: targetDate, $lt: nextDay },
       status: { $in: ['scheduled', 'confirmed'] }
-    }).select('appointmentDate appointmentTime');
+    };
 
-    const bookedSlots = appointments.map(appt => ({
-      date: appt.appointmentDate.toISOString().split('T')[0],
-      time: appt.appointmentTime
-    }));
+    if (exclude) query._id = { $ne: exclude };
 
-    res.json(bookedSlots);
+    const appointments = await Appointment.find(query).select('appointmentTime');
+    const bookedTimes = appointments.map(appt => appt.appointmentTime);
+
+    res.json(bookedTimes);
   } catch (err) {
     console.error('❌ Failed to fetch booked times:', err);
     res.status(500).json({ message: 'Failed to fetch booked times' });
   }
+};
+
+// ✅ Unified export at bottom
+export {
+  convertToValidTime,
+  getUpcomingForStudent,
+  getAppointmentByStudent,
+  getAppointmentsByTutor,
+  createAppointment,
+  completeAppointment,
+  getLoggedAppointments,
+  changeAppointment,
+  updateAppointment,
+  deleteAppointment,
+  getBookedTimesByTutor
 };

@@ -8,7 +8,7 @@ export default function RescheduleAppointment() {
   const token = localStorage.getItem('token');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/appointments/upcoming', {
+    fetch('/api/appointments/upcoming', {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -19,28 +19,19 @@ export default function RescheduleAppointment() {
   }, [token]);
 
   const handleReschedule = async (newDate, newTime) => {
-    const [year, month, day] = [
-      newDate.getFullYear(),
-      String(newDate.getMonth() + 1).padStart(2, '0'),
-      String(newDate.getDate()).padStart(2, '0'),
-    ];
-    const [time, modifier] = newTime.split(' ');
-    let [hours, minutes] = time.split(':');
-    if (modifier === 'PM' && hours !== '12') hours = String(parseInt(hours) + 12);
-    if (modifier === 'AM' && hours === '12') hours = '00';
-
-    const dateTimeISO = new Date(`${year}-${month}-${day}T${hours}:${minutes}`).toISOString();
-
     try {
-      const res = await fetch(`http://localhost:5000/api/appointments/${selectedAppointment._id}/change`, {
+      const formattedDate = new Date(newDate); // already a Date object
+      const formattedTime = newTime.trim(); // already a formatted string like "03:30 PM"
+
+      const res = await fetch(`/api/appointments/${selectedAppointment._id}/change`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`
         },
         body: JSON.stringify({
-          appointmentDate: newDate,
-          appointmentTime: newTime
+          appointmentDate: formattedDate,
+          appointmentTime: formattedTime
         }),
       });
 
@@ -49,7 +40,7 @@ export default function RescheduleAppointment() {
       if (res.ok) {
         alert('✅ Appointment successfully rescheduled!');
         setSelectedAppointment(null);
-        const updated = await fetch('http://localhost:5000/api/appointments/upcoming', {
+        const updated = await fetch('/api/appointments/upcoming', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setAppointments(await updated.json());
@@ -95,6 +86,8 @@ export default function RescheduleAppointment() {
         <>
           <p>New date/time for: <strong>{selectedAppointment.subject}</strong></p>
           <DateTimeSelector
+            tutorId={selectedAppointment.tutor._id}
+            currentAppointmentId={selectedAppointment._id}
             onDateTimeSelect={({ date, time }) => handleReschedule(date, time)}
           />
           <button onClick={() => setSelectedAppointment(null)} style={{ marginTop: '1rem' }}>

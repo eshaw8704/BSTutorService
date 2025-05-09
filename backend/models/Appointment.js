@@ -28,11 +28,15 @@ const appointmentSchema = new mongoose.Schema({
       "02:00 PM", "02:30 PM", "03:00 PM", "03:30 PM",
       "04:00 PM", "04:30 PM", "05:00 PM"
     ]
-    
   },
   appointmentDate: {
     type: Date,
     required: true
+  },
+  status: {
+    type: String,
+    enum: ['scheduled', 'completed', 'confirmed'],
+    default: 'scheduled'
   }
 });
 

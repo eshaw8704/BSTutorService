@@ -22,10 +22,11 @@ router.get('/upcoming', protect, getUpcomingForStudent);
 // 🔹 Create new appt
 router.post('/', protect, createAppointment);
 
-// 🔹 Update appt
+// 🔹 Update appt info
 router.patch('/:appointmentId/update', protect, updateAppointment);
+
+// 🔹 Change date/time for reschedule
 router.patch('/:appointmentId/change', protect, changeAppointment);
-router.put('/:appointmentId', protect, changeAppointment);
 
 // 🔹 Complete appt
 router.patch('/:appointmentId/complete', protect, completeAppointment);

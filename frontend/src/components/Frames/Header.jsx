@@ -37,7 +37,7 @@ export default function Header({ adminMode, tutorMode, studentMode }) {
             <>
               <button onClick={() => navigate('/tutordashboard/profile')}>Profile</button>
               <button onClick={() => navigate('/tutordashboard/settings')}>Settings</button>
-              <button onClick={() => navigate('/tutordashboard/payroll')}>Payroll</button>
+              {/*<button onClick={() => navigate('/tutordashboard/payroll')}>Payroll</button>*/}
             </>
           )}
 

@@ -1,13 +1,14 @@
-// src/components/DateTimeSelector.jsx
 import React, { useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./DateTimeSelector.css";
 
 const timeSlots = [
-  "08:00 AM", "09:30 AM", "10:00 AM", "11:30 AM",
-  "01:00 PM", "01:30 PM", "02:00 PM", "02:30 PM",
-  "03:00 PM"
+  "08:00 AM", "08:30 AM", "09:00 AM", "09:30 AM",
+  "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
+  "12:00 PM", "12:30 PM", "01:00 PM", "01:30 PM",
+  "02:00 PM", "02:30 PM", "03:00 PM", "03:30 PM",
+  "04:00 PM", "04:30 PM", "05:00 PM"
 ];
 
 const convertTo24Hour = (timeStr) => {
@@ -23,28 +24,42 @@ const slotToMinutes = (slot) => {
   return hours * 60 + minutes;
 };
 
-export default function DateTimeSelector({ onDateTimeSelect }) {
+export default function DateTimeSelector({ onDateTimeSelect, tutorId, excludeApptId }) {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
   const [confirmed, setConfirmed] = useState(false);
-  const [now, setNow] = useState(new Date());
+  const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
 
   useEffect(() => {
-    const id = setInterval(() => setNow(new Date()), 60_000);
-    return () => clearInterval(id);
-  }, []);
+    if (!selectedDate || !tutorId) return;
+    const dateStr = selectedDate.toISOString().split("T")[0];
 
-  const isSameLocalDay = (a, b) =>
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate();
+    fetch(`/api/appointments/tutor/${tutorId}/booked-times?date=${dateStr}&exclude=${excludeApptId}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    })
+      .then(res => res.json())
+      .then(booked => {
+        const bookedArray = Array.isArray(booked) ? booked : [];
 
-  const isToday = selectedDate && isSameLocalDay(selectedDate, now);
-  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+        const now = new Date();
+        const isToday = selectedDate.toDateString() === now.toDateString();
+        const nowMinutes = now.getHours() * 60 + now.getMinutes();
 
-  const availableTimeSlots = timeSlots.filter((t) =>
-    isToday ? slotToMinutes(t) >= nowMinutes : true
-  );
+        const filtered = timeSlots.filter(slot => {
+          const notBooked = !bookedArray.includes(slot);
+          const notPast = !isToday || slotToMinutes(slot) >= nowMinutes;
+          return notBooked && notPast;
+        });
+
+        setAvailableTimeSlots(filtered);
+      })
+      .catch(err => {
+        console.error("Failed to load booked times:", err);
+        setAvailableTimeSlots([]);
+      });
+  }, [selectedDate, tutorId, excludeApptId]);
 
   const handleConfirm = () => {
     if (!selectedDate || !selectedTime) {
@@ -91,13 +106,8 @@ export default function DateTimeSelector({ onDateTimeSelect }) {
         Confirm Selection
       </button>
 
-      <p className="confirm-text">
-        Almost there! Please confirm your selection.
-      </p>
-
-      {confirmed && (
-        <p className="confirmation-msg">✅ Time confirmed!</p>
-      )}
+      <p className="confirm-text">Almost there! Please confirm your selection.</p>
+      {confirmed && <p className="confirmation-msg">✅ Time confirmed!</p>}
     </div>
   );
 }
