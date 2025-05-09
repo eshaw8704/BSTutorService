@@ -6,7 +6,8 @@ const payrollSchema = new mongoose.Schema({
   confirmedHours:   { type: Number, default: 0 },
   unconfirmedHours: { type: Number, default: 0 },
   earnings:         { type: Number, default: 0 },
-  confirmed:        { type: Boolean, default: false },
+  confirmedBy:      { type: mongoose.Schema.Types.ObjectId, ref: 'User' },  // who confirmed
+  confirmedAt:      { type: Date },
 }, {
   timestamps: true
 });

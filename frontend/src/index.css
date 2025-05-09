@@ -62,3 +62,15 @@ button:hover {
 .bst-logo:hover {
   transform: scale(1.1);
 }
+
+
+/* Force light colors everywhere */
+:root {
+  color-scheme: light !important;
+}
+
+/* Override any chakra dark-mode background/text */
+body {
+  background-color: #fff !important;
+  color: #000 !important;
+}

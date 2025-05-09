@@ -1,6 +1,6 @@
 /* full-screen page wrapper */
 .login-page {
-  background: url('../../assets/water.gif') no-repeat center center fixed;
+  background: url('../../assets/pencil.png') no-repeat center center fixed;
   background-size: cover;
   min-height: 100vh;
   display: flex;
@@ -64,26 +64,36 @@
 /* Password toggle layout */
 .password-wrapper {
   position: relative;
+  width: 100%;
 }
 
 .password-wrapper input {
-  padding-right: 4rem;
+  padding-right: 40px;
+  box-sizing: border-box;
 }
 
-.toggle-password {
+.toggle-password-icon {
   position: absolute;
-  right: 1rem;
+  right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #6a0dadbb;
-  font-weight: bold;
   cursor: pointer;
-  font-size: 0.9rem;
-  padding: 0;
+  color: #6a0dad;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.back-link {
+  margin-top: 1rem;
+  text-align: center;
+  color: #00796b;
+  cursor: pointer;
+  font-size: 0.95rem;
+  text-decoration: underline;
 }
 
-.toggle-password:hover {
-  color: #069a78;
+.back-link:hover {
+  color: #004d40;
 }

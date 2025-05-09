@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from "../DashboardLayout";
 import './StudentDashboard.css';
+import { useNavigate }                  from 'react-router-dom';
 
 const StudentDashboard = () => {
   const [appointments, setAppointments] = useState([]);
