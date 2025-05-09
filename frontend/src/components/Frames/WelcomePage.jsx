@@ -16,6 +16,7 @@ function WelcomePage() {
 
   return (
     <div className="welcome-page">
+      <Header />
     {/* left side: Title, Subtitle, Buttons */}
     <div className="left-content">
       <p className="subtitle">
