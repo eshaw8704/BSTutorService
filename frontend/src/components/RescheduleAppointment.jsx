@@ -40,7 +40,8 @@ export default function RescheduleAppointment() {
         },
         body: JSON.stringify({
           appointmentDate: newDate,
-          appointmentTime: dateTimeISO }),
+          appointmentTime: newTime
+        }),
       });
 
       const data = await res.json();
@@ -61,6 +62,11 @@ export default function RescheduleAppointment() {
     }
   };
 
+  const formatDate = (isoDate) => {
+    const [year, month, day] = isoDate.slice(0, 10).split('-');
+    return `${month}/${day}/${year}`;
+  };
+
   return (
     <div className="appointment-container">
       <h2>Reschedule Appointment</h2>
@@ -73,7 +79,7 @@ export default function RescheduleAppointment() {
             <ul>
               {appointments.map(apt => (
                 <li key={apt._id} style={{ marginBottom: '1rem' }}>
-                  <strong>{apt.subject}</strong> on {new Date(apt.appointmentDate).toLocaleDateString()} at {apt.appointmentTime}
+                  <strong>{apt.subject}</strong> on {formatDate(apt.appointmentDate)} at {apt.appointmentTime}
                   <button
                     style={{ marginLeft: '1rem' }}
                     onClick={() => setSelectedAppointment(apt)}

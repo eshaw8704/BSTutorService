@@ -10,8 +10,6 @@ const ALL_TIME_SLOTS = [
   "04:00 PM", "04:30 PM", "05:00 PM"
 ];
 
-
-
 export default function BookAppointment() {
   const [subject, setSubject] = useState('');
   const [tutor, setTutor] = useState('');
@@ -23,37 +21,43 @@ export default function BookAppointment() {
 
   const token = localStorage.getItem('token');
 
-  // Fetch tutors
+  // ✅ Fetch tutors
   useEffect(() => {
-    if (!token) return;
-
     fetch('/api/users/tutors', {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     })
       .then(res => {
-        if (!res.ok) throw new Error('Failed to load tutors');
+        if (!res.ok) throw new Error('Failed to fetch tutors');
         return res.json();
       })
       .then(setTutors)
-      .catch(err => console.error('Tutor load error:', err));
+      .catch(err => console.error('Tutor fetch error:', err));
   }, [token]);
 
-  // Fetch available time slots
+  // ✅ Fetch available time slots
   useEffect(() => {
     if (!tutor || !date) {
       setAvailableTimes([]);
       return;
     }
 
-    fetch(`/api/appointments/tutor/${tutor}/booked?date=${date}`, {
-      headers: { Authorization: `Bearer ${token}` }
+    fetch(`/api/appointments/tutor/${tutor}/booked-times`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     })
       .then(res => {
         if (!res.ok) throw new Error('Failed to load booked times');
         return res.json();
       })
       .then(booked => {
-        const free = ALL_TIME_SLOTS.filter(t => !booked.includes(t));
+        const bookedTimes = booked
+          .filter(b => b.date === date)
+          .map(b => b.time);
+
+        const free = ALL_TIME_SLOTS.filter(t => !bookedTimes.includes(t));
         setAvailableTimes(free);
       })
       .catch(err => {
@@ -75,16 +79,7 @@ export default function BookAppointment() {
     if (!confirmed) return;
 
     try {
-      const appointmentDate = date; // Already in YYYY-MM-DD format from input type="date"
-
-
-
-      console.log('📤 Submitting appointment:', {
-        subject,
-        tutor,
-        appointmentDate,
-        appointmentTime: time
-      });
+      const student = localStorage.getItem('userId'); // ✅ Explicitly pull student ID
 
       const res = await fetch('/api/appointments', {
         method: 'POST',
@@ -95,7 +90,8 @@ export default function BookAppointment() {
         body: JSON.stringify({
           subject,
           tutor,
-          appointmentDate,
+          student,
+          appointmentDate: date,
           appointmentTime: time
         })
       });
@@ -116,7 +112,7 @@ export default function BookAppointment() {
         return;
       }
 
-      const data = await res.json();
+      await res.json();
       alert('✅ Appointment booked!');
 
       // Reset form
@@ -136,7 +132,6 @@ export default function BookAppointment() {
     <div className="appointment-container">
       <h2>Book Appointment</h2>
       <form className="book-form" onSubmit={handleSubmit}>
-        {/* Subject */}
         <div className="form-group">
           <label>Subject</label>
           <select value={subject} onChange={e => setSubject(e.target.value)}>
@@ -149,7 +144,6 @@ export default function BookAppointment() {
           </select>
         </div>
 
-        {/* Tutor */}
         <div className="form-group">
           <label>Tutor</label>
           <select value={tutor} onChange={e => {
@@ -166,7 +160,6 @@ export default function BookAppointment() {
           </select>
         </div>
 
-        {/* Date */}
         <div className="form-group">
           <label>Date</label>
           <input
@@ -180,7 +173,6 @@ export default function BookAppointment() {
           />
         </div>
 
-        {/* Time */}
         <div className="form-group">
           <label>Time</label>
           <select
@@ -198,7 +190,6 @@ export default function BookAppointment() {
           </select>
         </div>
 
-        {/* Confirm Button */}
         <button
           type="button"
           className={`confirm-strip${confirmed ? ' confirmed' : ''}`}
@@ -214,7 +205,6 @@ export default function BookAppointment() {
           )}
         </button>
 
-        {/* Submit Button */}
         <button
           type="submit"
           className="submit-btn"

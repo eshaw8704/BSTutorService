@@ -85,26 +85,23 @@ export const createAppointment = async (req, res) => {
     return res.status(400).json({ message: "Invalid appointment date" });
   }
 
-  const validTime = convertToValidTime(appointmentTime);
-  if (!validTime) {
-    return res.status(400).json({ message: "Invalid appointment time" });
-  }
+  // ✅ Skip convertToValidTime — directly trust dropdown string
+  const validTime = appointmentTime;
 
   try {
     const newAppt = new Appointment({
       student,
       tutor,
       subject,
-      appointmentTime: validTime,
+      appointmentTime: validTime, // using direct time string like "02:30 PM"
       appointmentDate: parsedDate,
       status: 'scheduled'
     });
 
-    // ✅ Populate email + name fields for both student and tutor
     await newAppt.populate('student tutor', 'email firstName lastName');
     await newAppt.save();
 
-    // ✅ Send confirmation email to student
+    // ✅ Email to student
     if (newAppt.student?.email) {
       await sendEmailReceipt({
         to: newAppt.student.email,
@@ -122,7 +119,7 @@ export const createAppointment = async (req, res) => {
       });
     }
 
-    // ✅ Send confirmation email to tutor
+    // ✅ Email to tutor
     if (newAppt.tutor?.email) {
       await sendEmailReceipt({
         to: newAppt.tutor.email,
@@ -143,13 +140,14 @@ export const createAppointment = async (req, res) => {
     res.status(201).json(newAppt);
 
   } catch (err) {
-    if (err.code === 11000) {
-      return res.status(409).json({ message: "That tutor is already booked at this date & time." });
-    }
     console.error("❌ Failed to create appointment:", err);
-    res.status(500).json({ message: 'Server error creating appointment' });
+    return res.status(500).json({
+      message: 'Server error creating appointment',
+      error: err.message
+    });
   }
 };
+
 
 export const completeAppointment = async (req, res) => {
   try {
@@ -375,5 +373,26 @@ export const deleteAppointment = async (req, res) => {
   } catch (err) {
     console.error('❌ Failed to cancel appointment:', err);
     res.status(500).json({ message: 'Server error canceling appointment' });
+  }
+};export const getBookedTimesByTutor = async (req, res) => {
+  try {
+    const { tutorID } = req.params;
+    const today = new Date();
+
+    const appointments = await Appointment.find({
+      tutor: tutorID,
+      appointmentDate: { $gte: today },
+      status: { $in: ['scheduled', 'confirmed'] }
+    }).select('appointmentDate appointmentTime');
+
+    const bookedSlots = appointments.map(appt => ({
+      date: appt.appointmentDate.toISOString().split('T')[0],
+      time: appt.appointmentTime
+    }));
+
+    res.json(bookedSlots);
+  } catch (err) {
+    console.error('❌ Failed to fetch booked times:', err);
+    res.status(500).json({ message: 'Failed to fetch booked times' });
   }
 };
