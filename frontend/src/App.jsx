@@ -37,8 +37,6 @@ export default function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* Legacy Redirect */}
-        <Route path="/admindashboard" element={<Navigate to="/admin/dashboard" replace />} />
       {/* Public Routes */}
       <Route path="/" element={<WelcomePage />} />
       <Route path="/login" element={<LoginPage />} />
@@ -46,6 +44,15 @@ export default function App() {
       <Route path="/tutor" element={<TutorCreation />} />
       <Route path="/admin-create" element={<AdminCreation />} /> {/* ✅ FIXED */}
       <Route path="/traffic" element={<AdminTrafficDashboard />} />
+        {/* Legacy Redirect */}
+        <Route path="/admindashboard" element={<Navigate to="/admin/dashboard" replace />} />
+
+        {/* Public Routes */}
+        <Route path="/"        element={<WelcomePage />} />
+        <Route path="/login"   element={<LoginPage />} />
+        <Route path="/student" element={<StudentCreation />} />
+        <Route path="/tutor"   element={<TutorCreation />} />
+        <Route path="/admin"   element={<AdminCreation />} />
 
         {/* Student Dashboard */}
         <Route

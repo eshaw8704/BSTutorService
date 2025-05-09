@@ -6,8 +6,11 @@ export const sendEmailReceipt = async ({ to, subject, html }) => {
     port: 587,
     secure: false,
     auth: {
-      user: process.env.EMAIL_USERNAME, // email
-      pass: process.env.EMAIL_PASSWORD, // Gmail App Password
+      user: process.env.EMAIL_USERNAME,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+    tls: {
+      rejectUnauthorized: false, // ✅ Allow self-signed certs
     },
   });
 
@@ -19,7 +22,7 @@ export const sendEmailReceipt = async ({ to, subject, html }) => {
   };
 
   try {
-    console.log("📨 Preparing to send email to", to); // ✅ Added logging
+    console.log("📨 Preparing to send email to", to);
     await transporter.sendMail(mailOptions);
     console.log('📬 Email sent to', to);
   } catch (error) {

@@ -1,8 +1,10 @@
+// src/components/WelcomePage.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import './WelcomePage.css';
-import Header from './Header'; // ✅ include Header
 import yellowLogo from "../../assets/yellowBS.png";
+import Header from '../Frames/Header';
 
 function WelcomePage() {
   const navigate = useNavigate();
@@ -13,43 +15,44 @@ function WelcomePage() {
   const goToLogin = () => navigate('/login');
 
   return (
-    <>
-      <Header />
-      <div className="welcome-page">
-        {/* left side: Title, Subtitle, Buttons */}
-        <div className="left-content">
-          <p className="subtitle">
-            Study Smarter, <br /> Not Harder
-            <br />
-            - With Expert Tutors
-          </p>
+    <div className="welcome-page">
+    {/* left side: Title, Subtitle, Buttons */}
+    <div className="left-content">
+      <p className="subtitle">
+        Study Smarter, <br /> Not Harder
+        <br />
+        - With Expert Tutors
+      </p>
 
-          <div className="button-group">
-            <button className="welcome-button" onClick={goToStudentCreation}>
-              Create Student Account
-            </button>
-            <button className="welcome-button" onClick={goToTutorCreation}>
-              Create Tutor Account
-            </button>
-            <button className="welcome-button" onClick={goToAdminCreation}>
-              Create Admin Account
-            </button>
-            <button className="welcome-button" onClick={goToLogin}>
-              Login
-            </button>
-          </div>
-        </div>
-
-        {/* right side: display the yellowBS logo */}
-        <div className="right-content">
-          <img 
-            src={yellowLogo} 
-            alt="BSTutors Yellow Logo" 
-            className="yellow-logo" 
-          />
-        </div>
+      <div className="button-group">
+        <button className="welcome-button" onClick={goToStudentCreation}>
+          Create Student Account
+        </button>
+        <button className="welcome-button" onClick={goToTutorCreation}>
+          Create Tutor Account
+        </button>
+        <button className="welcome-button" onClick={goToAdminCreation}>
+          Create Admin Account
+        </button>
+        <button className="welcome-button" onClick={goToLogin}>
+          Login
+        </button>
       </div>
-    </>
+    </div>
+
+      <motion.div
+        className="right-content"
+        initial={{ opacity: 0, x: 40 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8 }}
+      >
+        <img
+          src={yellowLogo}
+          alt="BSTutors Yellow Logo"
+          className="yellow-logo"
+        />
+      </motion.div>
+    </div>
   );
 }
 

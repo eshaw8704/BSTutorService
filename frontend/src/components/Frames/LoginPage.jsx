@@ -34,7 +34,7 @@ function LoginPage() {
           localStorage.setItem('userId', data.user._id);
 
           if (data.user.role === 'admin') {
-            navigate('/admin/admindashboard');
+            navigate('/admindashboard');
           } else if (data.user.role === 'tutor') {
             navigate('/tutordashboard');
           } else if (data.user.role === 'student') {

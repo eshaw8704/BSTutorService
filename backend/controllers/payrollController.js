@@ -1,5 +1,5 @@
 import User from '../models/User.js';
-import Payroll from '../models/Payroll.js';
+import Payroll from '../models/payroll.js';
 import { sendEmailReceipt } from '../utils/sendEmail.js';
 
 export const getPayrollForTutor = async (req, res) => {
@@ -40,6 +40,7 @@ export const confirmPayrollForTutor = async (req, res) => {
     }
 
     // Merge unconfirmed hours into confirmed
+    const earnings = payroll.confirmedHours * 20;
     payroll.confirmedHours += payroll.unconfirmedHours;
     payroll.unconfirmedHours = 0;
     payroll.confirmedBy = confirmedBy;
@@ -59,6 +60,7 @@ export const confirmPayrollForTutor = async (req, res) => {
         <ul>
           <li><strong>Confirmed Hours:</strong> ${payroll.confirmedHours}</li>
           <li><strong>Unconfirmed Hours:</strong> ${payroll.unconfirmedHours}</li>
+          <li><strong>Total Earnings:</strong> $${earnings.toFixed(2)}</li>
         </ul>
         <p>Thank you for tutoring with BSTutors!</p>
         <br>
@@ -73,8 +75,7 @@ export const confirmPayrollForTutor = async (req, res) => {
   }
 };
 
-// POST /api/payroll/tutor/:tutorId
-// Logs hours for a specific tutor
+
 export const logHoursForTutor = async (req, res) => {
   const { tutorId } = req.params;
   const { date, hours, notes } = req.body;
