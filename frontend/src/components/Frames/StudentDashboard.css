@@ -150,7 +150,7 @@ body {
 
 .info-box {
   flex: 1;
-  background-color: #eee3f5;
+  background-color:rgb(212, 187, 228);
   padding: 2rem;
   border-radius: 12px;
   max-width: 400px;

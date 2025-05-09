@@ -160,7 +160,7 @@ gap: 0.75rem;
 .btn-view-schedule,
 .mark-complete-btn,
 .submit-btn {
-background-color: #6a0dadbb; /* purple */
+background-color:rgba(111, 63, 145, 0.73); /* purple */
 color: #ffffff;
 border: none;
 padding: 0.5rem 1rem;
