@@ -16,33 +16,29 @@ function WelcomePage() {
 
   return (
     <div className="welcome-page">
-       <Header />
-      <motion.div
-        className="left-content"
-        initial={{ opacity: 0, x: -40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8 }}
-      >
-        <p className="subtitle">
-          Study Smarter, <br /> Not Harder <br />
-          <span>- With Expert Tutors</span>
-        </p>
+    {/* left side: Title, Subtitle, Buttons */}
+    <div className="left-content">
+      <p className="subtitle">
+        Study Smarter, <br /> Not Harder
+        <br />
+        - With Expert Tutors
+      </p>
 
-        <div className="button-group">
-          <button className="welcome-button" onClick={() => navigate('/student')}>
-            Create Student Account
-          </button>
-          <button className="welcome-button" onClick={() => navigate('/tutor')}>
-            Create Tutor Account
-          </button>
-          <button className="welcome-button" onClick={() => navigate('/admin-create')}>
-            Create Admin Account
-          </button>
-          <button className="welcome-button" onClick={() => navigate('/login')}>
-            Login
-          </button>
-        </div>
-      </motion.div>
+      <div className="button-group">
+        <button className="welcome-button" onClick={goToStudentCreation}>
+          Create Student Account
+        </button>
+        <button className="welcome-button" onClick={goToTutorCreation}>
+          Create Tutor Account
+        </button>
+        <button className="welcome-button" onClick={goToAdminCreation}>
+          Create Admin Account
+        </button>
+        <button className="welcome-button" onClick={goToLogin}>
+          Login
+        </button>
+      </div>
+    </div>
 
       <motion.div
         className="right-content"
