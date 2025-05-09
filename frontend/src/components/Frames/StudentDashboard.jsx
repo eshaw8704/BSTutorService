@@ -57,7 +57,6 @@ const StudentDashboard = () => {
           <p className="dashboard-welcome">
             Welcome to your dashboard! <br />
             <br />
-            Here you can schedule, reschedule, cancel and view upcoming and past appointments! If you need any additional information, please contact us at bstutorservice@gmail.com
           </p>
         </div>
       </div>
