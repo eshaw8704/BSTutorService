@@ -1,0 +1,180 @@
+/* PayrollPages.css */
+
+:root {
+  --bst-purple:   #9146FF;
+  --bst-pink:     #F2E7E8;
+  --text-dark:    #333333;
+  --border-gray:  #CCCCCC;
+}
+
+/* ─── Back Button ─── */
+.back-button {
+  background: none;
+  border: none;
+  color: var(--text-dark);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+/* ─── Wrapper & Header ─── */
+.payroll-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  padding-top: 6rem; /* avoid header overlap */
+  min-height: calc(100vh - 6rem);
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+  text-align: center;
+  background: var(--bst-pink);
+}
+
+.payroll-wrapper h2 {
+  margin-bottom: 1rem;
+  color: var(--text-dark);
+}
+
+/* ─── Add‐Hours Button & Form ─── */
+.payroll-header {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-hours-btn {
+  background-color: var(--bst-purple);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+.add-hours-btn:hover {
+  opacity: 0.9;
+}
+
+.add-hours-form {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  margin: 1rem 0;
+}
+.add-hours-form label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-size: 0.9rem;
+}
+.add-hours-form input {
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  width: 120px;
+  border: 1px solid var(--border-gray);
+  border-radius: 4px;
+}
+.add-hours-form button {
+  background-color: var(--bst-purple);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+.add-hours-form button:hover {
+  opacity: 0.9;
+}
+
+/* ─── Tutor List Buttons ─── */
+.tutor-list {
+  width: 100%;
+  max-width: 600px;
+  padding: 0;
+  margin: 1rem 0;
+  list-style: none;
+}
+.tutor-list li {
+  margin-bottom: 0.5rem;
+}
+.tutor-list button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: var(--bst-purple);
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+.tutor-list button:hover {
+  opacity: 0.9;
+}
+
+/* ─── Table ─── */
+.payroll-table {
+  width: 100%;
+  max-width: 600px;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+.payroll-table th,
+.payroll-table td {
+  border: 1px solid var(--border-gray);
+  padding: 0.75rem;
+  text-align: left;
+}
+.payroll-table th {
+  background: white;
+  color: var(--text-dark);
+}
+
+/* ─── Confirm Button ─── */
+.confirm-btn {
+  margin-top: 1rem;
+  padding: 0.75rem 2rem;
+  background-color: var(--bst-purple);
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+.confirm-btn:hover {
+  opacity: 0.9;
+}
+.confirm-btn:disabled {
+  background-color: var(--border-gray);
+  cursor: not-allowed;
+}
+
+/* ─── Inputs & Buttons Elsewhere ─── */
+input[type="number"],
+input[type="date"] {
+  padding: 0.5rem;
+  border: 1px solid var(--border-gray);
+  border-radius: 4px;
+}
+
+/* ─── Status Messages ─── */
+.status-msg {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+.status-msg.error {
+  color: #E53E3E; /* red */
+}
+.status-msg.success {
+  color: #10B981; /* green */
+}

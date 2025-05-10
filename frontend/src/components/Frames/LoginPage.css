@@ -1,0 +1,99 @@
+/* full-screen page wrapper */
+.login-page {
+  background: url('../../assets/pencil.png') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.login-container {
+  width: 90%;         /* make it span 90% of the viewport */
+  max-width: 600px;   /* but never exceed 600px */
+  padding: 2rem;
+  background-color: rgba(249, 244, 242, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.login-container h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.login-form input {
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #686668;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-form input:focus {
+  outline: none;
+  border-color: #5a4cff;
+  box-shadow: 0 0 3px rgba(90, 76, 255, 0.5);
+}
+
+.login-form button {
+  padding: 0.75rem;
+  font-size: 1.1rem;
+  background-color: #6a0dadbb;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-form button:hover {
+  background-color: #069a78;
+}
+
+/* Password toggle layout */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input {
+  padding-right: 40px;
+  box-sizing: border-box;
+}
+
+.toggle-password-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #6a0dad;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+.back-link {
+  margin-top: 1rem;
+  text-align: center;
+  color: #00796b;
+  cursor: pointer;
+  font-size: 0.95rem;
+  text-decoration: underline;
+}
+
+.back-link:hover {
+  color: #004d40;
+}

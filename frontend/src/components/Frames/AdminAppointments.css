@@ -1,0 +1,79 @@
+.page-wrapper {
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fff0fb;
+  border-radius: 8px;
+}
+
+.page-wrapper h2 {
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+  color: #8e24aa;
+  border-bottom: 2px solid #eec9ec;
+  padding-bottom: 0.5rem;
+}
+
+.tab-toggle {
+  margin-bottom: 1.5rem;
+}
+
+.tab-toggle button {
+  padding: 0.5rem 1rem;
+  margin-right: 1rem;
+  background-color: #f3d1ea;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  font-weight: bold;
+  color: #4a0072;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.tab-toggle button:hover {
+  background-color: #e7b8e2;
+  transform: scale(1.05);
+}
+
+.tab-toggle .active {
+  background-color: #c47ac0;
+  color: white;
+}
+
+.appointments-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(155, 89, 182, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.appointments-table thead {
+  background-color: #eec9ec;
+  color: #4a0072;
+}
+
+.appointments-table th,
+.appointments-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #f3d1ea;
+  color: #333;
+}
+
+.appointments-table tbody tr:hover {
+  background-color: #fcf2f9;
+}
+
+.status-msg {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.status-msg.success {
+  color: #6abf69;
+}
+
+.status-msg.error {
+  color: #e91e63;
+}

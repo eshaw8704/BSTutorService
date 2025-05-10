@@ -1,0 +1,218 @@
+/* 1) Universal box-sizing reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 2) Remove default body margins */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.dashboard-wrapper {
+  position: relative;
+  min-height: 100vh;
+  background-color: #f9f4f2;
+  padding-top: 100px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1rem 2rem;
+  gap: 1rem;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.top-right-controls {
+  position: absolute;
+  top: 135px; 
+  right: 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 10;
+}
+
+.settings-btn {
+  background-color: #6a0dadbb;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.settings-btn:hover {
+  background-color: #069a78;
+}
+
+.logout-btn {
+  background-color: #6a0dadbb;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 1rem auto;
+  display: block;
+  text-align: center;
+  width: fit-content;
+}
+
+.logout-btn:hover {
+  background-color: #f0e9f8;
+}
+
+.profile-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #6a0dadbb;
+  transition: transform 0.2s ease;
+  margin-left: 10px;
+}
+
+.profile-pic:hover {
+  transform: scale(1.05);
+}
+
+.dashboard-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 2rem 2rem;
+  padding-top: .5rem;
+  gap: 3rem;
+}
+
+.left-panel {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+}
+
+.schedule-btn {
+  padding: 1rem 3rem;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  border: none;
+  background-color: #6a0dadbb;
+  color: white;
+  cursor: pointer;
+  align-self: flex-start;
+  display: block;
+}
+
+.schedule-btn:hover {
+  background-color: #069a78;
+}
+
+.appointments-box {
+  background: white;
+  padding: 1rem 4rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-height: 300px; 
+  width: 100%;
+  max-width: 400px;
+}
+
+.subheading {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.appointment-list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 10px;
+}
+
+.info-box {
+  flex: 1;
+  background-color: #eee3f5;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 400px;
+  max-height: 200px;
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.dashboard-welcome {
+  font-size: 1rem;
+  color: #686668;
+  align-items: right;
+  margin-bottom: 2rem;
+  max-width: 400px;
+  max-height: 100px;
+}
+
+/* Appointment Sections */
+.appointments-section {
+  background-color: #fff0fb;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  margin: 2rem 4rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.appointments-section h3 {
+  margin-bottom: 1rem;
+  color: #6a0dad;
+  font-size: 1.25rem;
+}
+
+/* Appointment Table */
+.appointment-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 0.95rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.appointment-table thead {
+  background-color: #e7c9f7;
+}
+
+.appointment-table th,
+.appointment-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e0d0ec;
+}
+
+.appointment-table tr:last-child td {
+  border-bottom: none;
+}
+
+.appointment-table td {
+  color: #333;
+}

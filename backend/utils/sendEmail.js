@@ -1,12 +1,16 @@
 import nodemailer from 'nodemailer';
 
 export const sendEmailReceipt = async ({ to, subject, html }) => {
-    
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
     auth: {
-      user: process.env.EMAIL_USERNAME, // email
-      pass: process.env.EMAIL_PASSWORD, // app password
+      user: process.env.EMAIL_USERNAME,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+    tls: {
+      rejectUnauthorized: false, // ✅ Allow self-signed certs
     },
   });
 
@@ -18,9 +22,10 @@ export const sendEmailReceipt = async ({ to, subject, html }) => {
   };
 
   try {
+    console.log("📨 Preparing to send email to", to);
     await transporter.sendMail(mailOptions);
     console.log('📬 Email sent to', to);
   } catch (error) {
-    console.error('❌ Failed to send email:', error);
+    console.error('❌ Failed to send email:', error.response || error.message || error);
   }
 };
