@@ -51,3 +51,16 @@
     background-color: #069a78;
   }
   
+  .back-link {
+    margin-top: 1rem;
+    text-align: center;
+    color: #00796b;
+    cursor: pointer;
+    font-size: 0.95rem;
+    text-decoration: underline;
+  }
+  
+  .back-link:hover {
+    color: #004d40;
+  }
+  

@@ -1,56 +1,53 @@
-.error-message {
-    margin-top: 10px;
-    background: #f8d7da;
-    color: #721c24;
-    padding: 0.5rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
-  }
-  
-  /* Dropdown styling for calendar */
-  .react-datepicker__month-dropdown,
-  .react-datepicker__year-dropdown {
-    font-size: 14px;
-    max-height: 200px;
-    overflow-y: auto;
-  }
-  
-  .react-datepicker__navigation {
-    top: 10px;
-  }
-  
-  /* Light/Dark mode support */
-  @media (prefers-color-scheme: dark) {
-    .date-time-container {
-      background-color: #1e1e2f;
-      color: #eee;
-    }
-  
-    .date-time-container .date-picker,
-    .date-time-container select {
-      background-color: #2e2e3f;
-      color: #fff;
-      border-color: #444;
-    }
-  
-    .date-time-container button {
-      background-color: #8c44ec;
-    }
-  
-    .date-time-container button:hover {
-      background-color: #a05eff;
-    }
-  
-    .error-message {
-      background: #3f131a;
-      color: #ffb3b3;
-    }
-  
-    .react-datepicker__month-dropdown,
-    .react-datepicker__year-dropdown {
-      background-color: #2e2e3f;
-      color: #fff;
-      border: 1px solid #555;
-    }
-  }
-  
+.date-time-selector {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.date-time-selector h3 {
+  color: #8000c9;
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.date-input,
+.time-dropdown {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+}
+
+.confirm-button {
+  background-color: #8000c9;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  margin-bottom: 0.5rem;
+}
+
+.confirm-button:hover {
+  background-color: #6a00a8;
+}
+
+.confirm-text {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.confirmation-msg {
+  font-size: 0.95rem;
+  color: green;
+  margin-top: 0.5rem;
+}
+
+.react-datepicker-popper {
+  z-index: 9999 !important;
+}

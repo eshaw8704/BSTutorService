@@ -57,11 +57,14 @@ body {
   color: white;
   border: none;
   padding: 0.5rem 1rem;
-  border-radius: 20px;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 2rem;
+  font-size: 1rem;
+  margin: 1rem auto;
+  display: block;
+  text-align: center;
+  width: fit-content;
 }
-
 
 .logout-btn:hover {
   background-color: #f0e9f8;
@@ -147,7 +150,7 @@ body {
 
 .info-box {
   flex: 1;
-  background-color: #eee3f5;
+  background-color:rgb(212, 187, 228);
   padding: 2rem;
   border-radius: 12px;
   max-width: 400px;
@@ -166,79 +169,47 @@ body {
   margin-bottom: 2rem;
 }
 
-/* Dark Mode Overrides */
-@media (prefers-color-scheme: dark) {
-  .dashboard-wrapper {
-    background-color: #1e1e2f;
-  }
+/* Appointment Sections */
+.appointments-section {
+  background-color: #fff0fb;
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  margin: 2rem 4rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
 
-  .dashboard-header {
-    background-color: #2e2e3f;
-    color: #eee;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
-  }
+.appointments-section h3 {
+  margin-bottom: 1rem;
+  color: #6a0dad;
+  font-size: 1.25rem;
+}
 
-  .settings-btn {
-    background-color: #8c44ec;
-    color: #fff;
-  }
-  .settings-btn:hover {
-    background-color: #a05eff;
-  }
+/* Appointment Table */
+.appointment-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 0.95rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
 
-  .logout-btn {
-    background-color: #872bc0;
-    color: #fff;
-  }
-  .logout-btn:hover {
-    background-color: #803ce7;
-  }
+.appointment-table thead {
+  background-color: #e7c9f7;
+}
 
-  .profile-pic {
-    border-color: #8c44ec;
-  }
+.appointment-table th,
+.appointment-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e0d0ec;
+}
 
-  .schedule-btn {
-    background-color: #8c44ec;
-    color: #fff;
-  }
-  .schedule-btn:hover {
-    background-color: #a05eff;
-  }
+.appointment-table tr:last-child td {
+  border-bottom: none;
+}
 
-  .appointments-box {
-    background-color: #2e2e3f;
-    color: #eee;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
-  }
-
-  .subheading {
-    color: #ccc;
-  }
-
-  .appointment-list li {
-    color: #ccc;
-    border-bottom: 1px solid #444;
-  }
-
-  .appointments-box p {
-    color: #ccc;
-  }
-
-  .appointments-box .error {
-    color: #ff6b6b;
-  }
-
-  .info-box {
-    background-color: #2e2e3f;
-    color: #eee;
-  }
-
-  .dashboard-title {
-    color: #eee;
-  }
-
-  .dashboard-welcome {
-    color: #ccc;
-  }
+.appointment-table td {
+  color: #333;
 }

@@ -2,28 +2,34 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import User from '../models/User.js';
+import Payroll from '../models/payroll.js';
 import { protect } from '../middleware/auth.js';
 import {
-    getProfile,
-    updateProfile,
-    updateEmail,
-    updatePassword,
-    deleteUser
-  } from '../controllers/userController.js';
+  getProfile,
+  updateProfile,
+  updateEmail,
+  updatePassword,
+  deleteUser
+} from '../controllers/userController.js';
 
+dotenv.config();
 
 const router = express.Router();
 
-// 🔐 Generate a token
 const generateToken = (userId) => {
   return jwt.sign({ id: userId }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-// ✅ Register route: /api/users/register
+// 🔹 Register
 router.post('/register', async (req, res) => {
   try {
-    const { firstName, lastName, email, password, role } = req.body;
+    const { firstName, lastName, email, password, role, secretKey } = req.body;
+
+    if (role === 'admin' && secretKey !== process.env.ADMIN_SECRET_KEY) {
+      return res.status(403).json({ message: 'Invalid admin secret key.' });
+    }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -39,40 +45,51 @@ router.post('/register', async (req, res) => {
       email,
       password: hashedPassword,
       role,
-      UID,
+      UID
     });
 
     await newUser.save();
 
-    const { password: _, ...userData } = newUser.toObject(); // remove hashed password
+    if (role === 'tutor') {
+      await Payroll.create({
+        tutor: newUser._id,
+        confirmedHours: 0,
+        unconfirmedHours: 0,
+        earnings: 0,
+        confirmed: false
+      });
+    }
+
     const token = generateToken(newUser._id);
 
     res.status(201).json({
       message: 'User created successfully!',
-      user: userData,
+      user: {
+        _id: newUser._id,
+        email: newUser.email,
+        role: newUser.role,
+        UID: newUser.UID,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName
+      },
       token
     });
-
   } catch (error) {
     console.error('Error in registration:', error.message);
     res.status(500).json({ message: 'Server error during registration.' });
   }
 });
 
-// ✅ Login route: /api/users/login
+// 🔹 Login
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
-    }
+    if (!user) return res.status(404).json({ message: 'User not found.' });
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid password.' });
-    }
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) return res.status(401).json({ message: 'Invalid password.' });
 
     const token = generateToken(user._id);
 
@@ -88,17 +105,17 @@ router.post('/login', async (req, res) => {
       },
       token
     });
-
   } catch (error) {
     console.error('Login error:', error.message);
     res.status(500).json({ message: 'Server error during login.' });
   }
 });
 
-// ✅ Get all tutors (optional)
+// 🔹 Get all tutors
 router.get('/tutors', async (req, res) => {
   try {
     const tutors = await User.find({ role: 'tutor' }).select('-password');
+    console.log("👨‍🏫 Tutors found:", tutors.length);
     res.json(tutors);
   } catch (err) {
     console.error("Error fetching tutors:", err);
@@ -106,19 +123,11 @@ router.get('/tutors', async (req, res) => {
   }
 });
 
-router.get(
-  '/profile',       // path
-  protect,          // middleware that validates JWT & sets req.user.id
-  getProfile        // controller that returns the user (minus password)
-);
-
+// 🔹 User profile
+router.get('/profile', protect, getProfile);
 router.put('/profile', protect, updateProfile);
-
-
-// … your existing /register, /login, /tutors, /profile (GET)
-router.put('/email',    protect, updateEmail);
+router.put('/email', protect, updateEmail);
 router.put('/password', protect, updatePassword);
 router.delete('/profile', protect, deleteUser);
-
 
 export default router;

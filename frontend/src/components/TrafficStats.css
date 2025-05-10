@@ -1,0 +1,53 @@
+/* src/components/Frames/TrafficStats.css */
+
+.traffic-card {
+    /* Force a real width so ResponsiveContainer can calculate */
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+  
+    /* Light‐mode styling */
+    background-color: #ffffff !important;
+    color: #333 !important;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+  
+    /* Ignore dark‐mode media queries inside this card */
+    color-scheme: light;
+  }
+  
+  .traffic-card h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+    color: #222;
+  }
+  
+  /* Ensure the chart background stays white */
+  .traffic-card .recharts-wrapper {
+    background-color: #fff;
+  }
+  
+  /* Light‐mode grid lines */
+  .traffic-card .recharts-cartesian-grid line {
+    stroke: #e0e0e0 !important;
+  }
+  
+  /* Light‐mode axis lines */
+  .traffic-card .recharts-x-axis path,
+  .traffic-card .recharts-y-axis path {
+    stroke: #999 !important;
+  }
+  
+  /* Tooltip cursor line */
+  .traffic-card .recharts-tooltip-cursor {
+    stroke: #8884d8 !important;
+    stroke-width: 2px !important;
+  }
+  
+  /* Tooltip content box */
+  .traffic-card .recharts-tooltip-wrapper {
+    /* let the <Tooltip>’s contentStyle settings apply */
+    background-color: transparent;
+  }
+  

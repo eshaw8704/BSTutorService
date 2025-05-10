@@ -1,6 +1,6 @@
-import React from 'react';
-import './AppointmentFrame.css';
+import React, { useState, useEffect } from 'react';import './AppointmentFrame.css';
 import { useNavigate, Outlet } from 'react-router-dom';
+import DashboardLayout from '../DashboardLayout'; 
 
 const AppointmentFrame = () => {
   const navigate = useNavigate();
@@ -8,11 +8,10 @@ const AppointmentFrame = () => {
   const handleNavigate = (path) => {
     navigate(`/appointments/${path}`, { replace: true });
   };
-  
-  
 
-  return (
-    <div className="appointment-frame">
+    return (
+        <DashboardLayout role="student">
+          <div className="appointment-frame">
       <header className="frame-header">
         <img src="/logo.png" alt="BSTutors Logo" className="frame-logo" />
         <h2 className="frame-title">APPOINTMENTS</h2>
@@ -43,13 +42,12 @@ const AppointmentFrame = () => {
     ⬇️ Drop-In Sessions
   </button>
 </div>
-
-
       <div className="frame-content">
         <Outlet />
       </div>
-    </div>
-  );
+           </div>
+    </DashboardLayout>
+      );
 };
 
 export default AppointmentFrame;

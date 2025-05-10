@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import Header from '../Frames/Header';
 import './TutorCreation.css';
 import confetti from 'canvas-confetti';
-import { useNavigate } from 'react-router-dom';
 
-// displays a form to create a tutor account and handles the form submission
-// function to create a tutor account
 function TutorCreation() {
   const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName]   = useState('');
-  const [email, setEmail]         = useState('');
-  const [password, setPassword]   = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  // this function handles the form submission
-  // It sends a POST request to the server with the user data
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -23,7 +20,6 @@ function TutorCreation() {
         body: JSON.stringify({ firstName, lastName, email, password, role: 'tutor' }),
       });
 
-      // parse the response
       const data = await response.json();
       if (response.ok) {
         alert('Tutor account created successfully!');
@@ -42,19 +38,21 @@ function TutorCreation() {
     }
   };
 
-  // render the form for creating a new tutor account
-  // it includes fields for first name, last name, email, and password
   return (
-    <div className="tutor-creation-container">
-      <h2>Create Tutor Account</h2>
-      <form onSubmit={handleSubmit} className="tutor-form">
-        <input type="text" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
-        <input type="text" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
-        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <button type="submit">Register</button>
-      </form>
-    </div>
+    <>
+      <Header />
+      <div className="tutor-creation-container">
+        <h2>Create Tutor Account</h2>
+        <form onSubmit={handleSubmit} className="tutor-form">
+          <input type="text" placeholder="First Name" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+          <input type="text" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
+          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <button type="submit">Register</button>
+        </form>
+        <p className="back-link" onClick={() => navigate('/')}>← Return to Welcome Page</p>
+      </div>
+    </>
   );
 }
 

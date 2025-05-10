@@ -11,6 +11,7 @@ export default function AdminPayrollReview() {
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState('');
   const [confirming, setConfirming] = useState(false);
+  const token = localStorage.getItem('token');
 
   const rate = 20;
 
@@ -18,9 +19,12 @@ export default function AdminPayrollReview() {
     async function fetchPayroll() {
       setLoading(true);
       try {
-        const res  = await fetch(`/api/payroll/tutor/${tutorId}`);
+        const res = await fetch(`http://localhost:5000/api/payroll/tutor/${tutorId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         if (!res.ok) throw new Error(await res.text());
-        setPayroll(await res.json());
+        const data = await res.json();
+        setPayroll(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -34,10 +38,13 @@ export default function AdminPayrollReview() {
     setConfirming(true);
     try {
       const adminId = localStorage.getItem('userId');
-      const res = await fetch(`/api/payroll/tutor/${tutorId}`, {
+      const res = await fetch(`http://localhost:5000/api/payroll/tutor/${tutorId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ confirmedBy: adminId }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization:   `Bearer ${token}`
+        },
+        body: JSON.stringify({ confirmedBy: adminId })
       });
       if (!res.ok) throw new Error(await res.text());
       const updated = await res.json();

@@ -1,6 +1,6 @@
 import express from 'express';
 import Appointment from '../models/Appointment.js';
-
+import { protect } from '../middleware/auth.js';
 import {
   getAppointmentByStudent,
   getAppointmentsByTutor,
@@ -9,42 +9,41 @@ import {
   getLoggedAppointments,
   deleteAppointment,
   changeAppointment,
-  getUpcomingForStudent
+  getUpcomingForStudent,
   updateAppointment,
+  getBookedTimesByTutor
 } from '../controllers/appointmentController.js';
-
-import { protect } from '../middleware/auth.js';
-import { changeAppointment } from '../controllers/rescheduleController.js';
 
 const router = express.Router();
 
-// 🔹 GET /api/appointments/upcoming
+// 🔹 Student's upcoming appts
 router.get('/upcoming', protect, getUpcomingForStudent);
 
-// 🔹 POST /api/appointments
+// 🔹 Create new appt
 router.post('/', protect, createAppointment);
 
+// 🔹 Update appt info
 router.patch('/:appointmentId/update', protect, updateAppointment);
 
-// 🔹 GET /api/appointments/:studentID
-router.get('/:studentID', protect, getAppointmentByStudent);
+// 🔹 Change date/time for reschedule
+router.patch('/:appointmentId/change', protect, changeAppointment);
 
-// 🔹 GET /api/appointments/tutor/:tutorID
-router.get('/tutor/:tutorID', protect, getAppointmentsByTutor);
-
-// 🔹 PATCH /api/appointments/:appointmentId/complete
+// 🔹 Complete appt
 router.patch('/:appointmentId/complete', protect, completeAppointment);
 
-// 🔹 GET /api/appointments/logged
-router.get('/logged', protect, getLoggedAppointments);
-
-// 🔹 DELETE /api/appointments/:appointmentId
+// 🔹 Delete appt
 router.delete('/:appointmentId', protect, deleteAppointment);
 
-// 🔹 PUT /api/appointments/:appointmentId
-router.put('/:appointmentId', protect, changeAppointment);
+// 🔹 Get student history
+router.get('/:studentID', protect, getAppointmentByStudent);
 
-// 🔹 GET /api/appointments/all/upcoming (admin)
+// 🔹 Get tutor appts
+router.get('/tutor/:tutorID', protect, getAppointmentsByTutor);
+
+// 🔹 Get booked times for tutor
+router.get('/tutor/:tutorID/booked-times', protect, getBookedTimesByTutor);
+
+// 🔹 Admin view: All upcoming appts
 router.get('/all/upcoming', async (req, res) => {
   try {
     const now = new Date();
@@ -58,7 +57,7 @@ router.get('/all/upcoming', async (req, res) => {
   }
 });
 
-// 🔹 GET /api/appointments/all/history (admin)
+// 🔹 Admin view: History
 router.get('/all/history', async (req, res) => {
   try {
     const now = new Date();
@@ -71,6 +70,5 @@ router.get('/all/history', async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch appointment history' });
   }
 });
-
 
 export default router;
