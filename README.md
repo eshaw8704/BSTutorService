@@ -128,7 +128,7 @@ BSTUTORSERVICE/
 ### Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/BSTutors.git
+   git clone https://github.com/eshaw8704/BSTutorService.git
    cd BSTutors
    ```
 2. Install dependencies for both frontend and backend:
