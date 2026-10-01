@@ -12,7 +12,7 @@ export default function Settings() {
 
   const handleChangeEmail = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/users/email', {
+      const res = await fetch('/api/users/email', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ export default function Settings() {
 
   const handleChangePassword = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/users/password', {
+      const res = await fetch('/api/users/password', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export default function Settings() {
   const handleDelete = async () => {
     if (!window.confirm('This means goodbye—are you sure?')) return;
     try {
-      const res = await fetch('http://localhost:5000/api/users/profile', {
+      const res = await fetch('/api/users/profile', {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });

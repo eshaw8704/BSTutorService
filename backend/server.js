@@ -2,6 +2,9 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import { connectDB } from "./config/db.js";
 
 import userRoutes        from "./routes/userRoutes.js";
@@ -54,8 +57,19 @@ app.use("/api/admin", adminRoutes);
 app.use("/api", paymentRoutes);
 app.use("/api", webhookRoutes);
 
-// — Health check
-app.get("/", (_req, res) => res.send("API is running…"));
+// — Serve the built frontend (production); in dev, Vite serves it instead
+const distDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../frontend/dist");
+if (fs.existsSync(distDir)) {
+  app.use(express.static(distDir));
+  // Send index.html for client-side routes (anything that isn't an API call)
+  app.use((req, res, next) => {
+    if (req.method !== "GET" || req.path.startsWith("/api")) return next();
+    res.sendFile(path.join(distDir, "index.html"));
+  });
+} else {
+  // — Health check
+  app.get("/", (_req, res) => res.send("API is running…"));
+}
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

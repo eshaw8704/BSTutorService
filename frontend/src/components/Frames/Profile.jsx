@@ -22,7 +22,7 @@ export default function Profile() {
   
       try {
         // 2) Fetch profile from your Express backend
-        const res = await fetch('http://localhost:5000/api/users/profile', {
+        const res = await fetch('/api/users/profile', {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
         
@@ -52,7 +52,7 @@ export default function Profile() {
   const handleSave = async () => {
     const token = localStorage.getItem('token');
     try {
-      const res = await fetch('http://localhost:5000/api/users/profile', {
+      const res = await fetch('/api/users/profile', {
         method: 'PUT',
         headers: {
           'Content-Type':  'application/json',

@@ -19,7 +19,7 @@ export default function AdminPayrollReview() {
     async function fetchPayroll() {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:5000/api/payroll/tutor/${tutorId}`, {
+        const res = await fetch(`/api/payroll/tutor/${tutorId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (!res.ok) throw new Error(await res.text());
@@ -38,7 +38,7 @@ export default function AdminPayrollReview() {
     setConfirming(true);
     try {
       const adminId = localStorage.getItem('userId');
-      const res = await fetch(`http://localhost:5000/api/payroll/tutor/${tutorId}`, {
+      const res = await fetch(`/api/payroll/tutor/${tutorId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

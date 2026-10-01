@@ -12,7 +12,7 @@ export default function LogHoursForm({ tutorId, onLogged }) {
     e.preventDefault();
     setError(''); setSuccess('');
     try {
-        const res = await fetch(`http://localhost:5000/api/payroll/tutor/${tutorId}/log-hours`,{
+        const res = await fetch(`/api/payroll/tutor/${tutorId}/log-hours`,{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

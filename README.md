@@ -140,6 +140,14 @@ BSTUTORSERVICE/
    npm run dev
    ```
 
+## Deploying (Render, free)
+1. On [render.com](https://render.com), create a **Web Service** from this GitHub repo.
+2. Build command: `npm run render-build` · Start command: `npm start`
+3. Add the `backend/.env` values under **Environment**.
+4. In MongoDB Atlas → Network Access, allow `0.0.0.0/0`.
+
+The backend serves the built frontend, so the whole site runs from one URL.
+
 ## Usage
 - Access the application at `http://localhost:5173/`.
 - Log in or create an account (Admin, Student, Tutor).

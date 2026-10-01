@@ -5,7 +5,7 @@ export default function CancelAppointment() {
   const token = localStorage.getItem('token');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/appointments/upcoming', {
+    fetch('/api/appointments/upcoming', {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -20,7 +20,7 @@ export default function CancelAppointment() {
     if (!confirmed) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/appointments/${id}`, {
+      const res = await fetch(`/api/appointments/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`
