@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Frames/Header';
+import TermsAgreement from '../Legal/TermsAgreement';
 import './AdminCreation.css';
 
 function AdminCreation() {
@@ -9,6 +10,7 @@ function AdminCreation() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [secretKey, setSecretKey] = useState('');
+  const [agreed, setAgreed] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -60,6 +62,7 @@ function AdminCreation() {
           <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
           <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
           <input type="text" placeholder="Admin Secret Key" value={secretKey} onChange={(e) => setSecretKey(e.target.value)} required />
+          <TermsAgreement checked={agreed} onChange={setAgreed} />
           <button type="submit">Register</button>
         </form>
         <p className="back-link" onClick={() => navigate('/')}>← Return to Welcome Page</p>

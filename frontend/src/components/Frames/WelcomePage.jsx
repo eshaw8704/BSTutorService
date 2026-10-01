@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import './WelcomePage.css';
 import Header from './Header'; // ✅ include Header
+import SiteFooter from '../Legal/SiteFooter';
 import yellowLogo from "../../assets/yellowBS.png";
 
 function WelcomePage() {
@@ -15,6 +16,7 @@ function WelcomePage() {
   const goToLogin = () => navigate('/login');
 
   return (
+    <>
     <div className="welcome-page">
       <Header />
     {/* left side: Title, Subtitle, Buttons */}
@@ -54,6 +56,8 @@ function WelcomePage() {
         />
       </motion.div>
     </div>
+    <SiteFooter />
+    </>
   );
 }
 

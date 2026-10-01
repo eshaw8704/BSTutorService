@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Frames/Header';
+import TermsAgreement from '../Legal/TermsAgreement';
 import './StudentCreation.css';
 
 function StudentCreation() {
@@ -8,6 +9,7 @@ function StudentCreation() {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [agreed, setAgreed] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -46,6 +48,7 @@ function StudentCreation() {
           <input type="text" placeholder="Last Name" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
           <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
           <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <TermsAgreement checked={agreed} onChange={setAgreed} />
           <button type="submit">Register</button>
         </form>
         <p className="back-link" onClick={() => navigate('/')}>← Return to Welcome Page</p>

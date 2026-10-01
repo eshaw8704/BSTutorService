@@ -32,6 +32,11 @@ import BookAppointment       from './components/BookAppointment';
 import RescheduleAppointment from './components/RescheduleAppointment';
 import CancelAppointment     from './components/CancelAppointment';
 
+// Legal & contact
+import PrivacyPolicy         from './components/Legal/PrivacyPolicy';
+import TermsOfService        from './components/Legal/TermsOfService';
+import ContactUs             from './components/Legal/ContactUs';
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -44,6 +49,9 @@ export default function App() {
       <Route path="/tutor" element={<TutorCreation />} />
       <Route path="/admin-create" element={<AdminCreation />} /> {/* ✅ FIXED */}
       <Route path="/traffic" element={<AdminTrafficDashboard />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/terms" element={<TermsOfService />} />
+      <Route path="/contact" element={<ContactUs />} />
         {/* Legacy Redirect */}
         <Route path="/admindashboard" element={<Navigate to="/admin/dashboard" replace />} />
       {/* Public Routes */}
