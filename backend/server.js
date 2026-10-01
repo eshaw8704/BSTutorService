@@ -7,7 +7,7 @@ import { connectDB } from "./config/db.js";
 import userRoutes        from "./routes/userRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
 import payrollRoutes     from "./routes/payrollRoutes.js";
-import trafficRoutes     from "./routes/trafficroutes.js";
+import trafficRoutes     from "./routes/trafficRoutes.js";
 import adminRoutes       from "./routes/adminRoutes.js";
 import paymentRoutes     from "./routes/paymentRoutes.js";
 import webhookRoutes     from "./routes/webhookRoutes.js";
@@ -25,12 +25,6 @@ app.use('/api/webhook', express.raw({ type: 'application/json' })); // ⬅️ Re
 // Standard middleware
 app.use(express.json()); // ⬅️ Safe to use after webhook route
 app.use(cors());
-
-// Webhook raw body parser (required by Stripe)
-app.use('/api/webhook', express.raw({ type: 'application/json' })); // ⬅️ Required *before* express.json()
-
-// Webhook raw body parser (required by Stripe)
-app.use('/api/webhook', express.raw({ type: 'application/json' })); // ⬅️ Required *before* express.json()
 
 // — Visit-logging middleware (before your routes)
 app.use(async (req, res, next) => {

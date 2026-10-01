@@ -1,5 +1,5 @@
 import User from '../models/User.js';
-import Payroll from '../models/payroll.js';
+import Payroll from '../models/Payroll.js';
 import { sendEmailReceipt } from '../utils/sendEmail.js';
 
 export const getPayrollForTutor = async (req, res) => {

@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import User from '../models/User.js';
-import Payroll from '../models/payroll.js';
+import Payroll from '../models/Payroll.js';
 import { protect } from '../middleware/auth.js';
 import {
   getProfile,

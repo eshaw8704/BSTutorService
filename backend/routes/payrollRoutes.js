@@ -6,7 +6,7 @@ import {
   confirmPayrollForTutor,
   logHoursForTutor
 } from '../controllers/payrollController.js';
-import Payroll from '../models/payroll.js';
+import Payroll from '../models/Payroll.js';
 
 const router = express.Router();
 
