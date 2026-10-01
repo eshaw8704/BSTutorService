@@ -14,9 +14,6 @@ BSTutors is a web application designed to facilitate booking tutoring sessions. 
 ## Project Structure
 ```
 BSTUTORSERVICE/
-├── .vite/                      # Vite cache
-│   ├── deps/
-│   └── deps_temp_a76d9c3a/
 ├── .vscode/                    # VSCode workspace settings
 ├── backend/
 │   ├── config/
@@ -129,23 +126,17 @@ BSTUTORSERVICE/
 1. Clone the repository:
    ```bash
    git clone https://github.com/eshaw8704/BSTutorService.git
-   cd BSTutors
+   cd BSTutorService
    ```
-2. Install dependencies for both frontend and backend:
+2. Install dependencies for the root, backend and frontend:
    ```bash
-   cd backend
-   npm install
-   cd ../frontend
-   npm install
+   npm run install:all
    ```
-3. Run the backend server:
+3. Create `backend/.env` with `MONGO_URI`, `PORT`, `JWT_SECRET`, `ADMIN_SECRET_KEY`,
+   `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `EMAIL_USERNAME` and `EMAIL_PASSWORD`.
+   `.env` files are git-ignored; never commit them.
+4. Start the backend and frontend together:
    ```bash
-   cd backend
-   npm start
-   ```
-4. Run the frontend development server:
-   ```bash
-   cd frontend
    npm run dev
    ```
 
@@ -179,6 +170,9 @@ BSTUTORSERVICE/
    git push origin feature/your-feature
    ```
 5. Open a pull request.
+
+## Contributors
+- [Hitthenutz](https://github.com/Hitthenutz) (Matthew Quan)
 
 ## License
 This project is licensed under the MIT License.
